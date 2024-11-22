@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nurse Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nurse_pat1style.css' %}" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="navbar">
+        <div class="logo">
+          <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo" />
+          MediCare
+        </div>
+        <div class="profile">
+          <span><b>Beck Miller</b> </span>
+          <img src="{{ MEDIA_URL }}Male User.png" alt="Beck Miller Profile" />
+        </div>
+      </div>
+      <div class="content">
+        <div class="sidebar">
+          <a href="{% url 'nurse_dash' %}" class="menu-item">
+            <img src="{{ MEDIA_URL }}dashboard-removebg-preview.png" alt="Dashboard Icon" />
+            Dashboard
+          </a>
+
+          <a href="{% url 'nurse_pat' %}" class="menu-item">
+            <img src="{{ MEDIA_URL }}patient-removebg-preview.png" alt="Patients Icon" />
+            Patients
+          </a>
+
+          <a href="{% url 'nurse_app' %}" class="menu-item">
+            <img
+              src="{{ MEDIA_URL }}appointment-removebg-preview.png"
+              alt="Appointment Icon"
+            />
+             Appointment
+          </a>
+
+          <div class="logout">
+            <img src="{{ MEDIA_URL }}logout-removebg-preview.png" alt="Logout Icon" />
+            Logout
+          </div>
+        </div>
+        <div class="main-content">
+            <h1 class="page-title">Charles B</h1>
+            <div class="patient-card">
+                <div class="card-header">
+                    <div class="card-content">
+                        <h2 class="card-title"><b>Patient Details</b></h2>
+                        <div class="form-group">
+                           
+                            <div class="form-label">Name:</div>
+                            <input type="text">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Number:</div>
+                           
+                            <input type="number" name="phone number" id="">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-label">Age:</div>
+                             
+                                <input type="number" name="age" id="">
+                            </div>
+                          
+                        </div>
+                        <div class="form-col">
+                            <div class="form-label">Gender:</div>
+                         
+                            <select required>
+                                <option disabled selected>Select gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label">Date of Birth:</div>
+                          <input type="date" name="" id="">
+                        </div>
+                        <div class="form-control text-area"></div>
+                        <div class="button-group">
+                            <button class="btn">
+                                <span>+</span> Reports
+                            </button>
+                            <button class="btn">
+                                <span>+</span> Checkup
+                            </button>
+                        </div>
+                    </div>
+                    <img src="{{ MEDIA_URL }}patient image.jpg" alt="Patient Photo" class="patient-image">
+                </div>
+            </div>
+        </div>
+    </div>
+      </div>
+    </div>
+  </body>
+</html>

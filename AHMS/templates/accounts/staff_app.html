@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Appointments</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content {
+            flex: 1;
+            padding-top: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .search-add {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+        .search-container input {
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: #CED7D9;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .search-container img {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+        }
+        .add-btn {
+            background-color: #2D6CBF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .add-btn img {
+            width: 16px;
+            height: 16px;
+        }
+        .table-container {
+            background-color: w#E2F4F8;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #83BDD1;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        .operation-btn {
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .operation-btn.accept {
+            background-color: #dcfce7;
+            color: black;
+            border: black;
+        }
+        .operation-btn.edit {
+            background-color: #dbeafe;
+            color: black;
+        }
+        .operation-btn.reject {
+            background-color: #fee2e2;
+            color: black;
+        }
+        .operation-btn img {
+            width: 12px;
+            height: 12px;
+        }
+        .operation-container {
+            display: flex;
+            gap: 8px;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            color: #333;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .logout {
+            margin-top: auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .logout img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Health" >
+
+                MediCare
+            </div>
+            <div class="profile">
+                <span>Dr. Sarah K</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'staff_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
+                </a>
+                <div class="menu-item">
+                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment">
+                    Appointment
+                </div>
+                <a href="{% url 'staff_pat' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients">
+                    Patients
+                </a>
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout">
+                    Logout
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="header">
+                    <h2 style="margin: 0; font-size: 24px; font-weight: 600;">Appointments</h2>
+                    <div class="search-add">
+                        <div class="search-container">
+                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                            <input type="text" placeholder="Search ID/Date">
+                        </div>
+                        <button class="add-btn">
+                            <img src="{{ MEDIA_URL }}Plus Math.png" alt="Add">
+                            Add Appointment
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Charles B</td>
+                                <td>1234567890</td>
+                                <td>10-10-2024</td>
+                                <td>12:30 PM</td>
+                                <td>NOT CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn accept">
+                                            <img src="{{ MEDIA_URL }}Done.png" alt="Accept">
+                                            ACCEPT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Vivian J</td>
+                                <td>1234567890</td>
+                                <td>9-10-2024</td>
+                                <td>9:30 AM</td>
+                                <td>CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn edit">
+                                            <img src="{{ MEDIA_URL }}Edit.png" alt="Edit">
+                                            EDIT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Jamie C</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td>NOT CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn accept">
+                                            <img src="{{ MEDIA_URL }}Done.png" alt="Accept">
+                                            ACCEPT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Mike O</td>
+                                <td>1234567890</td>
+                                <td>6-10-2024</td>
+                                <td>3:30 PM</td>
+                                <td>CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn edit">
+                                            <img src="{{ MEDIA_URL }}Edit.png" alt="Edit">
+                                            EDIT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Blake C</td>
+                                <td>1234567890</td>
+                                <td>3-10-2024</td>
+                                <td>12:30 PM</td>
+                                <td>CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn edit">
+                                            <img src="{{ MEDIA_URL }}Edit.png" alt="Edit">
+                                            EDIT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Selena G</td>
+                                <td>1234567890</td>
+                                <td>3-10-2024</td>
+                                <td>8:45 AM</td>
+                                <td>CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn edit">
+                                            <img src="{{ MEDIA_URL }}Edit.png" alt="Edit">
+                                            EDIT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Tony J</td>
+                                <td>1234567890</td>
+                                <td>1-10-2024</td>
+                                <td>8:30 PM</td>
+                                <td>NOT CONFIRMED</td>
+                                <td>
+                                    <div class="operation-container">
+                                        <button class="operation-btn accept">
+                                            <img src="{{ MEDIA_URL }}Done.png" alt="Accept">
+                                            ACCEPT
+                                        </button>
+                                        <button class="operation-btn reject">
+                                            <img src="{{ MEDIA_URL }}Unavailable.png" alt="Reject">
+                                            REJECT
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 600;">History</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Charles B</td>
+                                <td>1234567890</td>
+                                <td>10-10-2024</td>
+                                <td>12:30 PM</td>
+                                <td>COMPLETED</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Vivian J</td>
+                                <td>1234567890</td>
+                                <td>9-10-2024</td>
+                                <td>9:30 AM</td>
+                                <td>COMPLETED</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

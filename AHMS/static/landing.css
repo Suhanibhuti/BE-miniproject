@@ -1,0 +1,627 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+
+}
+
+html{
+    scroll-behavior: smooth;
+    background-color: azure;
+ 
+}
+#Home{
+    width: 100%;
+    z-index: 2;
+    position: fixed;
+
+    
+}
+.container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 10vh;
+    background-color: 1E1E1E;
+    background-color: azure;
+  
+}
+.medi-care {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: absolute;
+    height: 29px;
+    top: 16px;
+    left: 50px;
+    color: #000000;
+    font-family: Inter, var(--default-font-family);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 32px;
+    text-align:left;
+ 
+  }
+ul{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul li{
+    margin: 10px;
+    list-style: none;
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif; 
+
+}
+
+ul li a{
+color: black;
+text-decoration: none;
+}
+
+.logoimg{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 14px;
+    left: 17px;
+    background: url(./assets/images/7a2d16b2bb9f3a64267d9e3e401dc1725ea0de3a.png)
+      no-repeat center;
+    background-size: contain;
+    z-index: 1;
+}
+
+.logoimg img{
+    height: 100%;
+    width: 100%;
+}
+
+.logos{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+.background-img{
+    background-image: azure;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    height: 86vh;
+}
+.headingtext{
+    height: 90vh;
+    width: 90wh;
+    padding: 150px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+.heading{
+    font-size: 60px;
+    font-family: 'Times New Roman', Times, serif; 
+    color: rgb(39, 60, 105);
+    text-align: center;
+    font-weight: bolder;
+    padding-bottom: 6px;
+    text-shadow: 2px 2px  rgba(122, 120, 120, 0.75);;;
+
+}
+button:hover{
+    color: blanchedalmond;
+    background-color: rgba(11, 11, 12, 0.404);
+}
+.button{
+    background-color: rgb(48, 78, 143);
+    height: 40px;
+    width:70px;
+    border-radius: 10px;
+    padding-top: 5px;
+    padding-bottom: 2px;
+    margin-top: 10px;
+    font-size: 19px;
+    font-style: normal;
+    font-weight: bold;
+    color: rgb(245, 245, 244);
+    text-align: center;
+
+  }
+
+   .midtexts{
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif; 
+    padding: 15px;
+    color:black;
+    text-align: center;
+    background-color: azure;
+
+    }
+.buttons{
+    background-color: rgb(48, 78, 143);
+    height: 40px;
+    width: 250px;
+    border-radius: 10px;
+    padding-top: 5px;
+    padding-bottom: 3px;
+    margin-top: 10px;
+    font-size: 19px;
+    font-style: normal;
+    font-weight: bold;
+    color: beige;
+    text-align: center;
+
+  }
+  .buttons:hover{
+    color: blanchedalmond;
+    background-color: rgba(0, 0, 0, 0.404);
+}
+.about{
+    background-color:rgba(114, 190, 190, 0.329);
+    border: 2px solid rgb(40, 180, 180) ;
+    height:250px;
+    margin-left: 30px;
+    margin-right: 30px;
+    border-radius: 4px;
+}
+.aboutpage{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.imgbox img{
+    height: 100%;
+    width: 100%;
+    border-radius: 15px;   
+}
+.imgbox{
+    height: 220px;
+    width: 220px;
+    margin-top: 15px;
+}
+
+.aboutpage{
+    padding: 0px;
+    margin: 0px 40px;
+}
+.textcolor{
+    color:rgb(14, 13, 13);
+    font-size: 23px;
+    font-weight: bold;
+}
+.texts{
+    font-size: 17px;
+    font-family: 'Times New Roman', Times, serif;
+    padding-top: 8px;
+}
+
+.service{
+    height:auto;
+    padding:30px;
+}
+.serviceheading{
+    text-align: center;
+    font-size: 40px;
+    padding: 30px;
+    
+}
+.cardimg img{
+    height: 100%;
+    width: 100%;
+    border-radius: 15px;
+    transition: transform 0.5s ease-in-out; 
+    /* accessing the parentn element  and giving the hover property to it */
+
+}
+.card:hover .cardimg img{
+    transform: scale(1.1);
+}
+
+.cardimg{
+    height: 250px;
+    width: 230px;
+    overflow: hidden;
+    border-radius: 20px;
+    margin-left: 20px;
+}
+.servicebox{
+    display: flex;
+    justify-content:center;
+    align-items: center; 
+}
+.textoverlay{
+    height: 250px;
+    width: 230px;
+    position: absolute;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.418);
+    border-radius: 15px;
+    justify-content: center;
+align-items: center;
+display: flex;
+flex-direction: column;
+margin-left: 20px;
+}
+.text{
+    font-size: 50px;
+    color: azure;
+    font-weight: bold;
+}
+.midtext{
+    font-size: 20px;
+    color: azure;   
+}
+
+.card{
+    position: relative;
+}
+
+.contact{
+    margin-top: 10px;
+    margin-left: 242px;
+    margin-bottom: 0px; 
+}
+.contact-1 {
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    width: 99px;
+    height: 100px;
+    margin: 0px 0 0 19px;
+    color: #000000;
+    font-family: Inter, var(--default-font-family);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 150px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 3;
+   
+  }
+  .interested-discussing {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    width: 191px;
+    height: 19px;
+    margin: -61px 0 0 20px;
+    color: #000000;
+    font-family: Inter, var(--default-font-family);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 4;
+  }
+  .flex-row-dd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 351px;
+    height: 19px;
+    margin: 8px 0 0 1px;
+    z-index: 24;
+  }
+  .name {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    width: 42px;
+    height: 19px;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+    z-index: 8;
+  }
+  .email {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    position: relative;
+    width: 42px;
+    height: 19px;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+   
+    z-index: 24;
+  }
+  .flex-row-b {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 594px;
+    height: 47px;
+    margin: 8px 0 0 1px;
+    z-index: 22;
+  }
+  .rectangle {
+    flex-shrink: 0;
+    position: relative;
+    width: 285px;
+    height: 47px;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 6;
+    overflow: hidden;
+  }
+  .enter-name {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: absolute;
+    width: 88px;
+    height: 19px;
+    top: 14px;
+    left: 24px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 7;
+    background: none;
+  }
+  .rectangle-2 {
+    flex-shrink: 0;
+    position: relative;
+    width: 285px;
+    height: 47px;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 22;
+    overflow: hidden;
+  }
+  .enter-email {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: absolute;
+    width: 86px;
+    height: 19px;
+    top: 14px;
+    left: 24px;
+    color: rgba(0, 0, 0, 0.6);
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 23;
+    background: none;
+  }
+  .flex-row-f {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 424px;
+    height: 19px;
+    margin: 18px 0 0 1px;
+    z-index: 20;
+  }
+  .subject {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    width: 60px;
+    height: 19px;
+    color: #000000;
+    background: none;
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 12;
+  }
+  .phone-number {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    width: 115px;
+    height: 19px;
+    color: #000000;
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 20;
+    background: none;
+  }
+  .flex-row-ae {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    width: 594px;
+    height: 47px;
+    margin: 8px 0 0 1px;
+    z-index: 18;
+  }
+  .rectangle-3 {
+    flex-shrink: 0;
+    position: relative;
+    width: 285px;
+    height: 47px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.15);
+    border: none;
+    z-index: 18;
+  }
+  .enter-subject {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: absolute;
+    width: 104px;
+    height: 19px;
+    top: 14px;
+    left: 24px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    background: none;
+    z-index: 11;
+  }
+  .rectangle-4 {
+    
+        flex-shrink: 0;
+        position: relative;
+        width: 285px;
+        height: 47px;
+        background: rgba(0, 0, 0, 0.15);
+        z-index: 22;
+        overflow: hidden;
+      border-radius: 0px;
+      margin-left: 20px;
+      margin-top: 2px;
+    border: none;
+  }
+  .enter-phone-number {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: absolute;
+    width: 159px;
+    height: 19px;
+    top: 14px;
+    left: 24px;
+    color: rgba(0, 0, 0, 0.6);
+    background: none;
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 19;
+    
+  }
+  .message {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    width: 71px;
+    height: 19px;
+    margin: 18px 0 0 0;
+    color: #000000;
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    text-align: center;
+    white-space: nowrap;
+    background: none;
+    z-index: 16;
+  }
+ 
+.rectangle-5 {
+    position: relative;
+    width: 594px;
+    height: 80px;
+    margin: 8px 0 0 1px;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 15;
+  }
+  .enter-message {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    position: absolute;
+    width: 117px;
+    height: 25px;
+    top: 14px;
+    left: 24px;
+    color: rgba(0, 0, 0, 0.6);
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    background: none;
+    font-weight: 500;
+    line-height: 19.364px;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 15;
+  }
+  .rectangle-6 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 238px;
+    height: 40px;
+    margin: 7px 0 0 0;
+    background: #2c6cbf;
+    z-index: 2;
+
+  }
+  .send-your-message {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    width: 170px;
+    height: 18.889px;
+    color:black;
+    font-family: Inter, var(--default-font-family);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19.364px;
+    text-align: center;
+    z-index: 2;
+    background: none;
+  }
+
+  .map{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 130vh;
+    margin-top: -53vh;
+margin-bottom: 18px;
+  }
+  .footertext{
+    height: 50px;
+    background-color: rgb(141, 140, 140);
+    color:#000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    margin-top: 50px;
+ 
+  }
+  
+.image{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 7px;
+  height: 20px;
+  margin-bottom: 5px;
+
+}

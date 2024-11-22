@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nurse_dashstyle.css' %}" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo">
+                MediCare
+            </div>
+            <div class="profile">
+                <span><b>Beck Miller</b> </span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Beck Miller Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <div class="menu-item">
+                    <img src="{{ MEDIA_URL }}dashboard-removebg-preview.png" alt="Dashboard Icon">
+                  <b>Dashboard</b>  
+                </div>
+            
+                <a href="{% url 'nurse_pat' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}patient-removebg-preview.png" alt="Patients Icon">
+                   <span>Patients</span> 
+                </a>
+
+                <a href="{% url 'nurse_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}appointment-removebg-preview.png" alt="Appointment Icon">
+                    <span> Appointment</span>
+                </a>
+
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}logout-removebg-preview.png" alt="Logout Icon">
+                   Logout
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="welcome-card">
+                    <h2> <b>Welcome Beck Miller !</b> </h2>
+                   
+                </div>
+      </div> 
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'landing.css' %}" />
+  </head>
+  <body>
+    <header id="Home">
+        <div class="container">
+            <!-- ============1st box======== -->
+            <div class="logo">
+                <div class="logoimg">
+                 
+                    <img src="{{ MEDIA_URL }}Heart Health.png" alt="">
+                    
+                </div>
+           
+            </div>
+            <div class="medi-care">MediCare</div>
+            <nav>
+                <ul>
+                    <li class="nav-link"><a href="#Home">Home</a></li>
+                    <li class="nav-link"><a href="#About_us">About</a></li>
+                    <li class="nav-link"><a href="#Our_services">Services</a></li>
+                    <li class="nav-link"><a href="#Doctors">Doctors</a></li>
+                    <li class="nav-link"><a href="#contact_us">Contact</a></li>
+                    <li class="nav-link"><a href="#Feedback">Feedback</a></li>
+                </ul>
+            </nav>
+            <div class="button">
+                {% comment %} <a href="#login.html">Login</a> {% endcomment %}
+                Login
+               
+             </div>  
+       
+        </div>
+    </header>
+
+    <div class="background-img">
+
+        <div class="headingtext">
+            <div class="heading"><b>What makes <br> you better <br>
+                makes us better</b></div>
+          <div class="midtexts">
+              Health is not valued till <br> sickness comes.
+           </div>
+     <div class="buttons">
+        Make an Appointment
+     </div>  
+        </div>
+        
+    </div>
+
+
+    <!-- ========================================================about==================================== -->
+    <div class="about" id="About_us">
+        <div class="aboutpage">
+            <div class="abouttext">
+          
+                <div class="midheading textcolor"> <b>ABOUT US</b>  <br> </div>
+                <div class="texts">
+                    At Medicare Advance Hospital System, we deliver cutting-edge healthcare driven by innovation, expertise, and compassion. Our team of top specialists, supported by state-of-the-art technology, is committed to providing personalized care that exceeds expectations. Your well-being is our unwavering priority, and excellence is our promise at every step.  <br>
+                     <br> 789 Wellness Avenue <br>
+                    Bandra West, Mumbai, Maharashtra 400050 <br>
+                    India
+                </div> 
+            </div>
+            <div class="aboutimg">
+                <div class="imgbox"><img src="{{ MEDIA_URL }}unsplash_DSqKAWX0LDY.png" alt="">
+                </div>
+            </div> 
+        </div>
+    </div>
+
+
+    <!-- ===============================================servics=================== -->
+    <div class="service" id="Our_services">
+        <div class="servicesection">
+            <div class="serviceheading"><b>SERVICES</b></div>
+        </div>
+        <div class="servicebox">
+            <div class="card">
+                <div class="cardimg"><img src="{{ MEDIA_URL }}dylis.png" alt=""></div>
+                <div class="textoverlay">  
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="cardimg"><img src="{{ MEDIA_URL }}eyecare.png" alt=""></div>
+                <div class="textoverlay">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- =======================================================doctors==========================================-->
+    <class="Doctors" id="Doctors">
+        <div class="servicesection">
+            <div class="serviceheading"><b> DOCTORS</b></div>
+        </div>
+        <div class="servicebox">
+            <div class="card">
+                <div class="cardimg"><img src="{{ MEDIA_URL }}d1.png" alt=""></div>
+                <div class="textoverlay">  
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="cardimg"><img src="{{ MEDIA_URL }}d2.png" alt=""></div>
+                <div class="textoverlay">
+                </div>
+            </div>
+
+            <div class="servicebox">
+                <div class="card">
+                    <div class="cardimg"><img src="{{ MEDIA_URL }}d3.png" alt=""></div>
+                    <div class="textoverlay">  
+                    </div>
+                </div>
+    
+                <div class="card">
+                    <div class="cardimg"><img src="{{ MEDIA_URL }}d4.png" alt=""></div>
+                    <div class="textoverlay">
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="cardimg"><img src="{{ MEDIA_URL }}d5.png" alt=""></div>
+                    <div class="textoverlay">
+                    </div>
+                </div>
+        </div>
+    </div>
+
+<!-- ==========================================================contact us=========================================== -->
+
+<div class="contact" id="contact_us">
+
+    <span class="contact-1"><b>CONTACT</b> </span 
+        ><span class="interested-discussing"> Interested in discussing? </span>
+        <div class="flex-row-dd">
+          <span class="name">Name</span><span class="email">Email</span>
+        </div>
+        <div class="flex-row-b">
+          <div class="rectangle"><span class="enter-name">Enter name</span></div>
+          <div class="rectangle-2">
+            <span class="enter-email">Enter Email</span>
+          </div>
+        </div>
+        <div class="flex-row-f">
+          <span class="subject">Subject</span
+          ><span class="phone-number">Phone Number</span>
+        </div>
+        <div class="flex-row-ae">
+          <div class="rectangle-3">
+            <span class="enter-subject">Enter Subject</span>
+          </div>
+          <button class="rectangle-4">
+            <span class="enter-phone-number">Enter Phone Number</span>
+          </button>
+        </div>
+        <span class="message">Message</span>
+        <div class="rectangle-5">
+          <span class="enter-message">Enter Message</span>
+        </div>
+        <div class="rectangle-6">
+          <span class="send-your-message">Send Your Message</span>
+        </div>
+      </div>
+      <div class="map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d60351.86171802351!2d72.76704732167968!3d19.020102500000025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7cec4cef71fd3%3A0x8e9cdfe35ba5ccd!2sJain%20Health%20Care%20Medical%20%26%20General%20Stores!5e0!3m2!1sen!2sin!4v1729528384992!5m2!1sen!2sin" width="450" height="370" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    
+</div>
+
+<!-- ===================================footer=================================== -->
+<footer>
+    <div class="footertext">
+        <div class="midfootertext">
+        <div class="image">
+            <img src="{{ MEDIA_URL }}Heart Health.png" alt="" srcset="">
+            <h4> Medicare</h4> 
+        </div>
+         
+            Medicare 2024. All Rights Reserved </div>
+           
+    </div>
+
+</footer>
+
+
+</body>

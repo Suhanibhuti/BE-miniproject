@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login.css' %}" />
+  </head>
+  <body>
+
+    <div class="BG">
+  <!-- Logo and Name beside each other -->
+  <div class="logo-container">
+    <div class="heart-health">
+      <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Health Logo" />
+    </div>
+    <div class="medi-care">MediCare</div>
+  </div>
+
+  <!-- Login form inside the container -->
+  <div class="main-container">
+    <div class="medi-careS">Doctor Login</div>
+
+    <form action="{% url 'staff_login' %}" method="post">
+
+      {% csrf_token %}
+      <span class="user-name-1">Username</span>
+      <input type="text" name="username" placeholder="Enter Username" />
+
+      <span class="password-label">Password</span>
+      <input type="password" name="password" placeholder="Enter Password" />
+      
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="text">
+      Forgot Password? <a href="#">Click here</a>
+    </div>
+  </div>
+</div>
+
+    
+  </body>
+</html>

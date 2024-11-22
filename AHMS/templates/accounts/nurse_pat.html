@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse patient</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nurse_patstyle.css' %}" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo">
+                MediCare
+            </div>
+            <div class="profile">
+                <span><b>Beck Miller</b> </span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Beck Miller Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'nurse_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}dashboard-removebg-preview.png" alt="Dashboard Icon">
+                  <span>Dashboard</span>  
+                </a>
+            
+                <div class="menu-item">
+                    <img src="{{ MEDIA_URL }}patient-removebg-preview.png" alt="Patients Icon">
+                   <b>Patients</b> 
+                </div>
+                <a href="{% url 'nurse_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}appointment-removebg-preview.png" alt="Appointment Icon">
+                    <span> Appointment</span>
+                </a>
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}logout-removebg-preview.png" alt="Logout Icon">
+                   Logout
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="main-content">
+                    <div class="section-header">
+                        <h2 class="section-title"><b> Patients</b></h2>
+                        <div class="search-add">
+                            <div class="search-container">
+                                <img src="{{ MEDIA_URL }}search_ion-removebg-preview.png" alt="Search">
+                                <input type="text" placeholder="Search Patients">
+                            </div>
+                            <button class="add-btn">
+                                <img src="{{ MEDIA_URL }}plus_sign-removebg-preview.png" alt="Add Icon">
+                                Add Patients
+                            </button>
+                        </div>
+                    </div>
+    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><b>ID</b></th>
+                                    <th><b>Name</b></th>
+                                    <th><b>Contact</b></th>
+                                    <th><b>Date</b></th>
+                                    <th><b>Time</b></th>
+                                    <th>
+                                        <b>Status</b>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><a href=" {% url 'nurse_pat1' %}"> Charles B </a></td>
+                                    <td>1234567890</td>
+                                    <td>10-10-2024</td>
+                                    <td>12:30 PM</td>
+                                    <td class="status-completed">COMPLETED</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Vivian J</td>
+                                    <td>1234567890</td>
+                                    <td>9-10-2024</td>
+                                    <td>9:30 AM</td>
+                                    <td class="status-completed">COMPLETED</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Jame C</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Joshua M</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>8:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Bernard P</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>Joy C</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>Jessica K</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>Troy C</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>Molly TC</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>Jiol C</td>
+                                    <td>1234567890</td>
+                                    <td>8-10-2024</td>
+                                    <td>1:30 PM</td>
+                                    <td class="status-cancelled">CANCELLED</td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+            </div> 
+        </div>   
+      
+    </div> 
+
+</body>
+</html>

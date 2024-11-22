@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #edf5f9;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile span {
+            font-weight: 500;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .menu-item.active {
+            color: black;
+            {% comment %} font-weight: bold; {% endcomment %}
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #edf5f9;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .search-add {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+        .search-container input {
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: #CED7D9;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .search-container img {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+        }
+        .add-btn {
+            background-color: #2D6CBF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .add-btn img {
+            width: 16px;
+            height: 16px;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #83BDD1;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .logout {
+            margin-top: auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .logout img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Icon">
+                MediCare
+            </div>
+            <div class="profile">
+                <span>Dr. Sarah K</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'staff_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
+                </a>
+                <a href="{% url 'staff_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment">
+                    Appointment
+                </a>
+                <div class="menu-item active">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients">
+                    Patients
+                </div>
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout">
+                    Logout
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="section-header">
+                    <h2 class="section-title">Patients</h2>
+                    <div class="search-add">
+                        <div class="search-container">
+                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                            <input type="text" placeholder="Search Patients">
+                        </div>
+                        <button class="add-btn">
+                            <img src="{{ MEDIA_URL }}Plus Math.png" alt="Add Icon">
+                            Add Patients
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><a href=" {% url 'staff_pat1' %}"> Charles B </a></td>
+                                <td>1234567890</td>
+                                <td>10-10-2024</td>
+                                <td>12:30 PM</td>
+                                <td class="status-completed">COMPLETED</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Vivian J</td>
+                                <td>1234567890</td>
+                                <td>9-10-2024</td>
+                                <td>9:30 AM</td>
+                                <td class="status-completed">COMPLETED</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Jame C</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Joshua M</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>8:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Bernard P</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Joy C</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>Jessica K</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>Troy C</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>Molly TC</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>Jiol C</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="status-cancelled">CANCELLED</td>
+                            </tr>
+                            <!-- More rows... -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

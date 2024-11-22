@@ -1,0 +1,117 @@
+:root {
+  font-family: 'Inter', sans-serif;
+  background-color: azure;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: azure;
+}
+
+.BG {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.heart-health img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px; /* Space between logo and text */
+}
+
+.medi-care {
+  font-size: 30px;
+  font-weight: 600;
+  color: #000;
+}
+
+.main-container {
+  width: 408px;
+  padding: 40px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 2px 3px 8px rgba(122, 120, 120, 0.5);
+  text-align: center;
+}
+
+.medi-careS {
+  font-size: 32px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 30px;
+}
+
+.user-name-1,
+.password-label {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+input {
+  margin-top: 10px;
+  width: 94%;
+  height: 25px;
+  padding: 10px;
+  border: 1px solid rgba(83, 162, 190, 0.5);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  background-color: #D2EBF2;
+}
+
+input::placeholder {
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+}
+
+button {
+  width: 100%;
+  height: 45px;
+  background-color: rgb(56, 56, 226);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: rgb(46, 46, 216);
+}
+
+.text {
+  color: #000;
+  font-size: 16px;
+  margin-top: 15px;
+}
+
+.text a {
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.text a:hover {
+  text-decoration: underline;
+}

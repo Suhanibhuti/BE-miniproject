@@ -1,0 +1,145 @@
+
+body, html {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f0f8ff;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.navbar {
+    background-color: #e6f3f8;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #d2ebf2;
+}
+.sidebar {
+    width: 200px;
+    background-color: #D2EBF2;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+   
+}
+.logo {
+    font-size: 24px;
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.profile span {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+.profile img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.content {
+    display: flex;
+    flex: 1;
+    
+}
+.logo img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+.menu-item {
+    margin-bottom: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+}
+.menu-item img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    padding: 30px; /* Increased padding */
+    max-width: 1200px;
+}
+.welcome-card {
+    background-color: #D2EBF2;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 30px; 
+}
+.welcome-card h2 {
+    margin-top: 0;
+    font-weight: 600;
+}
+.info-cards {
+    gap: 30px;
+    display: flex;
+    gap: 20px;
+}
+.info-card {
+    background-color: #83BDD1;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    width: 200px; /* Fixed width instead of flex-grow */
+    height: 70px;
+}
+.info-card h3 {
+    margin-top: 0;
+    font-weight: 600;
+}
+.info-card a {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    text-decoration: none;
+    color: #0066cc;
+    font-weight: 500;
+}
+.logout {
+    margin-top: auto;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+}
+.logout img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    padding: 20px; /* Increased padding */
+    max-width: 1200px;
+   height: 40px;
+}
+.welcome-card {
+    background-color: #D2EBF2;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+    /* margin-bottom: 30px;  */
+    height: 25px;
+}
