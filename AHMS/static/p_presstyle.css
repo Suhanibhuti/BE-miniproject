@@ -1,0 +1,261 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+    background-color: #f0f8ff;
+}
+
+.header {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.logo img {
+    width: 24px;
+    height: 24px;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: calc(100vh - 64px);
+}
+
+
+.content {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.patient-details {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+  .buttons {
+    margin-top: 20px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.water-intake {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.remaining-water {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #4285f4;
+    color: white;
+}
+
+.btn-secondary {
+    background: #4285f4;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.infected-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.schedule-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem;
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.schedule-item {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+#patient{
+    margin-left: 10px;
+}
+.detail-row {
+    margin-bottom: 1rem;
+  
+    display: flex;
+    justify-content:start;
+    align-items: center;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #666;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #D2EBF2;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+   
+}
+.menu-items {
+    margin-bottom: 15px;
+    padding: -10px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+   
+}
+.menu-item img{
+    height: 30px;
+}
+.menu-items img{
+    height: 50px;
+}
+.sidebar-nav {
+    flex-grow: 1;
+}
+
+.logout-section {
+    padding-bottom: 2rem;
+}
+
+
+.edit-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-left: 50rem;
+    transition: background-color 0.3s;
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .toggle-switch.on {
+    background-color: #4caf50;
+  }
+
+  .toggle-switch.on::after {
+    transform: translateX(30px);
+  }
+
+  .toggle-label {
+    margin-left: 10px;
+    font-size: 1.2rem;
+    color: #333;
+  }

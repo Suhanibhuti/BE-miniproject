@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>MediCare - Appointment List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body, html {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             height: 100%;
-            background-color: #edf5f9;
+            background-color: #f0f8ff;
         }
         .container {
             display: flex;
@@ -31,24 +31,13 @@
             font-weight: bold;
             display: flex;
             align-items: center;
+            color: #000;
+            text-decoration: none;
         }
-        .profile {
+        .admin-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-        .profile span {
-            font-weight: 500;
-        }
-        .profile img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-        .logo img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
         }
         .content {
             display: flex;
@@ -63,18 +52,21 @@
         }
         .menu-item {
             margin-bottom: 15px;
+            padding: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
         }
         .menu-item img {
             width: 20px;
             height: 20px;
             margin-right: 10px;
-        }
-        .menu-item.active {
-            color: black;
-            {% comment %} font-weight: bold; {% endcomment %}
         }
         .main-content {
             flex-grow: 1;
@@ -86,11 +78,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c3e50;
         }
         .search-add {
             display: flex;
@@ -117,101 +104,104 @@
             width: 16px;
             height: 16px;
         }
-        .add-btn {
-            background-color: #2D6CBF;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-        .add-btn img {
-            width: 16px;
-            height: 16px;
-        }
         .table-container {
-            margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
             background-color: white;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
         th {
-            background-color: #83BDD1;
+            background-color: #77bad3;
             padding: 12px 16px;
             text-align: left;
-            font-weight: 500;
-            color: #2c3e50;
+            color: #000000;
         }
         td {
             padding: 12px 16px;
             border-top: 1px solid #e2e8f0;
         }
+        tr:nth-child(odd) {
+            background-color: #e8f5e9;
+        }
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .status.completed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status.cancelled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status.not-confirmed {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
         .logout {
             margin-top: auto;
+            padding: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-        }
-        .logout img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="navbar">
-            <div class="logo">
-                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Icon">
+            <a href="#" class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare" width="24" height="24">
                 MediCare
-            </div>
-            <div class="profile">
-                <span>Dr. Sarah K</span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="Profile">
+            </a>
+            <div class="admin-profile">
+                <span>Admin</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
             </div>
         </div>
+        
         <div class="content">
             <div class="sidebar">
-                <a href="{% url 'staff_dash' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                <a href="{% url 'admin_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="">
                     Dashboard
                 </a>
-                <a href="{% url 'staff_app' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment">
+                <a href="{% url 'ad_doc' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="">
+                    Doctors
+                </a>
+                <a href="{% url 'ad_pat' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="">
+                    Patients
+                </a>
+                <a href="{% url 'ad_nurse' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="">
+                    Nurse
+                </a>
+                <a href="#" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="">
                     Appointment
                 </a>
-                <div class="menu-item active">
-                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients">
-                    Patients
-                </div>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="">
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
 
                 </div>
             </div>
+
             <div class="main-content">
                 <div class="section-header">
-                    <h2 class="section-title">Patients</h2>
-                    <div class="search-add">
-                        <div class="search-container">
-                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
-                            <input type="text" placeholder="Search Patients">
-                        </div>
-                        <button class="add-btn">
-                            <img src="{{ MEDIA_URL }}Plus Math.png" alt="Add Icon">
-                            Add Patients
-                        </button>
+                    <h2>Appointment List</h2>
+                    <div class="search-container">
+                        <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                        <input type="text" placeholder="Search Appointment">
                     </div>
                 </div>
 
@@ -230,11 +220,11 @@
                         <tbody>
                             <tr>
                                 <td>1</td>
-                                <td><a href=" {% url 'staff_pat1' %}"> Charles B </a></td>
+                                <td>Charles B</td>
                                 <td>1234567890</td>
                                 <td>10-10-2024</td>
                                 <td>12:30 PM</td>
-                                <td class="status-completed">COMPLETED</td>
+                                <td><span class="status completed">COMPLETED</span></td>
                             </tr>
                             <tr>
                                 <td>2</td>
@@ -242,7 +232,7 @@
                                 <td>1234567890</td>
                                 <td>9-10-2024</td>
                                 <td>9:30 AM</td>
-                                <td class="status-completed">COMPLETED</td>
+                                <td><span class="status completed">COMPLETED</span></td>
                             </tr>
                             <tr>
                                 <td>3</td>
@@ -250,15 +240,15 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
                             </tr>
                             <tr>
                                 <td>4</td>
                                 <td>Joshua M</td>
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
-                                <td>8:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td>1:30 PM</td>
+                                <td><span class="status cancelled">CANCELLED</span></td>
                             </tr>
                             <tr>
                                 <td>5</td>
@@ -266,7 +256,7 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
                             </tr>
                             <tr>
                                 <td>6</td>
@@ -274,7 +264,7 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status cancelled">CANCELLED</span></td>
                             </tr>
                             <tr>
                                 <td>7</td>
@@ -282,7 +272,7 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
                             </tr>
                             <tr>
                                 <td>8</td>
@@ -290,7 +280,7 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
                             </tr>
                             <tr>
                                 <td>9</td>
@@ -298,7 +288,7 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
                             </tr>
                             <tr>
                                 <td>10</td>
@@ -306,9 +296,8 @@
                                 <td>1234567890</td>
                                 <td>8-10-2024</td>
                                 <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
+                                <td><span class="status cancelled">CANCELLED</span></td>
                             </tr>
-                            <!-- More rows... -->
                         </tbody>
                     </table>
                 </div>

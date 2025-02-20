@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Doctors List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            color: #000;
+            text-decoration: none;
+        }
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #edf5f9;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-add {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .search-box {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            width: 250px;
+        }
+        .add-doctor-btn {
+            background-color: #2D6CBF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #77bad3;
+            padding: 12px 16px;
+            text-align: left;
+            color: #000000;
+        }
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        tr:nth-child(odd) {
+            background-color: #e8f5e9;
+        }
+        .operation-icons {
+            display: flex;
+            gap: 10px;
+        }
+        .logout {
+            margin-top: auto;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .search-add {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+        
+        .search-container input {
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: #CED7D9;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .search-container img {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+        }
+        
+        .add-doctor-btn {
+            background-color: #2D6CBF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .add-doctor-btn img {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <a href="#" class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare" width="24" height="24">
+                MediCare
+            </a>
+            <div class="admin-profile">
+                <span>Admin</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'admin_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="">
+                    Dashboard
+                </a>
+                <a href="#" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="">
+                    Doctors
+                </a>
+                <a href="{% url 'ad_pat' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="">
+                    Patients
+                </a>
+                <a href="{% url 'ad_nurse' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="">
+                    Nurse
+                </a>
+                <a href="{% url 'ad_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="">
+                    Appointment
+                </a>
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="">
+                    <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
+
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="section-header">
+                    <h2>Doctors List</h2>
+                    <div class="search-add">
+                        <div class="search-container">
+                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                            <input type="text" placeholder="Search Doctor">
+                        </div>
+                        <button class="add-doctor-btn">
+                            <img src="{{ MEDIA_URL }}Plus Math.png" alt="Add">
+                            Add Doctor
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Specialist</th>
+                                <th>Password</th>
+                                <th>Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Sarah K</td>
+                                <td>1234567890</td>
+                                <td>Physicist</td>
+                                <td>12:30 PM</td>
+                                <td class="operation-icons">
+                                    <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20">
+                                    <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Mark W</td>
+                                <td>1234567890</td>
+                                <td>Pediatrics</td>
+                                <td>9:30 AM</td>
+                                <td class="operation-icons">
+                                    <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20">
+                                    <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Jame C</td>
+                                <td>1234567890</td>
+                                <td>Psychiatric</td>
+                                <td>1:30 PM</td>
+                                <td class="operation-icons">
+                                    <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20">
+                                    <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Joshua M</td>
+                                <td>1234567890</td>
+                                <td>8-10-2024</td>
+                                <td>1:30 PM</td>
+                                <td class="operation-icons">
+                                    <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20">
+                                    <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

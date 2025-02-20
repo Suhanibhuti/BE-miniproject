@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Registration Form</title>
+
+    <!-- Load static files -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'p_regstyle.css' %}" />
+
+    <!-- Iconscout for icons -->
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>Patient Registration</header>
+
+      <form method="post" action="{% url 'p_reg' %}">
+        {% csrf_token %}
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+  
+     <div class="form first">
+       <div class="details personal">
+         {% comment %} <span class="title">Personal Details</span> {% endcomment %}
+         <div class="fields">
+           <div class="input-field">
+             <label>Full Name</label>
+             <input type="text" name="full_name" placeholder="Enter your name" required />
+           </div>
+           <div class="input-field">
+             <label>Date of Birth</label>
+             <input type="date" name="date_of_birth" placeholder="Enter birth date" required />
+           </div>
+           <div class="input-field">
+             <label>Email</label>
+             <input type="text" name="email"  placeholder="Enter your email" required />
+           </div>
+           <div class="input-field">
+             <label>Mobile Number</label>
+             <input
+               type="number" name="mobile_number"
+               placeholder="Enter mobile number"
+               required
+             />
+           </div>
+           <div class="input-field">
+             <label>Gender</label>
+             <select required name="gender">
+               <option disabled selected>Select gender</option>
+               <option>Male</option>
+               <option>Female</option>
+               <option>Others</option>
+             </select>
+           </div>
+           <div class="input-field">
+             <label>Age</label>
+             <input
+               type="number" name="age"
+               placeholder="Enteryour age"
+               required
+             />
+           </div>
+           
+           <div class="input-field">
+             <label for="bloodGroup">Blood Group:</label>
+             <select id="blood_group" name="blood_group" required>
+               <option value="">Select</option>
+               <option value="A+">A+</option>
+               <option value="A-">A-</option>
+               <option value="B+">B+</option>
+               <option value="B-">B-</option>
+               <option value="O+">O+</option>
+               <option value="O-">O-</option>
+               <option value="AB+">AB+</option>
+               <option value="AB-">AB-</option>
+             </select>
+           </div>
+           <div class="input-field">
+             <label for="bloodGroup">Marital Status:</label>
+             <select id="marital_status" name="marital_status" required>
+               <option value="">Select</option>
+               <option value="single">Single</option>
+               <option value="married">Married</option>
+           
+             </select>
+           </div>
+           <div class="input-field">
+             <label>Address</label>
+             <input type="text" name="address" placeholder="Enter your address" required />
+           </div>
+         </div>
+         
+       </div>
+       <div class="details ID">
+         <div class="fields">
+           
+           <div class="input-field">
+             <label for="emergencyContact">Emergency Contact Name</label>
+             <input
+               type="tel"
+               id="emergency_contact_name"
+               name="emergency_contact_name"
+               placeholder="Enter emergency contact name"
+               required/>
+           </div>
+           <div class="input-field">
+             <label for="emergencyContact">Emergency Contact Number</label>
+             <input
+               type="tel"
+               id="emergency_contact_number"
+               name="emergency_contact_number"
+               placeholder="Enter emergency contact number"
+               required/>
+           </div>
+           <div class="input-field">
+             <label>Occupation</label>
+             <input
+               type="text"
+               name="occupation"
+               placeholder="Enter your occupation"
+               required />
+           </div>
+           <div class="input-field">
+            <label for="habits">Habits</label>
+            <select id="habits" name="habits">
+              <option value="">Select</option>
+              <option value="smoke">Smoke</option>
+              <option value="drink">Drink</option>
+              <option value="both">Both</option>
+              <option value="none">None</option>
+            </select>
+          </div>
+           <div class="input-field">
+             <label>Medical History</label>
+             <input
+               type="text"
+               name="medical_history"
+               placeholder="Enter your medical history"
+               required />
+           </div>
+
+           <div class="input-field">
+  <label for="disease">Any Disease</label>
+  <select id="disease" name="disease">
+    <option value="">Select</option>
+    <option value="diabetes">Diabetes</option>
+    <option value="blood_pressure">Blood Pressure</option>
+    <option value="allergy">Any Allergy</option>
+    <option value="others">Others</option>
+    <option value="None">None</option>
+  </select>
+</div>
+         </div>
+     </div>
+     <button class="sumbit">
+         <span class="btnText">Submit</span>
+         <i class="uil uil-navigator"></i>
+     </button>
+   </form>
+ </div>
+    <script src="{% static 'p_regjs.js' %}"></script>
+  </body>
+</html>

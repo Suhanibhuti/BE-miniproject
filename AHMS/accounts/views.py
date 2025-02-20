@@ -1,6 +1,16 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .models import User
+from django.contrib.auth.decorators import login_required
+from .models import User,PatientReg
+from .forms import PatientForm
+
+def logoutp(request):
+    logout(request)    
+    return redirect('landing')
+
+def logouts(request):
+    logout(request)    
+    return redirect('staff_login')
 
 # Create your views here.
 
@@ -41,6 +51,27 @@ def staff_login(request):
     return render(request, 'accounts/staff_login.html')
 
 
+def login_p(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        print(f"Username: {username}, Password: {password}")  # Debug log
+        
+        if user and user.role == 'PATIENT':
+            login(request, user)
+            return redirect('p_dash')
+        else:
+            return render(request, 'accounts/login_p.html', {'error': 'Invalid credentials or not a patient.'})
+    return render(request, 'accounts/login_p.html')
+
+
+
+
+def basestaff(request):
+    return render(request, 'accounts/basestaff.html')
+
 def landing(request):
     return render(request, 'accounts/landing.html')
 
@@ -70,3 +101,46 @@ def nurse_app(request):
 
 def admin_dash(request):
     return render(request, 'accounts/admin_dash.html')
+
+
+def p_dash(request):
+    return render(request, 'accounts/p_dash.html')
+
+def p_pres(request):
+    return render(request, 'accounts/p_pres.html')
+
+def p_rep(request):
+    return render(request, 'accounts/p_rep.html')
+
+def p_det(request):
+    return render(request, 'accounts/p_det.html')
+
+
+@login_required
+def p_reg(request):
+    if request.method == 'POST':
+        form = PatientForm(request.POST)
+        if form.is_valid():
+            patient = form.save(commit=False)
+            patient.user = request.user
+            patient.save()
+            return redirect('p_dash')  # Redirect to patient dashboard
+        else:
+            print(form.errors) 
+            return render(request, 'accounts/p_reg.html', {'form': form, 'error': 'Invalid form data.'})
+    else:
+        form = PatientForm()
+    return render(request, 'accounts/p_reg.html', {'form': form})
+
+def ad_app(request):
+    return render(request, 'accounts/ad_app.html')
+
+def ad_pat(request):
+    return render(request, 'accounts/ad_pat.html')
+
+
+def ad_nurse(request):
+    return render(request, 'accounts/ad_nurse.html')
+
+def ad_doc(request):
+    return render(request, 'accounts/ad_doc.html')

@@ -21,9 +21,9 @@
 
   <!-- Login form inside the container -->
   <div class="main-container">
-    <div class="medi-careS">Staff Login</div>
+    <div class="medi-careS">Patient Login</div>
 
-    <form action="{% url 'staff_login' %}" method="post">
+    <form action="{% url 'login_p' %}" method="post">
 
       {% csrf_token %}
       <span class="user-name-1">Username</span>

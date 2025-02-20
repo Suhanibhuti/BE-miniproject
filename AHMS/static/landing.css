@@ -50,7 +50,7 @@ ul{
 }
 
 ul li{
-    margin: 10px;
+    margin: 29px;
     list-style: none;
     font-size: 18px;
     font-family: 'Times New Roman', Times, serif; 
@@ -116,7 +116,7 @@ button:hover{
 }
 .button{
     background-color: rgb(48, 78, 143);
-    height: 40px;
+    height: 48px;
     width:70px;
     border-radius: 10px;
     padding-top: 5px;
@@ -129,6 +129,22 @@ button:hover{
     text-align: center;
 
   }
+  .add-btn {
+    background-color: #2D6CBF;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+.add-btn img {
+  width: 16px;
+  height: 16px;
+}
 
    .midtexts{
     font-size: 20px;

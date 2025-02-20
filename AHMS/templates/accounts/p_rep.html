@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #edf5f9;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .logout img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+       
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        /* Form Styling */
+        .appointment-form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-direction: column;
+        }
+        .subform-group{
+            display: flex;
+            
+            flex-direction: row;
+
+        }
+        .input-field {
+            flex: 1;
+         
+        }
+        .input-field input {
+            width: 50%;
+            padding: 8px;
+            border: 1px solid #d0e2ec;
+            border-radius: 5px;
+            background-color: #eaf5fb;
+            font-size: 14px;
+        }
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: 600;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;
+        }
+        /* Table Styling */
+        .appointment-table {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .appointment-table h3 {
+           
+            padding: 8px;
+            margin: 0;
+            font-weight: 600;
+            border-radius: 6px 6px 0 0;
+            font-size: 14px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .table th {
+            background-color: #e6f3f8;
+            color: #333;
+        }
+        .table-row.completed td {
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .custom-textarea {
+            width: 900px;
+            height: 350px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+            background-color: #fff;
+            resize: none;
+            outline: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
+          }
+        
+          .custom-textarea:focus {
+            border-color: #4163ac;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          }
+        
+          .custom-textarea::placeholder {
+            color: #aaa;
+            font-style: italic;
+          }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <div class="navbar">
+            <a href="#" class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare" width="24" height="24">
+                MediCare
+            </a>
+            <div class="admin-profile">
+                <span>User</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
+            </div>
+        </div>
+        <div class="content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Details</a>
+                <a href="{% url 'p_dash' %}" class="menu-item "><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
+                <a href="{% url 'p_pres' %}" class="menu-item "><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
+                <a href="#" class="menu-item active"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> <a href="{% url "logoutp" %}" class='btn btn-primary'> Logout </a>
+                </div>
+            
+        </div>
+        <main class="main-content">
+         
+            <textarea class="custom-textarea" placeholder="Write doctor's report..."></textarea>
+    </main>
+    </div>
+</body>
+</html>

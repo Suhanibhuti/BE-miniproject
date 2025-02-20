@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+           
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #edf5f9;
+        }
+        .info-cards {
+            display: flex;
+            gap: 20px;
+        }
+        .info-card {
+            background-color: #83BDD1;
+            border-radius: 8px;
+            padding: 20px;
+            width: 200px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+            width: 250px; /* Fixed width instead of flex-grow */
+            height: 70px;
+        }
+        .info-card h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+       
+        .info-card a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .logout img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo" width="24" height="24">
+                MediCare
+            </div>
+            <div class="admin-profile">
+                <span>Admin</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin Profile" width="30" height="30">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <a href="#" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard Icon"> Dashboard
+                </a>
+                <a href="{% url 'ad_doc' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Doctors Icon"> Doctors
+                </a>
+                <a href="{% url 'ad_pat' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients Icon"> Patients
+                </a>
+                <a href="{% url 'ad_nurse' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Nurse Icon"> Nurse
+                </a>
+                <a href="{% url 'ad_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment
+                </a>
+                <div class="logout">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
+                    <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
+
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h3>Total Doctors</h3>
+                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">17</p>
+                        <a href="{% url 'ad_doc' %}">Add</a>
+                    </div>
+                    <div class="info-card">
+                        <h3>Total Patients</h3>
+                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">100</p>
+                        <a href="{% url 'ad_pat' %}">Add</a>
+                    </div>
+                    <div class="info-card">
+                        <h3>Total Nurses</h3>
+                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">25</p>
+                        <a href="{% url 'ad_nurse' %}">Add</a>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
