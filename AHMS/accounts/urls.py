@@ -14,7 +14,10 @@ urlpatterns = [
     path('staff_app/', views.staff_app, name='staff_app'),  # Your staff dashboard path
     path('staff_pat/', views.staff_pat, name='staff_pat'),  # Your staff dashboard path
     path('staff_pat1/', views.staff_pat1, name='staff_pat1'),  # Your staff dashboard path
-    # Add other URLs here as needed
+    path('staff_reg/', views.staff_reg, name='staff_reg'),  # Your staff dashboard path
+    path('get-schedule/', views.get_schedule, name='get_schedule'),
+    path('create-appointment/', views.create_appointment, name='create_appointment'),
+    #  path("getAppointments", views.get_appointments, name="get_appointments"),
     
     path('nurse_dash/', views.nurse_dash, name='nurse_dash'),
     path('nurse_pat/', views.nurse_pat, name='nurse_pat'),  # Your staff dashboard path
@@ -35,6 +38,9 @@ urlpatterns = [
     path('ad_pat/', views.ad_pat, name='ad_pat'),
     path('ad_nurse/', views.ad_nurse, name='ad_nurse'),
     path('ad_doc/', views.ad_doc, name='ad_doc'),
+    path('edit_doctor/<int:doctor_id>/', views.edit_doctor, name='edit_doctor'),
+    # path('reset_password/<int:user_id>/', views.reset_password, name='reset_password'),
+    path('delete_doctor/<int:doctor_id>/', views.delete_doctor, name='delete_doctor'),
     
     
 ]

@@ -1,5 +1,6 @@
 from django import forms
 from .models import PatientReg
+from django.core.exceptions import ValidationError
 
 class PatientForm(forms.ModelForm):
     class Meta:
@@ -15,3 +16,23 @@ class PatientForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),  # Custom widget for date fields
             'marital_status': forms.Select(),
         }
+
+
+# class StaffForm(forms.ModelForm):
+#     class Meta:
+#         model = Staff
+#         fields = [
+#             'full_name', 'email', 'mobile_number', 'gender', 'age', 'department',
+#             'specialization', 'qualification', 'years_of_experience',
+#             'working_hours_start', 'working_hours_end', 'previous_timings',
+#         ]
+#         widgets = {
+#     'working_hours_start': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+#     'working_hours_end': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+# }
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     user = self.instance.user
+    #     if user.role not in [User.DOCTOR, User.NURSE, User.ADMIN]:
+    #         raise ValidationError("Only staff roles (Doctor, Nurse, Admin) are allowed.")
+    #     return cleaned_data

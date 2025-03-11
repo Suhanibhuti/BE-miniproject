@@ -40,3 +40,38 @@ class PatientReg(models.Model):
 
     def __str__(self):
         return f"{self.full_name} ({self.user.username})"
+    
+    
+class StaffD(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='staff_profile', default=1)
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    mobile_number = models.CharField(max_length=15)
+    gender = models.CharField(max_length=10)
+    age = models.PositiveIntegerField()
+    department = models.CharField(max_length=50)
+    specialization = models.CharField(max_length=100)
+    qualification = models.CharField(max_length=100)
+    years_of_experience = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.full_name
+
+class WorkingHour(models.Model):
+    staff = models.ForeignKey(StaffD, on_delete=models.CASCADE)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self):
+        return f"{self.staff.full_name} - {self.start_time} to {self.end_time}"
+    
+class Appointment(models.Model):
+    doctor = models.ForeignKey(StaffD, on_delete=models.CASCADE)
+    patient = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    description = models.TextField()
+
+    class Meta:
+        unique_together = ('doctor', 'date', 'start_time')

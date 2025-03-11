@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Page</title>
+    <title>MediCare - Patient Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body, html {
@@ -54,6 +54,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            overflow-y: auto;
         }
         .logout {
             margin-top: auto;
@@ -88,124 +89,93 @@
             gap: 8px;
             font-size: 14px;
         }
-       
-        .section-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        /* Form Styling */
-        .appointment-form {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-direction: column;
-        }
-        .subform-group{
-            display: flex;
-            
-            flex-direction: row;
 
+        /* Patient Details Styling */
+        .patient-details {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .input-field {
-            flex: 1;
-         
-        }
-        .input-field input {
-            width: 50%;
-            padding: 8px;
-            border: 1px solid #d0e2ec;
-            border-radius: 5px;
-            background-color: #eaf5fb;
-            font-size: 14px;
-        }
-        .form-buttons {
+        .detail-row {
+            margin-bottom: 1rem;
             display: flex;
-            gap: 10px;
+            align-items: center;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #000;
+            width: 150px; /* Fixed width for labels */
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .patient-name {
+            font-weight: 600; /* Semi-bold for the name */
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Grid Container Styling */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Button Group Styling */
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
         }
         .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
             cursor: pointer;
-            color: #fff;
-            font-weight: 600;
+            border: none;
+            font-weight: 500;
         }
-        .btn-check {
-            background-color: #1e88e5;
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
         }
-        .btn-appointment {
-            background-color: #1a73e8;
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
         }
-        /* Table Styling */
-        .appointment-table {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .appointment-table h3 {
-           
-            padding: 8px;
-            margin: 0;
-            font-weight: 600;
-            border-radius: 6px 6px 0 0;
-            font-size: 14px;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .table th, .table td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .table th {
-            background-color: #e6f3f8;
-            color: #333;
-        }
-        .table-row.completed td {
-            color: #666;
-            text-decoration: line-through;
+        .btn-danger {
+            background: #dc3545;
+            color: white;
         }
 
-        .custom-textarea {
-            width: 900px;
-            height: 350px;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            color: #333;
-            background-color: #fff;
-            resize: none;
-            outline: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s, box-shadow 0.3s;
-          }
-        
-          .custom-textarea:focus {
-            border-color: #4163ac;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-          }
-        
-          .custom-textarea::placeholder {
-            color: #aaa;
-            font-style: italic;
-          }
+        /* Water Intake and Dialysis Specific Styling */
+        .water-intake {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+        .remaining-water {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <!-- Main Container -->
     <div class="container">
         <div class="navbar">
             <a href="#" class="logo">
@@ -213,216 +183,266 @@
                 MediCare
             </a>
             <div class="admin-profile">
-                <span>User</span>
+                <span><a href="{% url 'p_reg' %}"> User </a></span>
                 <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
             </div>
         </div>
         <div class="content">
-            <!-- Sidebar -->
             <div class="sidebar">
                 <a href="#" class="menu-item active"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Details</a>
-                <a href="{% url 'p_dash' %}" class="menu-item "><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
-                <a href="{% url 'p_pres' %}" class="menu-item "><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
-                <a href="#" class="menu-item "><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+                <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
+                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
+                <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> <a href="{% url "logoutp" %}" class='btn btn-primary'> Logout </a>
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
+                    <a href="{% url 'logoutp' %}" class='btn btn-primary'> Logout </a>
                 </div>
+            </div>
             
+            <main class="main-content">
+                <div class="patient-details">
+                    <h2 style="margin-bottom: 2rem;">Patient Details</h2>
+                    {% if patient %}
+                        <div class="detail-row">
+                        <span class="detail-label">Patient Name:</span>
+                        <span class="detail-value">{{ patient.full_name }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Date of Birth:</span>
+                            <span class="detail-value">{{ patient.date_of_birth }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Email:</span>
+                            <span class="detail-value">{{ patient.email }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Mobile Number:</span>
+                            <span class="detail-value">{{ patient.mobile_number }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Gender:</span>
+                            <span class="detail-value">{{ patient.gender }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Age:</span>
+                            <span class="detail-value">{{ patient.age }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Blood Group:</span>
+                            <span class="detail-value">{{ patient.blood_group }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Marital Status:</span>
+                            <span class="detail-value">{{ patient.marital_status }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Address:</span>
+                            <span class="detail-value">{{ patient.address }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Emergency Contact:</span>
+                            <span class="detail-value">{{ patient.emergency_contact_name }} ({{ patient.emergency_contact_number }})</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Occupation:</span>
+                            <span class="detail-value">{{ patient.occupation }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Habits:</span>
+                            <span class="detail-value">{{ patient.habits }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Medical History:</span>
+                            <span class="detail-value">{{ patient.medical_history }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Disease:</span>
+                            <span class="detail-value">{{ patient.disease }}</span>
+                        </div>
+                    {% else %}
+                        <div class="detail-row">
+                            <span class="detail-label">No patient details found. Fill the Registration form</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="grid-container">
+                    <div class="card">
+                        <h3>Weight Tracking</h3>
+                        <canvas id="weightChart"></canvas>
+                        <div class="btn-group">
+                            <button class="btn btn-primary">+ Add Weight</button>
+                            <button class="btn btn-secondary">Edit</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Dialysis Tubing</h3>
+                        <div style="text-align: center; margin: 2rem 0;">
+                            <span style="font-size: 2rem;">1/4</span>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary">+ Update</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Water Intake</h3>
+                        <div class="water-intake">
+                            <canvas id="waterIntakeChart"></canvas>
+                            <div class="remaining-water">
+                                <span>2000</span>ml
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary">+ Add 200ml</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        
     </div>
 
-    {% comment %} <main class="content">
-        <div class="patient-details">
-            <h2 style="margin-bottom: 2rem;">Patient Details</h2>
-            <div class="detail-row">
-                <span class="detail-label">Name:</span>
-                <span id="patient">Charles B</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Number:</span>
-                <span id="patient">12345</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Age:</span>
-                <span id="patient">45</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Gender:</span>
-                <span id="patient">Male</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Date of Birth:</span>
-                <span id="patient">1978-05-15</span>
-            </div>
-            <!-- <div class="detail-row">
-                <span class="detail-label">Infected Status:</span>
-                <div class="infected-status">
-                    <span id="patient">
-                    <select id="infectedStatus" onchange="updateInfectedStatus()">
-                        <option value="no">Not Infected</option>
-                        <option value="yes">Infected</option>
-                    </select>
-                </span>
-                </div>
-            </div> -->
-        </div>
+    <script>
+        // Weight Chart
+        const weightCtx = document.getElementById('weightChart').getContext('2d');
+        const weightData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Weight (kg)',
+                data: [75, 74, 73, 74, 72, 73],
+                borderColor: '#4285f4',
+                tension: 0.4
+            }]
+        };
+        const weightChart = new Chart(weightCtx, {
+            type: 'line',
+            data: weightData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
 
-        <div class="grid-container">
-            <div class="card">
-                <h3>Weight Tracking</h3>
-                <canvas id="weightChart"></canvas>
-                <div class="btn-group">
-                    <button class="btn btn-primary" onclick="addWeight()">+ Add Weight</button>
-                    <button class="btn btn-secondary" onclick="editWeight()">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteWeight()">
-                        <img src="Remove.png" alt="" srcset="">
-                    </button>
-                </div>
-            </div>
-            <div class="card">
-                <h3>Cholesterol Tracking</h3>
-                <canvas id="cholesterolChart"></canvas>
-                <div class="btn-group">
-                  <button class="btn btn-primary" id="addData">+ Add Data</button>
-                  <button class="btn btn-secondary" id="editData">Edit</button>
-                  <button class="btn btn-danger" id="deleteData">
-                    <img src="Remove.png" alt="Delete">
-                  </button>
-                </div>
-              </div>
-              
-            
-        </div>
-        <div class="schedule">
-            <h3 style="margin: 2rem 0 1rem;">Vitals Reading</h3>
-            <div class="schedule-header">
-                <span>Name</span>
-                <span>Date</span>
-                <span>Day</span>
-                <span>Readings</span>
-            </div>
-            <div class="schedule-item">
-                <span>Cholesterol</span>
-                <span>05/12/2024</span>
-                <span>Monday</span>
-                <span>105</span>
-            </div>
-            <div class="schedule-item">
-                <span>Weight</span>
-                <span>05/12/2024</span>
-                <span>Monday</span>
-                <span>69</span>
-            </div>
-            <div class="schedule-item">
-                <span>Sugar</span>
-                <span>05/12/2024</span>
-                <span>Monday</span>
-                <span>200</span>
-            </div>
-            <div class="schedule-item">
-                <span>Lipid Profile</span>
-                <span>05/12/2024</span>
-                <span>Monday</span>
-                <span>70</span>
-            </div>
-            <div class="schedule-item">
-                <span>Liver Profile</span>
-                <span>05/12/2024</span>
-                <span>Monday</span>
-                <span>
-                    <label for="allergies"></label>
-                    <select id="allergies" name="allergies">
-                      <option value="">Select</option>
-                      <option value="none">Yes</option>
-                      <option value="none">No</option>
-                      
-                      
-                    </select>
-                </span>
-            </div>
-            <div class="btn-group" style="justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="editSchedule()">
-                    <img src="Edit.png" alt="Edit" class="edit-icon">
-                    Edit 
-                </button>
-            </div>
-        </div>
-        <div class="schedule">
-            <h3 style="margin: 2rem 0 1rem;"> Previous Vitals Reading</h3>
-            <div class="schedule-header">
-                <span>Name</span>
-                <span>Date</span>
-                <span>Day</span>
-                <span>Readings</span>
-            </div>
-            <div class="schedule-item">
-                <span>Cholesterol</span>
-                <span>05/12/2022</span>
-                <span>Monday</span>
-                <span>290</span>
-            </div>
-            <div class="schedule-item">
-                <span>Weight</span>
-                <span>05/12/2022</span>
-                <span>Monday</span>
-                <span>74</span>
-            </div>
-            <div class="schedule-item">
-                <span>Sugar</span>
-                <span>05/12/2022</span>
-                <span>Monday</span>
-                <span>240</span>
-            </div>
-            <div class="schedule-item">
-                <span>Lipid Profile</span>
-                <span>05/12/2022</span>
-                <span>Monday</span>
-                <span>50</span>
-            </div>
-            <div class="schedule-item">
-                <span>Liver Profile</span>
-                <span>05/12/2022</span>
-                <span>Monday</span>
-                <span>
-                    <label for="allergies"></label>
-                    <select id="allergies" name="allergies">
-                      <option value="">Select</option>
-                      <option value="none">Yes</option>
-                      <option value="none">No</option>
-                      
-                      
-                    </select>
-                </span>
-            </div>
-            <div class="btn-group" style="justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="editSchedule()">
-                    <img src="Edit.png" alt="Edit" class="edit-icon">
-                    Edit 
-                </button>
-            </div>
-        </div>
-        <div class="schedule">
-            <h3 style="margin: 2rem 0 1rem;">Upcoming Sessions</h3>
-            <div class="schedule-header">
-                <span>Time</span>
-                <span>Date</span>
-                <span>Staff</span>
-                <span>Bed No.</span>
-            </div>
-            <div class="schedule-item">
-                <span>9:30 AM</span>
-                <span>05/12/2022</span>
-                <span>Elizabeth Polson</span>
-                <span>Bed NC</span>
-            </div>
-            <div class="btn-group" style="justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="editSchedule()">
-                    <img src="Edit.png" alt="Edit" class="edit-icon">
-                    Edit 
-                </button>
-            </div>
-        </div>
-    </main> {% endcomment %}
+        // Water Intake Chart
+        const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
+        let waterConsumed = 0;
+        const totalWater = 2000;
+
+        const waterChart = new Chart(waterCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [waterConsumed, totalWater - waterConsumed],
+                    backgroundColor: ['#4285f4', '#e0e0e0']
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+            }
+        });
+
+        // Functions for Weight
+        function addWeight() {
+            const newWeight = prompt('Enter new weight (kg):');
+            if (newWeight && !isNaN(newWeight)) {
+                weightData.datasets[0].data.push(parseFloat(newWeight));
+                weightData.datasets[0].data.shift();
+                weightChart.update();
+            }
+        }
+
+        function editWeight() {
+            const lastIndex = weightData.datasets[0].data.length - 1;
+            const newWeight = prompt('Edit last weight (kg):', weightData.datasets[0].data[lastIndex]);
+            if (newWeight && !isNaN(newWeight)) {
+                weightData.datasets[0].data[lastIndex] = parseFloat(newWeight);
+                weightChart.update();
+            }
+        }
+
+        function deleteWeight() {
+            if (confirm('Delete last weight entry?')) {
+                weightData.datasets[0].data.pop();
+                weightData.datasets[0].data.unshift(null);
+                weightChart.update();
+            }
+        }
+
+        // Functions for Tubing
+        let tubingCount = 1;
+        let tubingHistory = [];
+        function updateTubing() {
+            const time = new Date().toLocaleTimeString();
+            tubingCount = (tubingCount % 4) + 1;
+            tubingHistory.push({
+                time: time,
+                ratio: tubingCount
+            });
+            document.getElementById('tubingRatio').textContent = `${tubingCount}/4`;
+            updateTubingHistory();
+        }
+
+        function editTubing() {
+            const newRatio = prompt('Enter tubing ratio (1-4):', tubingCount);
+            if (newRatio && !isNaN(newRatio) && newRatio >= 1 && newRatio <= 4) {
+                tubingCount = parseInt(newRatio);
+                document.getElementById('tubingRatio').textContent = `${tubingCount}/4`;
+            }
+        }
+
+        function deleteTubingEntry(index) {
+            if (confirm('Delete this tubing entry?')) {
+                tubingHistory.splice(index, 1);
+                if (tubingHistory.length > 0) {
+                    tubingCount = tubingHistory[tubingHistory.length - 1].ratio;
+                } else {
+                    tubingCount = 1;
+                }
+                document.getElementById('tubingRatio').textContent = `${tubingCount}/4`;
+                updateTubingHistory();
+            }
+        }
+
+        function updateTubingHistory() {
+            const historyDiv = document.getElementById('tubingHistory');
+            historyDiv.innerHTML = '';
+            tubingHistory.forEach((entry, index) => {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'tubing-entry';
+                entryDiv.innerHTML = `
+                    <span>${entry.time}: ${entry.ratio}/4</span>
+                    <button class="btn btn-danger" onclick="deleteTubingEntry(${index})">Delete</button>
+                `;
+                historyDiv.appendChild(entryDiv);
+            });
+        }
+
+        // Functions for Schedule
+        function editSchedule() {
+            alert('Edit schedule functionality will be implemented based on your requirements');
+        }
+
+        // Function for Infected Status
+        function updateInfectedStatus() {
+            const status = document.getElementById('infectedStatus').value;
+            // Additional logic for handling infected status
+        }
+
+        function editInfectedStatus() {
+            const status = document.getElementById('infectedStatus');
+            status.disabled = !status.disabled;
+        }
+    </script>
 </body>
 </html>

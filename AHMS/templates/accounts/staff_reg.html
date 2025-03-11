@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Registration Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% load static %}
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full border border-gray-300">
+     <!-- <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-32 after:bg-blue-500 after:rounded-md">Staff Registration</h2> -->
+     <h2 class="text-2xl font-semibold mb-6 text-left text-gray-800 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-32 after:bg-blue-500 after:rounded-md">
+      Staff Registration
+  </h2>
+  <form method="post" action="{% url 'staff_reg' %}" id="staffForm">
+    {% csrf_token %}
+    {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+                <li class="p-2 mb-2 text-white {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium">Full Name</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter your name" name="full_name" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Email</label>
+                    <input type="email" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter your email" name="email" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Mobile Number</label>
+                    <input type="number" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter mobile number" name="mobile_number" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Gender</label>
+                    <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="gender" required>
+                        <option disabled selected>Select gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Others</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Age</label>
+                    <input type="number" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter your age" name="age" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Department</label>
+                    <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="department" required>
+                        <option disabled selected>Select Department</option>
+                        <option>Dialysis</option>
+                        <option>Cardiology</option>
+                        <option>EyeCare</option>
+                        <option>Gynaecology</option>
+                        <option>General OPD</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Specialization</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter Specialization" name="specialization" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Qualification</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter Qualification" name="qualification" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Years of Experience</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter your Years of Experience" name="yrofexp" required>
+                </div>
+            </div>
+            
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium">Working Hours Start</label>
+                    <input type="time" id="start-time" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="whs" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Working Hours End</label>
+                    <input type="time" id="end-time" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="whe" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Previous Timings</label>
+                    <ul id="timing-list" class="border border-gray-300 p-2 rounded bg-gray-100 text-sm text-gray-700">
+                        <!-- Previous timings will be displayed here -->
+                    </ul>
+                </div>
+            </div>
+            
+            <button type="button" onclick="addTiming()" class="mt-4 w-40 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-all">Add Timing</button>
+
+            <button type="submit" class="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-all">Submit</button>
+
+        </form>
+    </div>
+    <script src="{% static 'staff_regjs.js' %}"></script>
+</body>
+</html>

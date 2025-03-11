@@ -159,12 +159,12 @@
                 <div class="info-cards">
                     <div class="info-card">
                         <h3>Total Doctors</h3>
-                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">17</p>
+                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">{{ total_doctors }}</p>
                         <a href="{% url 'ad_doc' %}">Add</a>
                     </div>
                     <div class="info-card">
                         <h3>Total Patients</h3>
-                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">100</p>
+                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon">{{ total_patients }}</p>
                         <a href="{% url 'ad_pat' %}">Add</a>
                     </div>
                     <div class="info-card">
