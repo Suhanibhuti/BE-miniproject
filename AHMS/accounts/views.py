@@ -12,6 +12,8 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
+from .models import User 
+
 def logoutp(request):
     logout(request)    
     return redirect('landing')
@@ -53,8 +55,17 @@ def staff_login(request):
                 login(request, user)
                 return redirect('admin_dash')
         else:
-            # If authentication fails, display an error message
-            return render(request, 'accounts/staff_login.html', {'error': 'Invalid credentials'})
+            # Check if the user exists
+            try:
+                user = User.objects.get(username=username)
+                # If user exists but password is incorrect
+                messages.error(request, 'Incorrect password. Please try again.')
+            except User.DoesNotExist:
+                # If user does not exist
+                messages.error(request, 'User does not exist. Please check your username.')
+            
+            return render(request, 'accounts/staff_login.html')
+    
     return render(request, 'accounts/staff_login.html')
 
 
@@ -99,9 +110,13 @@ def staff_pat(request):
 def staff_pat1(request):
     return render(request, 'accounts/staff_pat1.html')
 
+
+
+
 @login_required
 def staff_reg(request):
     if request.method == 'POST':
+        # Extract form data
         full_name = request.POST.get('full_name')
         email = request.POST.get('email')
         mobile_number = request.POST.get('mobile_number')
@@ -114,33 +129,61 @@ def staff_reg(request):
         whs = request.POST.get('whs')
         whe = request.POST.get('whe')
 
-        # Validate and save staff information
+        # Check if a StaffD entry already exists for the user
         try:
-            staff = StaffD.objects.create(
-                full_name=full_name,
-                email=email,
-                mobile_number=mobile_number,
-                gender=gender,
-                age=age,
-                department=department,
-                specialization=specialization,
-                qualification=qualification,
-                years_of_experience=yrofexp
-            )
-            
-            # Save working hours
+            staff = StaffD.objects.get(user=request.user)
+            # Update existing StaffD entry
+            staff.full_name = full_name
+            staff.email = email
+            staff.mobile_number = mobile_number
+            staff.gender = gender
+            staff.age = age
+            staff.department = department
+            staff.specialization = specialization
+            staff.qualification = qualification
+            staff.years_of_experience = yrofexp
+            staff.save()
+
+            # Update working hours (delete existing and create new)
+            WorkingHour.objects.filter(staff=staff).delete()  # Delete existing working hours
             WorkingHour.objects.create(
                 staff=staff,
                 start_time=whs,
                 end_time=whe
             )
 
-            messages.success(request, 'Staff registration successful!')
+            messages.success(request, 'Staff details updated successfully!')
             return redirect('staff_dash')
 
-        except Exception as e:
-            messages.error(request, f"Error: {e}")
-            return redirect('staff_reg')
+        except StaffD.DoesNotExist:
+            # Create new StaffD entry
+            try:
+                staff = StaffD.objects.create(
+                    user=request.user,  # Associate with the logged-in user
+                    full_name=full_name,
+                    email=email,
+                    mobile_number=mobile_number,
+                    gender=gender,
+                    age=age,
+                    department=department,
+                    specialization=specialization,
+                    qualification=qualification,
+                    years_of_experience=yrofexp
+                )
+                
+                # Save working hours
+                WorkingHour.objects.create(
+                    staff=staff,
+                    start_time=whs,
+                    end_time=whe
+                )
+
+                messages.success(request, 'Staff registration successful!')
+                return redirect('staff_dash')
+
+            except Exception as e:
+                messages.error(request, f"Error: {e}")
+                return redirect('staff_reg')
 
     return render(request, 'accounts/staff_reg.html')
 
@@ -366,7 +409,7 @@ def ad_nurse(request):
     return render(request, 'accounts/ad_nurse.html')
 
 def ad_doc(request):
-    # Fetch all doctors from the StaffD model
+    # Fetch all doctors from the StaffD model and their related User data
     doctors = StaffD.objects.select_related('user').all()
     
     context = {
@@ -413,11 +456,59 @@ def edit_doctor(request, doctor_id):
 #         return redirect('ad_doc')
 #     return render(request, 'accounts/reset_password.html', {'user': user})
 
-# Delete Doctor
+
+
 def delete_doctor(request, doctor_id):
+    # Fetch the StaffD entry
     doctor = get_object_or_404(StaffD, id=doctor_id)
+    
     if request.method == 'POST':
+        # Fetch the associated User
+        user = doctor.user
+        
+        # Delete the StaffD entry
         doctor.delete()
-        messages.success(request, 'Doctor deleted successfully.')
+        
+        # Delete the User entry
+        user.delete()
+        
+        messages.success(request, 'Doctor and associated user deleted successfully.')
         return redirect('ad_doc')
+    
     return redirect('ad_doc')
+
+
+
+def add_doctor(request):
+    if request.method == 'POST':
+        # Extract form data
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        role = 'doctor'  # Default role
+
+        # Create a new User with the role 'doctor'
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            role=role
+        )
+
+        # Create a new StaffD entry with default values
+        StaffD.objects.create(
+            user=user,
+            full_name='-',  # Default value
+            email=None,  # Default value
+            mobile_number='-',  # Default value
+            gender='-',  # Default value
+            age=0,  # Default value
+            department='-',  # Default value
+            specialization='-',  # Default value
+            qualification='-',  # Default value
+            years_of_experience='-',  # Default value
+            # whs='-',  # Default value
+            # whe='-',  # Default value
+        )
+
+        return redirect('ad_doc')  # Redirect to the doctors list page
+
+    return render(request, 'accounts/ad_doc.html')

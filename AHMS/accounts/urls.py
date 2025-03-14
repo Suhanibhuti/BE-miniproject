@@ -41,6 +41,6 @@ urlpatterns = [
     path('edit_doctor/<int:doctor_id>/', views.edit_doctor, name='edit_doctor'),
     # path('reset_password/<int:user_id>/', views.reset_password, name='reset_password'),
     path('delete_doctor/<int:doctor_id>/', views.delete_doctor, name='delete_doctor'),
-    
+    path('add_doctor/', views.add_doctor, name='add_doctor'),
     
 ]

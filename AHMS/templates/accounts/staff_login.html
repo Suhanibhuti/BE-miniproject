@@ -23,6 +23,9 @@
   <div class="main-container">
     <div class="medi-careS">Staff Login</div>
 
+
+
+
     <form action="{% url 'staff_login' %}" method="post">
 
       {% csrf_token %}
@@ -31,6 +34,16 @@
 
       <span class="password-label">Password</span>
       <input type="password" name="password" placeholder="Enter Password" />
+
+
+       <!-- Display messages here -->
+ {% if messages %}
+ <div class="messages">
+   {% for message in messages %}
+     <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+   {% endfor %}
+ </div>
+{% endif %}
       
       <button type="submit">Login</button>
     </form>

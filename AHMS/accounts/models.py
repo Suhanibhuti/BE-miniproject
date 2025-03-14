@@ -45,7 +45,7 @@ class PatientReg(models.Model):
 class StaffD(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='staff_profile', default=1)
     full_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
     mobile_number = models.CharField(max_length=15)
     gender = models.CharField(max_length=10)
     age = models.PositiveIntegerField()
