@@ -34,9 +34,16 @@ urlpatterns = [
     path('p_reg/', views.p_reg, name='p_reg'),
     
     
-    path('ad_app/', views.ad_app, name='ad_app'),  
+    path('ad_app/', views.ad_app, name='ad_app'), 
+     
     path('ad_pat/', views.ad_pat, name='ad_pat'),
+    path('edit_patient/<int:patient_id>/', views.edit_patient, name='edit_patient'),
+    path('delete_patient/<int:patient_id>/', views.delete_patient, name='delete_patient'),
+    path('add_patient/', views.add_patient, name='add_patient'),
+    
+    
     path('ad_nurse/', views.ad_nurse, name='ad_nurse'),
+    
     path('ad_doc/', views.ad_doc, name='ad_doc'),
     path('edit_doctor/<int:doctor_id>/', views.edit_doctor, name='edit_doctor'),
     # path('reset_password/<int:user_id>/', views.reset_password, name='reset_password'),

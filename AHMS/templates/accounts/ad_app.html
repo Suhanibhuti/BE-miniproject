@@ -152,6 +152,29 @@
             display: flex;
             align-items: center;
         }
+
+
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;}
     </style>
 </head>
 <body>
@@ -190,114 +213,90 @@
                     Appointment
                 </a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
-
                 </div>
             </div>
 
             <div class="main-content">
                 <div class="section-header">
                     <h2>Appointment List</h2>
-                    <div class="search-container">
+                    {% comment %} <div class="search-container">
                         <img src="{{ MEDIA_URL }}Search.png" alt="Search">
                         <input type="text" placeholder="Search Appointment">
-                    </div>
+                    </div> {% endcomment %}
                 </div>
 
+                <!-- Upcoming Appointments Table -->
+                <h3>Upcoming Appointments</h3>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Contact</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
                                 <th>Date</th>
-                                <th>Time</th>
-                                <th>Status</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for appointment in upcoming_appointments %}
                             <tr>
-                                <td>1</td>
-                                <td>Charles B</td>
-                                <td>1234567890</td>
-                                <td>10-10-2024</td>
-                                <td>12:30 PM</td>
-                                <td><span class="status completed">COMPLETED</span></td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ appointment.patient.username }}</td>
+                                <td>{{ appointment.doctor.full_name }}</td>
+                                <td>{{ appointment.doctor.department }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.start_time }}</td>
+                                <td>{{ appointment.end_time }}</td>
+                                <td>{{ appointment.description }}</td>
                             </tr>
+                            {% empty %}
                             <tr>
-                                <td>2</td>
-                                <td>Vivian J</td>
-                                <td>1234567890</td>
-                                <td>9-10-2024</td>
-                                <td>9:30 AM</td>
-                                <td><span class="status completed">COMPLETED</span></td>
+                                <td colspan="7">No upcoming appointments.</td>
                             </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Old Appointments Table -->
+                <h3>Old Appointments</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td>3</td>
-                                <td>Jame C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
+                                <th>ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Date</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Description</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in old_appointments %}
                             <tr>
-                                <td>4</td>
-                                <td>Joshua M</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status cancelled">CANCELLED</span></td>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ appointment.patient.username }}</td>
+                                <td>{{ appointment.doctor.full_name }}</td>
+                                <td>{{ appointment.doctor.department }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.start_time }}</td>
+                                <td>{{ appointment.end_time }}</td>
+                                <td>{{ appointment.description }}</td>
                             </tr>
+                            {% empty %}
                             <tr>
-                                <td>5</td>
-                                <td>Bernard P</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
+                                <td colspan="7">No old appointments.</td>
                             </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Joy C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status cancelled">CANCELLED</span></td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>Jessica K</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>Troy C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td>Molly TC</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status not-confirmed">NOT CONFIRMED</span></td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>Jiol C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td><span class="status cancelled">CANCELLED</span></td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

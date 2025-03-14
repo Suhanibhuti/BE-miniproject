@@ -23,7 +23,7 @@ class PatientReg(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_profile')
     full_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, null=True, blank=True)
     mobile_number = models.CharField(max_length=15)
     gender = models.CharField(max_length=10)
     age = models.PositiveIntegerField()

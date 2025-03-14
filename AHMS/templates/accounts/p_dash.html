@@ -227,7 +227,7 @@
                             <input type="text" id="doctor" placeholder="Enter Doctor">
                         </div>
                             <div class="form-buttons">
-                                <button class="btn btn-primary" >🔍 Check Schedule</button>
+                                <button class="btn btn-primary" id="check-availability" >🔍 Check Schedule</button>
      
                             </div>
                         </div> 
@@ -350,9 +350,19 @@
 
         // Check Schedule Button
         document.addEventListener('DOMContentLoaded', function () {
-            const checkScheduleButton = document.querySelector('.btn-check');
+            const checkScheduleButton = document.querySelector('#check-availability');
             const doctorInput = document.querySelector('#doctor');
             const resultField = document.querySelector('#description');
+
+
+            console.log('Check Schedule Button:', checkScheduleButton);
+            console.log('Doctor Input:', doctorInput);
+            console.log('Result Field:', resultField);
+
+            if (!checkScheduleButton || !doctorInput || !resultField ) {
+                console.error('One or more elements are missing in the DOM.');
+                return;
+            }
 
             checkScheduleButton.addEventListener('click', function () {
                 const doctorName = doctorInput.value.trim();

@@ -154,6 +154,27 @@
             display: flex;
             align-items: center;
         }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;}
     </style>
 </head>
 <body>
@@ -192,9 +213,8 @@
                     Appointment
                 </a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="">
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
-
                 </div>
             </div>
 

@@ -179,6 +179,26 @@
             height: 16px;
         }
 
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;}
 
         /* Modal Styles */
         .modal {
@@ -221,6 +241,10 @@
             justify-content: flex-end;
             gap: 10px;
         }
+
+        .highlight {
+            background-color: #ffff99 !important; /* Yellow background for highlighting */
+        }
     </style>
 </head>
 <body>
@@ -259,8 +283,8 @@
                     Appointment
                 </a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="">
-                    <a href="{% url 'logouts' %}" class='btn btn-primary'> Logout </a>
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
+                    <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
                 </div>
             </div>
 
@@ -268,10 +292,22 @@
                 <div class="section-header">
                     <h2>Doctors List</h2>
                     <div class="search-add">
-                        <div class="search-container">
-                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
-                            <input type="text" placeholder="Search Doctor">
+
+                        {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
                         </div>
+                    {% endif %}
+
+                        <div class="search-container">
+                        <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                        <input type="text" id="searchDoctor" placeholder="Search Doctor">
+                        </div>
+
                         <button class="add-doctor-btn" onclick="openAddDoctorModal()">
                             Add Doctor
                         </button>
@@ -464,6 +500,39 @@ function submitAddDoctorForm() {
     const form = document.getElementById('addDoctorForm');
     form.submit();
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchDoctor'); // Select the search input
+
+    // Add event listener for the search input
+    searchInput.addEventListener('input', function () {
+        const searchQuery = searchInput.value.trim().toLowerCase(); // Get the search query
+        console.log("Search Query:", searchQuery);
+
+        // Select all table rows (refresh the selection in case of dynamic content)
+        const tableRows = document.querySelectorAll('.table-container tbody tr');
+
+        // Loop through all table rows
+        tableRows.forEach(row => {
+            // Get the doctor's name from the correct column (e.g., 3rd column)
+            const doctorName = row.querySelector('td:nth-child(3)').textContent.trim().toLowerCase();
+            console.log("Doctor Name:", doctorName);
+
+            // Check if the search query is not empty
+            if (searchQuery === "") {
+                // If the search query is empty, remove the highlight from all rows
+                row.classList.remove('highlight');
+            } else if (doctorName.includes(searchQuery)) {
+                // If the search query matches, add the highlight class
+                row.classList.add('highlight');
+            } else {
+                // If the search query does not match, remove the highlight class
+                row.classList.remove('highlight');
+            }
+        });
+    });
+});
 
 </script>
 

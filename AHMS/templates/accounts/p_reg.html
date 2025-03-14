@@ -20,6 +20,16 @@
     <div class="container">
       <header>Patient Registration</header>
 
+      {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
       <form method="post" action="{% url 'p_reg' %}">
         {% csrf_token %}
         {% if error %}

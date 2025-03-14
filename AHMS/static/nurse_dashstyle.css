@@ -143,3 +143,25 @@ body, html {
     /* margin-bottom: 30px;  */
     height: 25px;
 }
+
+.messages {
+    margin-bottom: 20px;
+  }
+  
+  .alert {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .alert-error {
+    background-color: #ffebee; /* Light red background */
+    color: #c62828; /* Dark red text */
+    border: 1px solid #c62828;
+  }
+  
+  .alert-success {
+    background-color: #e8f5e9; /* Light green background */
+    color: #2e7d32; /* Dark green text */
+    border: 1px solid #2e7d32;
+  }

@@ -16,7 +16,7 @@ from .models import User
 
 def logoutp(request):
     logout(request)    
-    return redirect('landing')
+    return redirect('login_p')
 
 def logouts(request):
     logout(request)    
@@ -382,26 +382,191 @@ def p_det(request):
     return render(request, 'accounts/p_det.html', context)
 
 
+
+
 @login_required
 def p_reg(request):
     if request.method == 'POST':
         form = PatientForm(request.POST)
         if form.is_valid():
-            patient = form.save(commit=False)
-            patient.user = request.user
-            patient.save()
-            return redirect('p_dash')  # Redirect to patient dashboard
+            # Check if a PatientReg entry already exists for the user
+            try:
+                patient = PatientReg.objects.get(user=request.user)
+                # Update existing PatientReg entry
+                patient.full_name = form.cleaned_data['full_name']
+                patient.date_of_birth = form.cleaned_data['date_of_birth']
+                patient.email = form.cleaned_data['email']
+                patient.mobile_number = form.cleaned_data['mobile_number']
+                patient.gender = form.cleaned_data['gender']
+                patient.age = form.cleaned_data['age']
+                patient.blood_group = form.cleaned_data['blood_group']
+                patient.marital_status = form.cleaned_data['marital_status']
+                patient.address = form.cleaned_data['address']
+                patient.emergency_contact_name = form.cleaned_data['emergency_contact_name']
+                patient.emergency_contact_number = form.cleaned_data['emergency_contact_number']
+                patient.occupation = form.cleaned_data['occupation']
+                patient.habits = form.cleaned_data['habits']
+                patient.medical_history = form.cleaned_data['medical_history']
+                patient.disease = form.cleaned_data['disease']
+                patient.save()
+
+                messages.success(request, 'Patient details updated successfully!')
+                return redirect('p_dash')  # Redirect to patient dashboard
+
+            except PatientReg.DoesNotExist:
+                # Create new PatientReg entry
+                patient = form.save(commit=False)
+                patient.user = request.user
+                patient.save()
+
+                messages.success(request, 'Patient registration successful!')
+                return redirect('p_dash')  # Redirect to patient dashboard
+
         else:
-            print(form.errors) 
-            return render(request, 'accounts/p_reg.html', {'form': form, 'error': 'Invalid form data.'})
+            # If the form is invalid, display errors
+            print(form.errors)
+            messages.error(request, 'Invalid form data. Please correct the errors below.')
+            return render(request, 'accounts/p_reg.html', {'form': form})
+
     else:
-        form = PatientForm()
+        # If the request method is GET, check if the patient already exists
+        try:
+            patient = PatientReg.objects.get(user=request.user)
+            # Pre-fill the form with existing data
+            form = PatientForm(instance=patient)
+        except PatientReg.DoesNotExist:
+            # If no patient exists, create a new form
+            form = PatientForm()
+
     return render(request, 'accounts/p_reg.html', {'form': form})
 
-def ad_app(request):
-    return render(request, 'accounts/ad_app.html')
 
+
+def ad_app(request):
+    current_time = timezone.now()
+
+    # Upcoming appointments: date and start_time are in the future
+    upcoming_appointments = Appointment.objects.filter(
+        date__gt=current_time.date()
+    ).exclude(
+        date=current_time.date(), start_time__lte=current_time.time()
+    ).order_by('date', 'start_time')
+
+    # Old appointments: date and start_time are in the past or equal to the current time
+    old_appointments = Appointment.objects.filter(
+        date__lt=current_time.date()
+    ).exclude(
+        date=current_time.date(), start_time__gt=current_time.time()
+    ).order_by('-date', '-start_time')
+
+    context = {
+        'upcoming_appointments': upcoming_appointments,
+        'old_appointments': old_appointments,
+    }
+    return render(request, 'accounts/ad_app.html', context)
+
+
+
+@login_required
 def ad_pat(request):
+    patients = PatientReg.objects.select_related('user').all()
+    context = {
+        'patients': patients,
+    }
+    return render(request, 'accounts/ad_pat.html', context)
+
+
+
+@login_required
+def edit_patient(request, patient_id):
+    print("Current user:", request.user)  # Debugging
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    if request.method == 'POST':
+        print("Updating patient:", patient.full_name)  # Debugging
+        print("Form data:", request.POST)  # Debugging
+
+        # Update all fields of the PatientReg model
+        patient.full_name = request.POST.get('full_name')
+        patient.date_of_birth = request.POST.get('date_of_birth')
+        patient.email = request.POST.get('email')
+        patient.mobile_number = request.POST.get('mobile_number')
+        patient.gender = request.POST.get('gender')
+        patient.age = request.POST.get('age')
+        patient.blood_group = request.POST.get('blood_group')
+        patient.marital_status = request.POST.get('marital_status')
+        patient.address = request.POST.get('address')
+        patient.emergency_contact_name = request.POST.get('emergency_contact_name')
+        patient.emergency_contact_number = request.POST.get('emergency_contact_number')
+        patient.occupation = request.POST.get('occupation')
+        patient.habits = request.POST.get('habits')
+        patient.medical_history = request.POST.get('medical_history')
+        patient.disease = request.POST.get('disease')
+        patient.save()
+
+        # Reset password if provided
+        new_password = request.POST.get('new_password')
+        if new_password:
+            user = patient.user
+            user.password = make_password(new_password)
+            user.save()
+
+        messages.success(request, 'Patient details updated successfully.')
+        return redirect('ad_pat')
+    return redirect('ad_pat')
+
+
+def delete_patient(request, patient_id):
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    if request.method == 'POST':
+        user = patient.user
+        patient.delete()
+        user.delete()
+        messages.success(request, 'Patient and associated user deleted successfully.')
+        return redirect('ad_pat')
+    return redirect('ad_pat')
+
+
+def add_patient(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        role = 'patient'  # Default role
+
+        # Check if the username already exists
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already exists. Please choose a different username.')
+            return redirect('ad_pat')
+
+        # Create a new User with the role 'patient'
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            role=role
+        )
+
+        # Create a new PatientReg entry with default values
+        PatientReg.objects.create(
+            user=user,
+            full_name='-',  # Default value
+            date_of_birth=timezone.now().date(),  # Set a default date (e.g., today's date)
+            email='',  # Default value
+            mobile_number='-',  # Default value
+            gender='-',  # Default value
+            age=0,  # Default value
+            blood_group='-',  # Default value
+            marital_status='-',  # Default value
+            address='-',  # Default value
+            emergency_contact_name='-',  # Default value
+            emergency_contact_number='-',  # Default value
+            occupation='-',  # Default value
+            habits='-',  # Default value
+            medical_history='None',  # Default value
+            disease='None',  # Default value
+        )
+
+        messages.success(request, 'Patient added successfully.')
+        return redirect('ad_pat')
+
     return render(request, 'accounts/ad_pat.html')
 
 
