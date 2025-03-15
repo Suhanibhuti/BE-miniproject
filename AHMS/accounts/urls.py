@@ -23,6 +23,8 @@ urlpatterns = [
     path('nurse_pat/', views.nurse_pat, name='nurse_pat'),  # Your staff dashboard path
     path('nurse_pat1/', views.nurse_pat1, name='nurse_pat1'),
     path('nurse_app/', views.nurse_app, name='nurse_app'),
+    path('nurse_reg/', views.nurse_reg, name='nurse_reg'),
+    
     
     path('admin_dash/', views.admin_dash, name='admin_dash'),
     
@@ -43,6 +45,9 @@ urlpatterns = [
     
     
     path('ad_nurse/', views.ad_nurse, name='ad_nurse'),
+    path('edit-nurse/<int:nurse_id>/', views.edit_nurse, name='edit_nurse'),
+    path('add-nurse/', views.add_nurse, name='add_nurse'),
+    path('delete-nurse/<int:nurse_id>/',views.delete_nurse, name='delete_nurse'),
     
     path('ad_doc/', views.ad_doc, name='ad_doc'),
     path('edit_doctor/<int:doctor_id>/', views.edit_doctor, name='edit_doctor'),

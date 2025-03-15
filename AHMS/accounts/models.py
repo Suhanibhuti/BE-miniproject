@@ -45,7 +45,7 @@ class PatientReg(models.Model):
 class StaffD(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='staff_profile', default=1)
     full_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True, null=True, blank=True)
+    email = models.EmailField( null=True, blank=True)
     mobile_number = models.CharField(max_length=15)
     gender = models.CharField(max_length=10)
     age = models.PositiveIntegerField()
@@ -75,3 +75,18 @@ class Appointment(models.Model):
 
     class Meta:
         unique_together = ('doctor', 'date', 'start_time')
+        
+        
+class NurseReg(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100)
+    mobile_number = models.CharField(max_length=15)
+    email = models.EmailField(null=True, blank=True)  # Allow null and blank
+    gender = models.CharField(max_length=10,  null=True, blank=True)
+    age = models.IntegerField()
+    department = models.CharField(max_length=100)
+    qualification = models.CharField(max_length=100)
+    blood_group = models.CharField(max_length=5, null=True, blank=True)
+
+    def __str__(self):
+        return self.full_name

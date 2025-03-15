@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, PatientReg, StaffD, WorkingHour, Appointment
+from .models import User, PatientReg, StaffD, WorkingHour, Appointment,NurseReg
 
 class CustomUserAdmin(UserAdmin):
     model = User
@@ -40,3 +40,8 @@ class AppointmentAdmin(admin.ModelAdmin):
     list_display = ('doctor', 'patient', 'start_time','end_time','date')
 
 
+
+class NurseAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'email', 'mobile_number', 'department')
+
+admin.site.register(NurseReg, NurseAdmin)

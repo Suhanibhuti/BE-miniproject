@@ -16,9 +16,9 @@
                 <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo">
                 MediCare
             </div>
-            <div class="profile">
-                <span><b>Beck Miller</b> </span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="Beck Miller Profile">
+            <div class="admin-profile">
+                <span><a href="{% url 'nurse_reg' %}"> {{ full_name }} </a></span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
             </div>
         </div>
         <div class="content">

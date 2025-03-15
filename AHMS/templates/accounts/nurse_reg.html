@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nurse Registration Form</title>
+    <!-- Load static files -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'nurse_regstyle.css' %}" />
+
+    <!-- Iconscout for icons -->
+    <link
+      rel="stylesheet"
+      href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>Nurse Registration Form</header>
+
+      {% if messages %}
+      <div class="messages">
+          {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                  {{ message }}
+              </div>
+          {% endfor %}
+      </div>
+  {% endif %}
+
+  <form method="post" action="{% url 'nurse_reg' %}">
+    {% csrf_token %}
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+
+     <div class="form first">
+       <div class="details personal">
+      <span class="title">Personal Details</span>
+         <div class="fields">
+           <div class="input-field">
+             <label>Full Name</label>
+             <input type="text" name="full_name" placeholder="Enter your name" required />
+           </div>
+           <div class="input-field">
+             <label>Mobile Number</label>
+             <input
+               type="number" name="mobile_number"
+               placeholder="Enter mobile number"
+               required
+             />
+           </div>
+           <div class="input-field">
+            <label>Email</label>
+            <input
+              type="email" name="email"
+              placeholder="Enter Email"
+              required
+            />
+          </div>
+           <div class="input-field">
+             <label>Gender</label>
+             <select required name="gender">
+               <option disabled selected>Select gender</option>
+               <option>Male</option>
+               <option>Female</option>
+               <option>Others</option>
+             </select>
+           </div>
+           <div class="input-field">
+             <label>Age</label>
+             <input
+               type="number" name="age"
+               placeholder="Enter age"
+               required
+             />
+           </div>
+           <div class="input-field">
+            <label>Department</label>
+            <select  name="department" required>
+                <option disabled selected>Select Department</option>
+                <option>Dialysis</option>
+                <option>Cardiology</option>
+                <option>EyeCare</option>
+                <option>Gynaecology</option>
+                <option>General OPD</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label>Qualification</label>
+            <input
+              type="text"
+              name="qualification"
+              placeholder="Enter your Qualification"
+              required />
+          </div>
+          <div class="input-field">
+            <label>Blood Group</label>
+            <select required name="blood_group">
+              <option disabled selected>Select Blood Group</option>
+              <option>A+</option>
+              <option>A-</option>
+              <option>B+</option>
+              <option>B-</option>
+              <option>AB+</option>
+              <option>AB-</option>
+              <option>O+</option>
+              <option>O-</option>
+            </select>
+          </div>
+       </div>
+     <button class="sumbit">
+         <span class="btnText">Submit</span>
+         <i class="uil uil-navigator"></i>
+     </button>
+   </form>
+ </div>
+ <script src="{% static 'nurse_regjs.js' %}"></script>
+  </body>
+</html>

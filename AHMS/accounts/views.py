@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import User,PatientReg,StaffD,WorkingHour,Appointment
+from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg
 from .forms import PatientForm
 from django.http import JsonResponse
 from django.contrib import messages
@@ -98,14 +98,88 @@ def basestaff(request):
 def landing(request):
     return render(request, 'accounts/landing.html')
 
+@login_required
 def staff_dash(request):
-    return render(request, 'accounts/staff_dash.html')
+    try:
+        # Fetch the StaffD record for the current user
+        staff = StaffD.objects.get(user=request.user)
+        full_name = staff.full_name
+        staff_data = {
+            'full_name': staff.full_name,
+            'email': staff.email,
+            'mobile_number': staff.mobile_number,
+            'department': staff.department,
+            'specialization': staff.specialization,
+            'qualification': staff.qualification,
+            'years_of_experience': staff.years_of_experience,
+        }
 
+        # Fetch the working hours for the staff member
+        working_hours = WorkingHour.objects.filter(staff=staff)
+    except StaffD.DoesNotExist:
+        full_name = "User"  # Default value if no StaffD record exists
+        staff_data = None
+        working_hours = None
+
+    # Pass the full_name, staff_data, and working_hours to the template
+    context = {
+        'full_name': full_name,
+        'staff_data': staff_data,
+        'working_hours': working_hours,
+    }
+    return render(request, 'accounts/staff_dash.html', context)
+
+
+@login_required
 def staff_app(request):
-    return render(request, 'accounts/staff_app.html')
+    # Fetch the logged-in user
+    user = request.user
 
+    # Try to fetch the full name from the StaffD model (for doctors)
+    try:
+        staff = StaffD.objects.get(user=user)
+        full_name = staff.full_name
+    except StaffD.DoesNotExist:
+        # If not a doctor, try to fetch the full name from the NurseReg model (for nurses)
+        try:
+            nurse = NurseReg.objects.get(user=user)
+            full_name = nurse.full_name
+        except NurseReg.DoesNotExist:
+            # If neither exists, fall back to the user's username
+            full_name = user.username
+
+    # Pass the full_name to the template
+    context = {
+        'full_name': full_name,
+    }
+    return render(request, 'accounts/staff_app.html', context)
+
+
+@login_required
 def staff_pat(request):
-    return render(request, 'accounts/staff_pat.html')
+        # Fetch the logged-in user
+    user = request.user
+
+    # Try to fetch the full name from the StaffD model (for doctors)
+    try:
+        staff = StaffD.objects.get(user=user)
+        full_name = staff.full_name
+    except StaffD.DoesNotExist:
+        # If not a doctor, try to fetch the full name from the NurseReg model (for nurses)
+        try:
+            nurse = NurseReg.objects.get(user=user)
+            full_name = nurse.full_name
+        except NurseReg.DoesNotExist:
+            # If neither exists, fall back to the user's username
+            full_name = user.username
+
+    # Pass the full_name to the template
+    context = {
+        'full_name': full_name,
+    }
+    return render(request, 'accounts/staff_pat.html',context)
+
+
 
 def staff_pat1(request):
     return render(request, 'accounts/staff_pat1.html')
@@ -299,29 +373,168 @@ def create_appointment(request):
 
 
 
-    
-    
+@login_required
 def nurse_dash(request):
-    return render(request, 'accounts/nurse_dash.html')
+    try:
+        # Fetch the NurseReg record for the current user
+        nurse = NurseReg.objects.get(user=request.user)
+        full_name = nurse.full_name
+        nurse_data = {
+            'full_name': nurse.full_name,
+            'mobile_number': nurse.mobile_number,
+            'email': nurse.email,
+            'gender': nurse.gender,
+            'age': nurse.age,
+            'department': nurse.department,
+            'qualification': nurse.qualification,
+            'blood_group': nurse.blood_group,
+        }
+    except NurseReg.DoesNotExist:
+        full_name = "User"  # Default value if no NurseReg record exists
+        nurse_data = None
 
+    # Pass the full_name and nurse_data to the template
+    context = {
+        'full_name': full_name,
+        'nurse_data': nurse_data,
+    }
+    return render(request, 'accounts/nurse_dash.html', context)
+
+@login_required
 def nurse_pat(request):
-    return render(request, 'accounts/nurse_pat.html')
+    try:
+        # Fetch the NurseReg record for the current user
+        nurse = NurseReg.objects.get(user=request.user)
+        full_name = nurse.full_name
+        nurse_data = {
+            'full_name': nurse.full_name,
+            'mobile_number': nurse.mobile_number,
+            'email': nurse.email,
+            'gender': nurse.gender,
+            'age': nurse.age,
+            'department': nurse.department,
+            'qualification': nurse.qualification,
+            'blood_group': nurse.blood_group,
+        }
+    except NurseReg.DoesNotExist:
+        full_name = "User"  # Default value if no NurseReg record exists
+        nurse_data = None
+
+    # Pass the full_name and nurse_data to the template
+    context = {
+        'full_name': full_name,
+        'nurse_data': nurse_data,
+    }
+    return render(request, 'accounts/nurse_pat.html',context)
 
 def nurse_pat1(request):
     return render(request, 'accounts/nurse_pat1.html')
 
+@login_required
 def nurse_app(request):
-    return render(request, 'accounts/nurse_app.html')
+    try:
+        # Fetch the current nurse's department
+        nurse = NurseReg.objects.get(user=request.user)
+        department = nurse.department
+
+        # Fetch all doctors in the same department
+        doctors_in_department = StaffD.objects.filter(department=department)
+
+        # Fetch upcoming appointments (date >= today)
+        upcoming_appointments = Appointment.objects.filter(
+            doctor__in=doctors_in_department,
+            date__gte=timezone.now().date()
+        ).order_by('date', 'start_time')
+
+        # Fetch old appointments (date < today)
+        old_appointments = Appointment.objects.filter(
+            doctor__in=doctors_in_department,
+            date__lt=timezone.now().date()
+        ).order_by('-date', '-start_time')
+
+    except NurseReg.DoesNotExist:
+        # If no nurse record exists, show no appointments
+        upcoming_appointments = []
+        old_appointments = []
+
+    # Pass the data to the template
+    context = {
+        'upcoming_appointments': upcoming_appointments,
+        'old_appointments': old_appointments,
+    }
+    return render(request, 'accounts/nurse_app.html', context)
+
+
+@login_required
+def nurse_reg(request):
+    if request.method == 'POST':
+        # Extract form data
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        mobile_number = request.POST.get('mobile_number')
+        gender = request.POST.get('gender')
+        age = request.POST.get('age')
+        department = request.POST.get('department')
+        qualification = request.POST.get('qualification')
+        blood_group = request.POST.get('blood_group')
+        
+        # Check if a Nurse entry already exists for the user
+        try:
+            nurse = NurseReg.objects.get(user=request.user)
+            # Update existing Nurse entry
+            nurse.full_name = full_name
+            # nurse.email = email if email else None  # Set email to None if empty
+            nurse.email = email 
+            nurse.mobile_number = mobile_number
+            nurse.gender = gender
+            nurse.age = age
+            nurse.department = department
+            nurse.qualification = qualification
+            nurse.blood_group = blood_group
+            nurse.save()
+
+            messages.success(request, 'Nurse details updated successfully!')
+            return redirect('nurse_dash')  # Redirect to nurse dashboard or profile page
+
+        except NurseReg.DoesNotExist:
+            # Create new Nurse entry
+            try:
+                nurse = NurseReg.objects.create(
+                    user=request.user,  # Associate with the logged-in user
+                    full_name=full_name,
+                    email=email, 
+                    # email=email if email else None,  # Set email to None if empty
+                    mobile_number=mobile_number,
+                    gender=gender,
+                    age=age,
+                    department=department,
+                    qualification=qualification,
+                    blood_group=blood_group
+                )
+                                
+                messages.success(request, 'Nurse registration successful!')
+                return redirect('nurse_dash')  # Redirect to nurse dashboard or profile page
+
+            except Exception as e:
+                messages.error(request, f"Error: {e}")
+                return redirect('nurse_reg')
+
+    return render(request, 'accounts/nurse_reg.html')
+
+
+
 
 def admin_dash(request):
     # Query the database to get counts
     total_doctors = StaffD.objects.count()
     total_patients = PatientReg.objects.count()
+    total_nurse = NurseReg.objects.count()
     
     # Pass the counts to the template
     context = {
         'total_doctors': total_doctors,
         'total_patients': total_patients,
+        'total_nurse': total_nurse,
     }
     return render(request, 'accounts/admin_dash.html', context)
 
@@ -571,7 +784,115 @@ def add_patient(request):
 
 
 def ad_nurse(request):
+    # Fetch all nurses from the database
+    nurses = NurseReg.objects.all()
+
+    # Pass the nurses to the template
+    context = {
+        'nurses': nurses,
+    }
+    return render(request, 'accounts/ad_nurse.html', context)
+
+
+def edit_nurse(request, nurse_id):
+    nurse = get_object_or_404(NurseReg, id=nurse_id)
+
+    if request.method == 'POST':
+        # new_email = request.POST.get('email')
+
+        # # Debugging: Print the new_email value
+        # print(f"New Email: {new_email}")
+
+        # # Skip duplicate email check if new_email is None or blank
+        # if new_email is not None and new_email.strip() != "":  # Only check if new_email is not None and not empty
+        #     print("Performing duplicate email check")
+        #     if NurseReg.objects.filter(email=new_email).exclude(id=nurse_id).exists():
+        #         messages.error(request, 'Email already exists. Please use a different email.')
+        #         return redirect('ad_nurse')
+        # else:
+        #     print("Skipping duplicate email check (email is None or blank)")
+
+        # Update nurse details
+        nurse.full_name = request.POST.get('full_name')
+        nurse.mobile_number = request.POST.get('mobile_number')
+        nurse.email = request.POST.get('email')
+        # nurse.email = new_email or None  # Set to None if empty
+        nurse.gender = request.POST.get('gender')
+        nurse.age = request.POST.get('age')
+        nurse.department = request.POST.get('department')
+        nurse.qualification = request.POST.get('qualification')
+        nurse.blood_group = request.POST.get('blood_group')
+        nurse.save()
+
+        # Reset password if provided
+        new_password = request.POST.get('new_password')
+        if new_password: 
+        # if new_password and new_password.strip():  # Check if new_password is not empty
+            user = nurse.user
+            user.password = make_password(new_password)
+            user.save()
+
+        messages.success(request, 'Nurse details updated successfully.')
+        return redirect('ad_nurse')
+
+    return redirect('ad_nurse')
+
+
+
+
+def add_nurse(request):
+    if request.method == 'POST':
+        # Extract form data
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        role = 'nurse'  # Default role
+
+        # Create a new User with the role 'nurse'
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            role=role
+        )
+
+        # Create a new NurseReg entry with default values
+        NurseReg.objects.create(
+            user=user,
+            full_name='-',  # Default value
+            email=None,  # Set email to None (null)
+            mobile_number='-',  # Default value
+            gender='-',  # Default value
+            age=0,  # Default value
+            department='-',  # Default value
+            qualification='-',  # Default value
+            blood_group='-',  # Default value
+        )
+
+        messages.success(request, 'Nurse added successfully.')
+        return redirect('ad_nurse')  # Redirect to the nurses list page
+
     return render(request, 'accounts/ad_nurse.html')
+
+
+def delete_nurse(request, nurse_id):
+    # Fetch the NurseReg entry
+    nurse = get_object_or_404(NurseReg, id=nurse_id)
+    
+    if request.method == 'POST':
+        # Fetch the associated User
+        user = nurse.user
+        
+        # Delete the NurseReg entry
+        nurse.delete()
+        
+        # Delete the User entry
+        user.delete()
+        
+        messages.success(request, 'Nurse and associated user deleted successfully.')
+        return redirect('ad_nurse')  # Redirect to the nurses list page
+    
+    return redirect('ad_nurse')
+
+
 
 def ad_doc(request):
     # Fetch all doctors from the StaffD model and their related User data

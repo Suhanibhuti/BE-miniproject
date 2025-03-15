@@ -165,3 +165,62 @@ body, html {
     color: #2e7d32; /* Dark green text */
     border: 1px solid #2e7d32;
   }
+
+  .admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+
+/* Nurse Details Section */
+.nurse-details {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nurse-details h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 1.5rem;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #000;
+    width: 150px; /* Fixed width for labels */
+    flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.detail-value {
+    flex: 1;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-label {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-value {
+        width: 100%;
+    }
+}
