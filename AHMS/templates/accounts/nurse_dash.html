@@ -48,7 +48,7 @@
                 <div class="welcome-card">
                     <h2> <b>Welcome {{ full_name }}!</b> </h2>
                    
-                </div>
+                {% comment %} </div> {% endcomment %}
 
     <!-- Display Nurse Data -->
     {% if nurse_data %}
@@ -92,6 +92,7 @@
         <span class="detail-label">No nurse details found. Please complete your registration.</span>
     </div>
     {% endif %}
+</div>
 </div>
 </div>
 </div>

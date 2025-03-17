@@ -1,5 +1,5 @@
 from django import forms
-from .models import PatientReg
+from .models import PatientReg,PatientReport,DoctorComment,WaterIntake,WeightTracking,DialysisTubing
 from django.core.exceptions import ValidationError
 
 class PatientForm(forms.ModelForm):
@@ -17,6 +17,33 @@ class PatientForm(forms.ModelForm):
             'marital_status': forms.Select(),
         }
 
+
+class PatientReportForm(forms.ModelForm):
+    class Meta:
+        model = PatientReport
+        fields = ['file']
+
+
+class DoctorCommentForm(forms.ModelForm):
+    class Meta:
+        model = DoctorComment
+        fields = ['comment']
+        
+        
+class WeightTrackingForm(forms.ModelForm):
+    class Meta:
+        model = WeightTracking
+        fields = ['weight']
+
+class DialysisTubingForm(forms.ModelForm):
+    class Meta:
+        model = DialysisTubing
+        fields = ['tubing_count']
+
+class WaterIntakeForm(forms.ModelForm):
+    class Meta:
+        model = WaterIntake
+        fields = ['amount']
 
 # class StaffForm(forms.ModelForm):
 #     class Meta:

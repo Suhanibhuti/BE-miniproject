@@ -89,10 +89,10 @@ text-decoration: none;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    height: 86vh;
+    height: 65vh;
 }
 .headingtext{
-    height: 90vh;
+    height: 80vh;
     width: 90wh;
     padding: 150px;
     justify-content: center;
@@ -146,6 +146,28 @@ button:hover{
   height: 16px;
 }
 
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: #4285f4;
+  color: white;
+}
+
+.btn-secondary {
+  background: #304e8f;
+  color: white;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
    .midtexts{
     font-size: 20px;
     font-family: 'Times New Roman', Times, serif; 

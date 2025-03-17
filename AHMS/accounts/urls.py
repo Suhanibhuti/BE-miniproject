@@ -32,9 +32,20 @@ urlpatterns = [
     path('p_dash/', views.p_dash, name='p_dash'),
     path('p_pres/', views.p_pres, name='p_pres'),
     path('p_rep/', views.p_rep, name='p_rep'),
+    path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
+    
     path('p_det/', views.p_det, name='p_det'),
     path('p_reg/', views.p_reg, name='p_reg'),
+    path('p_dialysis/', views.p_dialysis, name='p_dialysis'),
+    path('fetch_tubing_data/', views.fetch_tubing_data, name='fetch_tubing_data'),
     
+    path('fetch_weight_data/', views.fetch_weight_data, name='fetch_weight_data'),
+    path('add_weight/', views.add_weight, name='add_weight'),
+    path('delete_weight/', views.delete_weight, name='delete_weight'),
+    
+    path('fetch_water_intake/', views.fetch_water_intake, name='fetch_water_intake'),
+    path('fetch_water_history/', views.fetch_water_history, name='fetch_water_history'),
+    path('add_water_intake/', views.add_water_intake, name='add_water_intake'),
     
     path('ad_app/', views.ad_app, name='ad_app'), 
      
@@ -54,5 +65,9 @@ urlpatterns = [
     # path('reset_password/<int:user_id>/', views.reset_password, name='reset_password'),
     path('delete_doctor/<int:doctor_id>/', views.delete_doctor, name='delete_doctor'),
     path('add_doctor/', views.add_doctor, name='add_doctor'),
+    
+    path('accept-appointment/<int:appointment_id>/', views.accept_appointment, name='accept_appointment'),
+    path('reject-appointment/<int:appointment_id>/', views.reject_appointment, name='reject_appointment'),
+    # path('send_email/', views.send_email, name='send_email'),
     
 ]

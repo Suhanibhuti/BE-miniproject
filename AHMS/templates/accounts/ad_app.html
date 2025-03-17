@@ -175,6 +175,29 @@
         }
         .btn-appointment {
             background-color: #1a73e8;}
+
+            .status-badge {
+                padding: 4px 12px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 500;
+                text-transform: uppercase;
+            }
+        
+            .status-accepted {
+                background-color: #dcfce7; /* Light green */
+                color: #155724; /* Dark green */
+            }
+        
+            .status-rejected {
+                background-color: #fee2e2; /* Light red */
+                color: #721c24; /* Dark red */
+            }
+        
+            .status-pending {
+                background-color: #dbeafe; /* Light blue */
+                color: #1e40af; /* Dark blue */
+            }
     </style>
 </head>
 <body>
@@ -241,6 +264,8 @@
                                 <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Description</th>
+                                <th>Status</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -254,6 +279,11 @@
                                 <td>{{ appointment.start_time }}</td>
                                 <td>{{ appointment.end_time }}</td>
                                 <td>{{ appointment.description }}</td>
+                                <td>
+                                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -278,6 +308,7 @@
                                 <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Description</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -291,6 +322,12 @@
                                 <td>{{ appointment.start_time }}</td>
                                 <td>{{ appointment.end_time }}</td>
                                 <td>{{ appointment.description }}</td>
+                                <td>
+                                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+
                             </tr>
                             {% empty %}
                             <tr>

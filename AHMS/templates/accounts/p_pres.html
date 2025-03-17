@@ -279,6 +279,92 @@
     margin-top: 1rem;
 }
 
+.schedule-header {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem;
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.schedule-item {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #4285f4;
+    color: white;
+}
+
+.btn-secondary {
+    background: #4285f4;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-switch.on {
+    background-color: #4caf50;
+}
+
+.toggle-switch.on::after {
+    transform: translateX(30px);
+}
+
+.toggle-label {
+    margin-left: 10px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
     </style>
 </head>
 <body>
@@ -290,118 +376,56 @@
                 MediCare
             </a>
             <div class="admin-profile">
-                <span>User</span>
+                <span>{{ request.user.patient_profile.full_name }}</span>
                 <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
             </div>
         </div>
+        
         <div class="content">
             <!-- Sidebar -->
             <div class="sidebar">
                 <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Details</a>
-                <a href="{% url 'p_dash' %}" class="menu-item "><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
+                <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
                 <a href="#" class="menu-item active"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
                 <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+                <a href="{% url 'p_dialysis' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Dialysis</a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> <a href="{% url "logoutp" %}" class='btn btn-primary'> Logout </a>
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
+                    <a href="{% url 'logoutp' %}" class='btn btn-primary'> Logout </a>
                 </div>
-            
-        </div>
-
-        <main class="content" style="margin-left: 2rem">
-           
-            
-            
-            <div  class="schedule">
-                <h3 style="margin: 1rem;">Prescription</h3>
-                <div class="schedule-header">
-                    <span>Name</span>
-                    <span>Dosage</span>
-                    <span>Time</span>
-                    <span>Before/After</span>
-                </div>
-                <div class="schedule-item">
-                    <span>Dolo</span>
-                    <span>5mg</span>
-                    <span>1-1-1</span>
-                 <span>
-                        <label for="allergies"></label>
-                        <select id="allergies" name="allergies">
-                          <option value="">select</option>
-                          <option value="none">Before</option>
-                          <option value="none">After</option>
-                        </select>
-                    </span>
-                </div>
-                <div class="schedule-item">
-                    <span>Paracetamol</span>
-                    <span>10mg</span>
-                    <span>1-1</span>
-                 <span>
-                        <label for="allergies"></label>
-                        <select id="allergies" name="allergies">
-                          <option value="">select</option>
-                          <option value="none">Before</option>
-                          <option value="none">After</option>
-                        </select>
-                    </span>
-                </div>
-                <div class="schedule-item">
-                    <span>xyxz</span>
-                    <span>5mg</span>
-                    <span>1-1-1</span>
-                 <span>
-                        <label for="allergies"></label>
-                        <select id="allergies" name="allergies">
-                          <option value="">select</option>
-                          <option value="none">Before</option>
-                          <option value="none">After</option>
-                        </select>
-                    </span>
-                </div>
-                <div class="schedule-item">
-                    <span>abc</span>
-                    <span>5mg</span>
-                    <span>1-1-1</span>
-                 <span>
-                        <label for="allergies"></label>
-                        <select id="allergies" name="allergies">
-                          <option value="">select</option>
-                          <option value="none">Before</option>
-                          <option value="none">After</option>
-                        </select>
-                    </span>
-                </div>
-                <div class="schedule-item">
-                    <span>pqr</span>
-                    <span>5mg</span>
-                    <span>1-1-1</span>
-                 <span>
-                        <label for="allergies"></label>
-                        <select id="allergies" name="allergies">
-                          <option value="">select</option>
-                          <option value="none">Before</option>
-                          <option value="none">After</option>
-                        </select>
-                    </span>
-                </div>
-             
-             
-                {% comment %} <div class="btn-group" style="justify-content: flex-end;">
-                    <button class="btn btn-secondary" onclick="editSchedule()">
-                        <img src="{{ MEDIA_URL }}Edit.png" alt="Edit" class="edit-icon">
-                        Edit 
-                    </button>
-                </div> {% endcomment %}
             </div>
-        <div class="toggle-container">
-                <div>
-                <div class="toggle-switch" id="toggleSwitch" ></div>
-                <span>Reminder</span>
-                {% comment %} <span class="toggle-label" id="toggleLabel">OFF</span> {% endcomment %}
-                </div>
-            </div> 
-        </main>
 
+            <!-- Main Content -->
+            <main class="content" style="margin-left: 2rem">
+                <div class="schedule">
+                    <h3 style="margin: 1rem;">Prescription</h3>
+                    <div class="schedule-header">
+                        <span>Name</span>
+                        <span>Dosage</span>
+                        <span>Time</span>
+                        <span>Before/After</span>
+                    </div>
+                    {% for prescription in prescriptions %}
+                    <div class="schedule-item">
+                        <span>{{ prescription.medicine_name }}</span>
+                        <span>{{ prescription.dosage }}</span>
+                        <span>{{ prescription.timing }}</span>
+                        <span>{{ prescription.before_after_food }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="schedule-item">
+                        <span colspan="4">No prescriptions available.</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="toggle-container">
+                    <div>
+                        <div class="toggle-switch" id="toggleSwitch"></div>
+                        <span>Reminder</span>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
     <script src="{% static 'p_presjs.js' %}"></script>

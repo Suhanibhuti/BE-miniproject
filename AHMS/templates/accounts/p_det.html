@@ -183,7 +183,7 @@
                 MediCare
             </a>
             <div class="admin-profile">
-                <span><a href="{% url 'p_reg' %}"> User </a></span>
+                <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }} </a></span>
                 <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
             </div>
         </div>
@@ -193,6 +193,7 @@
                 <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
                 <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
                 <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+                <a href="{% url 'p_dialysis' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Dialysis</a>
                 <div class="logout">
                     <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
                     <a href="{% url 'logoutp' %}" class='btn btn-primary'> Logout </a>
@@ -266,183 +267,11 @@
                     {% endif %}
                 </div>
 
-                <div class="grid-container">
-                    <div class="card">
-                        <h3>Weight Tracking</h3>
-                        <canvas id="weightChart"></canvas>
-                        <div class="btn-group">
-                            <button class="btn btn-primary">+ Add Weight</button>
-                            <button class="btn btn-secondary">Edit</button>
-                            <button class="btn btn-danger">Delete</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>Dialysis Tubing</h3>
-                        <div style="text-align: center; margin: 2rem 0;">
-                            <span style="font-size: 2rem;">1/4</span>
-                        </div>
-                        <div class="btn-group">
-                            <button class="btn btn-primary">+ Update</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h3>Water Intake</h3>
-                        <div class="water-intake">
-                            <canvas id="waterIntakeChart"></canvas>
-                            <div class="remaining-water">
-                                <span>2000</span>ml
-                            </div>
-                        </div>
-                        <div class="btn-group">
-                            <button class="btn btn-primary">+ Add 200ml</button>
-                        </div>
-                    </div>
-                </div>
+                
             </main>
         </div>
     </div>
 
-    <script>
-        // Weight Chart
-        const weightCtx = document.getElementById('weightChart').getContext('2d');
-        const weightData = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            datasets: [{
-                label: 'Weight (kg)',
-                data: [75, 74, 73, 74, 72, 73],
-                borderColor: '#4285f4',
-                tension: 0.4
-            }]
-        };
-        const weightChart = new Chart(weightCtx, {
-            type: 'line',
-            data: weightData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
 
-        // Water Intake Chart
-        const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
-        let waterConsumed = 0;
-        const totalWater = 2000;
-
-        const waterChart = new Chart(waterCtx, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [waterConsumed, totalWater - waterConsumed],
-                    backgroundColor: ['#4285f4', '#e0e0e0']
-                }]
-            },
-            options: {
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-            }
-        });
-
-        // Functions for Weight
-        function addWeight() {
-            const newWeight = prompt('Enter new weight (kg):');
-            if (newWeight && !isNaN(newWeight)) {
-                weightData.datasets[0].data.push(parseFloat(newWeight));
-                weightData.datasets[0].data.shift();
-                weightChart.update();
-            }
-        }
-
-        function editWeight() {
-            const lastIndex = weightData.datasets[0].data.length - 1;
-            const newWeight = prompt('Edit last weight (kg):', weightData.datasets[0].data[lastIndex]);
-            if (newWeight && !isNaN(newWeight)) {
-                weightData.datasets[0].data[lastIndex] = parseFloat(newWeight);
-                weightChart.update();
-            }
-        }
-
-        function deleteWeight() {
-            if (confirm('Delete last weight entry?')) {
-                weightData.datasets[0].data.pop();
-                weightData.datasets[0].data.unshift(null);
-                weightChart.update();
-            }
-        }
-
-        // Functions for Tubing
-        let tubingCount = 1;
-        let tubingHistory = [];
-        function updateTubing() {
-            const time = new Date().toLocaleTimeString();
-            tubingCount = (tubingCount % 4) + 1;
-            tubingHistory.push({
-                time: time,
-                ratio: tubingCount
-            });
-            document.getElementById('tubingRatio').textContent = `${tubingCount}/4`;
-            updateTubingHistory();
-        }
-
-        function editTubing() {
-            const newRatio = prompt('Enter tubing ratio (1-4):', tubingCount);
-            if (newRatio && !isNaN(newRatio) && newRatio >= 1 && newRatio <= 4) {
-                tubingCount = parseInt(newRatio);
-                document.getElementById('tubingRatio').textContent = `${tubingCount}/4`;
-            }
-        }
-
-        function deleteTubingEntry(index) {
-            if (confirm('Delete this tubing entry?')) {
-                tubingHistory.splice(index, 1);
-                if (tubingHistory.length > 0) {
-                    tubingCount = tubingHistory[tubingHistory.length - 1].ratio;
-                } else {
-                    tubingCount = 1;
-                }
-                document.getElementById('tubingRatio').textContent = `${tubingCount}/4`;
-                updateTubingHistory();
-            }
-        }
-
-        function updateTubingHistory() {
-            const historyDiv = document.getElementById('tubingHistory');
-            historyDiv.innerHTML = '';
-            tubingHistory.forEach((entry, index) => {
-                const entryDiv = document.createElement('div');
-                entryDiv.className = 'tubing-entry';
-                entryDiv.innerHTML = `
-                    <span>${entry.time}: ${entry.ratio}/4</span>
-                    <button class="btn btn-danger" onclick="deleteTubingEntry(${index})">Delete</button>
-                `;
-                historyDiv.appendChild(entryDiv);
-            });
-        }
-
-        // Functions for Schedule
-        function editSchedule() {
-            alert('Edit schedule functionality will be implemented based on your requirements');
-        }
-
-        // Function for Infected Status
-        function updateInfectedStatus() {
-            const status = document.getElementById('infectedStatus').value;
-            // Additional logic for handling infected status
-        }
-
-        function editInfectedStatus() {
-            const status = document.getElementById('infectedStatus');
-            status.disabled = !status.disabled;
-        }
-    </script>
 </body>
 </html>

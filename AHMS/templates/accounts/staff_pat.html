@@ -208,10 +208,10 @@
                             <img src="{{ MEDIA_URL }}Search.png" alt="Search">
                             <input type="text" placeholder="Search Patients">
                         </div>
-                        <button class="add-btn">
+                        {% comment %} <button class="add-btn">
                             <img src="{{ MEDIA_URL }}Plus Math.png" alt="Add Icon">
                             Add Patients
-                        </button>
+                        </button> {% endcomment %}
                     </div>
                 </div>
 
@@ -222,96 +222,28 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Contact</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Status</th>
+                                <th>Last Appointment Date</th>
+                                <th>Upcoming Appointment Date</th>
+                                <th>Email</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for patient in patients_list %}
                             <tr>
-                                <td>1</td>
-                                <td><a href=" {% url 'staff_pat1' %}"> Charles B </a></td>
-                                <td>1234567890</td>
-                                <td>10-10-2024</td>
-                                <td>12:30 PM</td>
-                                <td class="status-completed">COMPLETED</td>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{% url 'staff_pat1' %}">{{ patient.name }}</a></td>
+                                <td>{{ patient.contact }}</td>
+                                <td>{{ patient.last_appointment_date }}</td>
+                                <td>{{ patient.upcoming_appointment_date|default:"No upcoming appointment" }}</td>
+                                <td>{{ patient.email }}</td>
+                                
                             </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Vivian J</td>
-                                <td>1234567890</td>
-                                <td>9-10-2024</td>
-                                <td>9:30 AM</td>
-                                <td class="status-completed">COMPLETED</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Jame C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Joshua M</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>8:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Bernard P</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Joy C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>Jessica K</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>Troy C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td>Molly TC</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>Jiol C</td>
-                                <td>1234567890</td>
-                                <td>8-10-2024</td>
-                                <td>1:30 PM</td>
-                                <td class="status-cancelled">CANCELLED</td>
-                            </tr>
-                            <!-- More rows... -->
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
+
+
             </div>
         </div>
     </div>

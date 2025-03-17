@@ -1,16 +1,24 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg
-from .forms import PatientForm
+from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg,PatientReport,DoctorComment,Prescription,WeightTracking,WaterIntake,DialysisTubing
+from .forms import PatientForm,PatientReportForm,DoctorCommentForm,WeightTrackingForm,WaterIntakeForm,DialysisTubingForm
 from django.http import JsonResponse
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
-
+from collections import defaultdict
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from .utils import email
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.db.models import Count
+
+from django.core.mail import send_mail
+from django.urls import reverse
 
 from .models import User 
 
@@ -82,7 +90,7 @@ def login_p(request):
             if user.role == 'patient':  # Compare with the string 'patient'
                 login(request, user)
                 print("Login successful, redirecting to p_dash")  # Debug: Print success message
-                return redirect('p_dash')
+                return redirect('p_det')
             else:
                 print("User is not a patient")  # Debug: Print role mismatch
                 return render(request, 'accounts/login_p.html', {'error': 'You are not a patient.'})
@@ -97,6 +105,7 @@ def basestaff(request):
 
 def landing(request):
     return render(request, 'accounts/landing.html')
+
 
 @login_required
 def staff_dash(request):
@@ -116,16 +125,32 @@ def staff_dash(request):
 
         # Fetch the working hours for the staff member
         working_hours = WorkingHour.objects.filter(staff=staff)
+
+        # Count the number of appointments for the staff member
+        appointment_count = Appointment.objects.filter(doctor=staff).count()
+
+        # Count the number of unique patients associated with the staff member
+        patient_count = (
+            Appointment.objects
+            .filter(doctor=staff)  # Filter appointments by the doctor
+            .values('patient')     # Group by patient
+            .annotate(count=Count('patient'))  # Count unique patients
+            .count()  # Get the total number of unique patients
+        )
     except StaffD.DoesNotExist:
         full_name = "User"  # Default value if no StaffD record exists
         staff_data = None
         working_hours = None
+        appointment_count = 0
+        patient_count = 0
 
-    # Pass the full_name, staff_data, and working_hours to the template
+    # Pass the full_name, staff_data, working_hours, and counts to the template
     context = {
         'full_name': full_name,
         'staff_data': staff_data,
         'working_hours': working_hours,
+        'appointment_count': appointment_count,
+        'patient_count': patient_count,
     }
     return render(request, 'accounts/staff_dash.html', context)
 
@@ -148,37 +173,98 @@ def staff_app(request):
             # If neither exists, fall back to the user's username
             full_name = user.username
 
-    # Pass the full_name to the template
+    # Fetch all appointments for the current doctor
+    current_time = timezone.now()
+    upcoming_appointments = Appointment.objects.filter(
+        doctor=staff,  # Assuming the logged-in user is a doctor
+        date__gte=current_time.date(),  # Upcoming or today's appointments
+    ).order_by('date', 'start_time')
+
+    old_appointments = Appointment.objects.filter(
+        doctor=staff,  # Assuming the logged-in user is a doctor
+        date__lt=current_time.date(),  # Past appointments
+    ).order_by('-date', '-start_time')
+
+    # Pass the data to the template
     context = {
         'full_name': full_name,
+        'upcoming_appointments': upcoming_appointments,
+        'old_appointments': old_appointments,
     }
     return render(request, 'accounts/staff_app.html', context)
 
 
+
 @login_required
 def staff_pat(request):
-        # Fetch the logged-in user
+    # Fetch the logged-in user
     user = request.user
 
+    # Initialize variables
+    full_name = user.username
+    appointments = []
+
     # Try to fetch the full name from the StaffD model (for doctors)
-    try:
-        staff = StaffD.objects.get(user=user)
-        full_name = staff.full_name
-    except StaffD.DoesNotExist:
-        # If not a doctor, try to fetch the full name from the NurseReg model (for nurses)
+    if user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=user)
+            full_name = staff.full_name
+            # Fetch appointments for the current doctor
+            appointments = Appointment.objects.filter(doctor=staff)
+        except StaffD.DoesNotExist:
+            pass
+
+    # If not a doctor, try to fetch the full name from the NurseReg model (for nurses)
+    elif user.role == User.NURSE:
         try:
             nurse = NurseReg.objects.get(user=user)
             full_name = nurse.full_name
+            # Fetch appointments for the current nurse
+            appointments = Appointment.objects.filter(patient__patient_profile__isnull=False)  # Assuming nurses can see all patient appointments
         except NurseReg.DoesNotExist:
-            # If neither exists, fall back to the user's username
-            full_name = user.username
+            pass
 
-    # Pass the full_name to the template
+    # Extract unique patients and their relevant appointment details
+    patients_data = {}
+    for appointment in appointments:
+        patient_user = appointment.patient
+        try:
+            patient = PatientReg.objects.get(user=patient_user)
+            if patient.id not in patients_data:
+                patients_data[patient.id] = {
+                    'name': patient.full_name,
+                    'contact': patient.mobile_number,
+                    'last_appointment_date': appointment.date,
+                    'upcoming_appointment_date': None,  # Initialize as None
+                    'email': patient.email,  # Initialize as None
+                }
+            else:
+                # Update the last appointment date if this appointment is more recent
+                if appointment.date > patients_data[patient.id]['last_appointment_date']:
+                    patients_data[patient.id]['last_appointment_date'] = appointment.date
+        except PatientReg.DoesNotExist:
+            continue
+
+    # Check for upcoming appointments
+    for appointment in appointments:
+        if appointment.date > timezone.now().date():  # Check if the appointment is in the future
+            patient_user = appointment.patient
+            try:
+                patient = PatientReg.objects.get(user=patient_user)
+                if patient.id in patients_data:
+                    patients_data[patient.id]['upcoming_appointment_date'] = appointment.date
+            except PatientReg.DoesNotExist:
+                continue
+
+    # Convert the dictionary to a list for easier templating
+    patients_list = list(patients_data.values())
+
+    # Pass the full_name and patients_list to the template
     context = {
         'full_name': full_name,
+        'patients_list': patients_list,
     }
-    return render(request, 'accounts/staff_pat.html',context)
-
+    return render(request, 'accounts/staff_pat.html', context)
 
 
 def staff_pat1(request):
@@ -575,11 +661,78 @@ def p_dash(request):
 
 
 
+@login_required
 def p_pres(request):
-    return render(request, 'accounts/p_pres.html')
+    # Fetch prescriptions for the current patient
+    prescriptions = Prescription.objects.filter(patient=request.user).order_by('-prescribed_at')
 
+    # Group prescriptions by date
+    grouped_prescriptions = defaultdict(list)
+    for prescription in prescriptions:
+        date_key = prescription.prescribed_at.date()  # Extract the date part
+        grouped_prescriptions[date_key].append(prescription)
+
+    context = {
+        'grouped_prescriptions': grouped_prescriptions,
+    }
+    return render(request, 'accounts/p_pres.html', context)
+
+
+
+
+@login_required
 def p_rep(request):
-    return render(request, 'accounts/p_rep.html')
+    # Handle file uploads
+    if request.method == 'POST' and 'file_submit' in request.POST:
+        form = PatientReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.patient = request.user
+            report.file_name = request.FILES['file'].name
+            report.save()
+            messages.success(request, 'File uploaded successfully!')
+            return redirect('p_rep')
+        else:
+            messages.error(request, 'Invalid file Format (.pdf,.doc,.jpg,.png). Please try again.')
+
+    # Handle doctor's comments
+    if request.method == 'POST' and 'comment_submit' in request.POST:
+        comment_form = DoctorCommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.patient = request.user
+            comment.doctor = request.user  # Assuming the doctor is the logged-in user
+            comment.save()
+            messages.success(request, 'Comment added successfully!')
+            return redirect('p_rep')
+        else:
+            messages.error(request, 'Invalid comment. Please try again.')
+
+    # Fetch doctor's comments for the current patient
+    doctor_comments = DoctorComment.objects.filter(patient=request.user).order_by('-commented_at')
+
+    # Fetch uploaded files for the current patient
+    uploaded_files = PatientReport.objects.filter(patient=request.user)
+
+    # Initialize forms
+    form = PatientReportForm()
+    comment_form = DoctorCommentForm()
+
+    context = {
+        'doctor_comments': doctor_comments,
+        'uploaded_files': uploaded_files,
+        'form': form,
+        'comment_form': comment_form,
+    }
+    return render(request, 'accounts/p_rep.html', context)
+
+
+
+@login_required
+def delete_report(request, report_id):
+    report = get_object_or_404(PatientReport, id=report_id, patient=request.user)
+    report.delete()
+    return redirect('p_rep')
 
 @login_required
 def p_det(request):
@@ -652,6 +805,108 @@ def p_reg(request):
             form = PatientForm()
 
     return render(request, 'accounts/p_reg.html', {'form': form})
+
+@login_required
+def p_dialysis(request):
+    return render(request, 'accounts/p_dialysis.html')
+
+
+@csrf_exempt
+@login_required
+def fetch_weight_data(request):
+    if request.method == 'GET':
+        weights = WeightTracking.objects.filter(patient=request.user).order_by('date')
+        data = [{
+            'date': entry.date.strftime('%Y-%m-%d'),
+            'weight': float(entry.weight)
+        } for entry in weights]
+        return JsonResponse(data, safe=False)
+
+@csrf_exempt
+@login_required
+def add_weight(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        weight = data.get('weight')
+        if weight:
+            WeightTracking.objects.create(
+                patient=request.user,
+                weight=weight,
+                date=timezone.now()
+            )
+            return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+@csrf_exempt
+@login_required
+def delete_weight(request):
+    if request.method == 'POST':
+        last_entry = WeightTracking.objects.filter(patient=request.user).order_by('-date').first()
+        if last_entry:
+            last_entry.delete()
+            return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+
+@csrf_exempt
+@login_required
+def fetch_water_intake(request):
+    if request.method == 'GET':
+        today = timezone.now().date()
+        water_entries = WaterIntake.objects.filter(patient=request.user, date__date=today)
+        total_consumed = sum(entry.amount for entry in water_entries)
+        return JsonResponse({'total_consumed': total_consumed})
+
+@csrf_exempt
+@login_required
+def fetch_water_history(request):
+    if request.method == 'GET':
+        water_entries = WaterIntake.objects.filter(patient=request.user).order_by('-date')
+        history = [{
+            'date': entry.date.strftime('%Y-%m-%d'),
+            'amount': entry.amount
+        } for entry in water_entries]
+        return JsonResponse(history, safe=False)
+
+@csrf_exempt
+@login_required
+def add_water_intake(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        amount = data.get('amount')
+        if amount:
+            WaterIntake.objects.create(
+                patient=request.user,
+                amount=amount,
+                date=timezone.now()
+            )
+            return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+
+@csrf_exempt
+@login_required
+def fetch_tubing_data(request):
+    if request.method == 'GET':
+        today = timezone.now().date()
+        start_of_month = today.replace(day=1)  # Start of the current month
+        end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)  # End of the current month
+
+        # Fetch tubing entries for the current month
+        tubing_entries = DialysisTubing.objects.filter(patient=request.user, date__date__range=[start_of_month, end_of_month])
+
+        # Group tubing entries by week
+        tubing_data = {}
+        for entry in tubing_entries:
+            week_number = (entry.date.date() - start_of_month).days // 7 + 1
+            if week_number not in tubing_data:
+                tubing_data[week_number] = 0
+            tubing_data[week_number] += 1
+
+        # Fill in missing weeks with 0
+        data = [{'week': week, 'count': tubing_data.get(week, 0)} for week in range(1, 6)]  # Max 5 weeks in a month
+
+        return JsonResponse(data, safe=False)
 
 
 
@@ -762,7 +1017,7 @@ def add_patient(request):
             user=user,
             full_name='-',  # Default value
             date_of_birth=timezone.now().date(),  # Set a default date (e.g., today's date)
-            email='',  # Default value
+            email=None,  # Default value
             mobile_number='-',  # Default value
             gender='-',  # Default value
             age=0,  # Default value
@@ -998,3 +1253,117 @@ def add_doctor(request):
         return redirect('ad_doc')  # Redirect to the doctors list page
 
     return render(request, 'accounts/ad_doc.html')
+
+
+
+from django.core.mail import EmailMessage
+
+def accept_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    appointment.status = 'accepted'
+    appointment.save()
+
+    # Fetch the patient's email from the PatientReg model
+    try:
+        patient_reg = appointment.patient.patient_profile  # Access the related PatientReg
+        patient_email = patient_reg.email
+    except PatientReg.DoesNotExist:
+        messages.error(request, 'Patient profile not found. Notification not sent.')
+        return redirect(reverse('staff_app'))
+
+    # Check if the patient has an email
+    if not patient_email:
+        messages.error(request, 'Patient email is missing. Notification not sent.')
+        return redirect(reverse('staff_app'))
+
+    # Send email to patient
+    subject = 'Appointment Accepted'
+    message = f'Your appointment on {appointment.date} at {appointment.start_time} has been accepted.'
+    html_message = f'''
+    <html>
+        <body>
+            <p>Your appointment on <strong>{appointment.date}</strong> at <strong>{appointment.start_time}</strong> has been accepted.</p>
+            <p>Thank you for choosing MediCare.</p>
+        </body>
+    </html>
+    '''
+    from_email = f'MediCare <{settings.EMAIL_HOST_USER}>'
+    recipient_list = [patient_email]
+
+    email = EmailMessage(
+        subject,
+        message,
+        from_email,
+        recipient_list,
+        reply_to=[settings.EMAIL_HOST_USER],
+    )
+    email.content_subtype = 'html'  # Set content type to HTML
+    email.body = html_message  # Add HTML content
+
+    try:
+        email.send(fail_silently=False)
+        # Success message with recipient email
+        messages.success(request, f'Appointment accepted and notification sent to {patient_email}.')
+    except Exception as e:
+        # Error message
+        messages.error(request, f'Failed to send email to {patient_email}. Error: {e}')
+
+    return redirect(reverse('staff_app'))
+
+
+
+def reject_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    appointment.status = 'rejected'
+    appointment.save()
+
+    # Fetch the patient's email from the PatientReg model
+    try:
+        patient_reg = appointment.patient.patient_profile  # Access the related PatientReg
+        patient_email = patient_reg.email
+    except PatientReg.DoesNotExist:
+        messages.error(request, 'Patient profile not found. Notification not sent.')
+        return redirect(reverse('staff_app'))
+
+    # Check if the patient has an email
+    if not patient_email:
+        messages.error(request, 'Patient email is missing. Notification not sent.')
+        return redirect(reverse('staff_app'))
+
+    # Send email to patient
+    subject = 'Appointment Rejected'
+    message = f'Your appointment on {appointment.date} at {appointment.start_time} has been rejected.'
+    html_message = f'''
+    <html>
+        <body>
+            <p>Your appointment on <strong>{appointment.date}</strong> at <strong>{appointment.start_time}</strong> has been rejected.</p>
+            <p>Please contact us for further assistance.</p>
+        </body>
+    </html>
+    '''
+    from_email = f'MediCare <{settings.EMAIL_HOST_USER}>'
+    recipient_list = [patient_email]
+
+    email = EmailMessage(
+        subject,
+        message,
+        from_email,
+        recipient_list,
+        reply_to=[settings.EMAIL_HOST_USER],
+    )
+    email.content_subtype = 'html'  # Set content type to HTML
+    email.body = html_message  # Add HTML content
+
+    try:
+        email.send(fail_silently=False)
+        # Success message with recipient email
+        messages.success(request, f'Appointment rejected and notification sent to {patient_email}.')
+    except Exception as e:
+        # Error message
+        messages.error(request, f'Failed to send email to {patient_email}. Error: {e}')
+
+    return redirect(reverse('staff_app'))
+
+# def send_email(request):
+#     email()
+#     return redirect('/')

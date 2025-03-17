@@ -183,6 +183,30 @@
             color: #666;
             text-decoration: line-through;
         }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+    
+        .status-accepted {
+            background-color: #dcfce7; /* Light green */
+            color: #155724; /* Dark green */
+        }
+    
+        .status-rejected {
+            background-color: #fee2e2; /* Light red */
+            color: #721c24; /* Dark red */
+        }
+    
+        .status-pending {
+            background-color: #dbeafe; /* Light blue */
+            color: #1e40af; /* Dark blue */
+        }
+
     </style>
 </head>
 <body>
@@ -194,7 +218,7 @@
                 MediCare
             </a>
             <div class="admin-profile">
-                <span><a href="{% url 'p_reg' %}"> User </a></span>
+                <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }} </a></span>
                 <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
             </div>
         </div>
@@ -205,6 +229,8 @@
                 <a href="#" class="menu-item active"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
                 <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}prescription.png" alt="Reminder Icon"> Prescription</a>
                 <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+                <a href="{% url 'p_dialysis' %}" class="menu-item "><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Dialysis</a>
+
                 <div class="logout">
                     <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
                     <a href="{% url "logoutp" %}" class='btn btn-primary'> Logout </a>
@@ -273,8 +299,7 @@
                 </div>
 
                     
-                
-                <!-- Upcoming Appointments Table -->
+               <!-- Upcoming Appointments Table -->
 <h3>Upcoming Appointments</h3>
 <div class="appointment-table">
     <table class="table" id="upcoming-appointments">
@@ -284,6 +309,7 @@
                 <th>Doctor</th>
                 <th>Date</th>
                 <th>Time</th>
+                <th>Status</th> <!-- Add Status Column -->
             </tr>
         </thead>
         <tbody>
@@ -292,11 +318,16 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ appointment.doctor.full_name }}</td>
                 <td>{{ appointment.date }}</td>
-                <td>{{ appointment.start_time }}</td> <!-- Already formatted in 24-hour format -->
+                <td>{{ appointment.start_time }}</td>
+                <td>
+                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                        {{ appointment.get_status_display }}
+                    </span>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No upcoming appointments.</td>
+                <td colspan="5">No upcoming appointments.</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -313,6 +344,7 @@
                 <th>Doctor</th>
                 <th>Date</th>
                 <th>Time</th>
+                <th>Status</th> <!-- Add Status Column -->
             </tr>
         </thead>
         <tbody>
@@ -321,11 +353,16 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ appointment.doctor.full_name }}</td>
                 <td>{{ appointment.date }}</td>
-                <td>{{ appointment.start_time }}</td> <!-- Already formatted in 24-hour format -->
+                <td>{{ appointment.start_time }}</td>
+                <td>
+                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                        {{ appointment.get_status_display }}
+                    </span>
+                </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No old appointments.</td>
+                <td colspan="5">No old appointments.</td>
             </tr>
             {% endfor %}
         </tbody>

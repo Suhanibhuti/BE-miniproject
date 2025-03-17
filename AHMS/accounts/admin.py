@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, PatientReg, StaffD, WorkingHour, Appointment,NurseReg
+from .models import User, PatientReg, StaffD, WorkingHour, Appointment,NurseReg,PatientReport,Prescription,WaterIntake,WeightTracking,DialysisTubing,DoctorComment
 
 class CustomUserAdmin(UserAdmin):
     model = User
@@ -45,3 +45,10 @@ class NurseAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'email', 'mobile_number', 'department')
 
 admin.site.register(NurseReg, NurseAdmin)
+admin.site.register(PatientReport)
+admin.site.register(Prescription)
+admin.site.register(DoctorComment)
+
+admin.site.register(WeightTracking)
+admin.site.register(WaterIntake)
+admin.site.register(DialysisTubing)

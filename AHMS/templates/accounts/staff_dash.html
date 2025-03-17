@@ -281,18 +281,18 @@
  
 
             </div>
-                <div class="info-cards">
-                    <div class="info-card">
-                        <h3>Appointment for you</h3>
-                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon"> 7</p>
-                        <a href="{% url 'staff_app' %}" class="menu-item">See all</a>
-                    </div>
-                    <div class="info-card">
-                        <h3>Patients for you</h3>
-                        <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon"> 10</p>
-                        <a href="{% url 'staff_pat' %}" class="menu-item">See all</a>
-                    </div>
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>Appointment for you</h3>
+                    <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon"> {{ appointment_count }}</p>
+                    <a href="{% url 'staff_app' %}" class="menu-item">See all</a>
                 </div>
+                <div class="info-card">
+                    <h3>Patients for you</h3>
+                    <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon"> {{ patient_count }}</p>
+                    <a href="{% url 'staff_pat' %}" class="menu-item">See all</a>
+                </div>
+            </div>
             </div>
         </div>
     </div>
