@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Page</title>
+    <title>MediCare - Prescription</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     {% load static %}
     <style>
+        /* Add your existing CSS styles here */
         body, html {
             font-family: 'Inter', sans-serif;
             margin: 0;
@@ -89,285 +90,174 @@
             gap: 8px;
             font-size: 14px;
         }
-       
-        .section-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-        }
-        /* Form Styling */
-        .appointment-form {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-direction: column;
-        }
-        .subform-group{
-            display: flex;
-            
-            flex-direction: row;
-
-        }
-        .input-field {
-            flex: 1;
-         
-        }
-        .input-field input {
-            width: 50%;
-            padding: 8px;
-            border: 1px solid #d0e2ec;
-            border-radius: 5px;
-            background-color: #eaf5fb;
-            font-size: 14px;
-        }
-        .form-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            color: #fff;
-            font-weight: 600;
-        }
-        .btn-check {
-            background-color: #1e88e5;
-        }
-        .btn-appointment {
-            background-color: #1a73e8;
-        }
-        /* Table Styling */
-        .appointment-table {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-        }
-        .appointment-table h3 {
-           
-            padding: 8px;
-            margin: 0;
-            font-weight: 600;
-            border-radius: 6px 6px 0 0;
-            font-size: 14px;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .table th, .table td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .table th {
-            background-color: #e6f3f8;
-            color: #333;
-        }
-        .table-row.completed td {
-            color: #666;
-            text-decoration: line-through;
-        }
-
-        {% comment %} .content {
-            padding: 2rem;
-            overflow-y: auto;
-        } {% endcomment %}
-
-        .toggle-container {
-            {% comment %} display: flex; {% endcomment %}
-            align-items: center;
-            padding:1rem
-          }
-        
-          .toggle-switch {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background-color: #ccc;
-            border-radius: 15px;
-            cursor: pointer;
-            {% comment %} margin-left: 50rem; {% endcomment %}
-            transition: background-color 0.3s;
-            
-          }
-        
-          .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 24px;
-            height: 24px;
-            background-color: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-          }
-        
-          .toggle-switch.on {
-            background-color: #4caf50;
-          }
-        
-          .toggle-switch.on::after {
-            transform: translateX(30px);
-          }
-        
-          .toggle-label {
-            margin-left: 10px;
-            font-size: 1.2rem;
-            color: #333;
-          }
-
-          .schedule-header {
+        .schedule-header {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             padding: 1rem;
             background: #f8f9fa;
             font-weight: bold;
         }
-        
         .schedule-item {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             padding: 1rem;
             border-bottom: 1px solid #eee;
         }
-
-        .btn-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
+        /* Prescription-specific styles */
+        .prescription-form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
-.btn {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    font-weight: 500;
-}
 
-.btn-primary {
-    background: #4285f4;
-    color: white;
-}
+        .prescription-form h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
+        }
 
-.btn-secondary {
-    background: #4285f4;
-    color: white;
-}
+        .prescription-form input,
+        .prescription-form select {
+            width: 90%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
 
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
+        .prescription-form button {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
 
-.infected-status {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-}
+        .prescription-form button:hover {
+            background-color: #1e4bb5;
+        }
 
-.schedule-header {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 1rem;
-    background: #f8f9fa;
-    font-weight: bold;
-}
+        .prescription-list {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px;
+            width: 80%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
 
-.schedule-item {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-}
+        .prescription-list h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
+        }
 
-.btn-group {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
+        .prescription-list table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
 
-.btn {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    font-weight: 500;
-}
+        .prescription-list th,
+        .prescription-list td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
 
-.btn-primary {
-    background: #4285f4;
-    color: white;
-}
+        .prescription-list th {
+            background-color: #f1f5f9;
+        }
 
-.btn-secondary {
-    background: #4285f4;
-    color: white;
-}
-
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
-
-.toggle-container {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-}
-
+        /* Toggle Switch Styles */
 .toggle-switch {
     position: relative;
-    width: 60px;
-    height: 30px;
-    background-color: #ccc;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.toggle-switch::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 24px;
-    height: 24px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.3s;
-}
-
-.toggle-switch.on {
-    background-color: #4caf50;
-}
-
-.toggle-switch.on::after {
-    transform: translateX(30px);
-}
-
-.toggle-label {
+    display: inline-block;
+    width: 40px;
+    height: 20px;
     margin-left: 10px;
-    font-size: 1.2rem;
-    color: #333;
 }
 
+.toggle-switch input {
+    opacity: 0;
+    width: 100%; /* Ensure the input covers the entire toggle switch */
+    height: 100%; /* Ensure the input covers the entire toggle switch */
+    position: absolute; /* Position the input over the slider */
+    z-index: 2; /* Ensure the input is above the slider */
+    cursor: pointer; /* Show pointer cursor */
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px;
+    z-index: 1; /* Ensure the slider is below the input */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2563eb;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+        /* Date and Toggle Container */
+        .date-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .messages {
+            margin-bottom: 20px;
+          }
+          
+          .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+          }
+          
+          .alert-error {
+            background-color: #ffebee; /* Light red background */
+            color: #c62828; /* Dark red text */
+            border: 1px solid #c62828;
+          }
+          
+          .alert-success {
+            background-color: #e8f5e9; /* Light green background */
+            color: #2e7d32; /* Dark green text */
+            border: 1px solid #2e7d32;
+          }
     </style>
 </head>
 <body>
+
     <!-- Main Container -->
     <div class="container">
         <div class="navbar">
@@ -396,38 +286,97 @@
             </div>
 
             <!-- Main Content -->
-            <main class="content" style="margin-left: 2rem">
-                <div class="schedule">
-                    <h3 style="margin: 1rem;">Prescription</h3>
-                    <div class="schedule-header">
-                        <span>Name</span>
-                        <span>Dosage</span>
-                        <span>Time</span>
-                        <span>Before/After</span>
-                    </div>
-                    {% for prescription in prescriptions %}
-                    <div class="schedule-item">
-                        <span>{{ prescription.medicine_name }}</span>
-                        <span>{{ prescription.dosage }}</span>
-                        <span>{{ prescription.timing }}</span>
-                        <span>{{ prescription.before_after_food }}</span>
-                    </div>
-                    {% empty %}
-                    <div class="schedule-item">
-                        <span colspan="4">No prescriptions available.</span>
+            <div class="prescription-list">
+                <h3>Prescriptions</h3>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
                     </div>
                     {% endfor %}
                 </div>
-                <div class="toggle-container">
-                    <div>
-                        <div class="toggle-switch" id="toggleSwitch"></div>
-                        <span>Reminder</span>
-                    </div>
+                {% endif %}
+
+
+                {% for date, doctors in grouped_prescriptions.items %}
+                <div class="date-toggle-container">
+                    <h4>Prescribed On: {{ date }}</h4>
+                    <label class="toggle-switch">
+                        <input type="checkbox" class="toggle-checkbox" id="toggle-{{ forloop.counter }}" 
+                               data-date="{{ date }}" {% if prescriptions.0.reminders_set %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
                 </div>
-            </main>
+                    {% for doctor_name, prescriptions in doctors.items %}
+                        <h5>Prescribed By: {{ doctor_name }}</h5>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Medicine Name</th>
+                                    <th>Dosage</th>
+                                    <th>Timing</th>
+                                    <th>Before/After Food</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for prescription in prescriptions %}
+                                <tr>
+                                    <td>{{ prescription.medicine_name }}</td>
+                                    <td>{{ prescription.dosage }}</td>
+                                    <td>{{ prescription.timing }}</td>
+                                    <td>{{ prescription.before_after_food }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 
-    <script src="{% static 'p_presjs.js' %}"></script>
+    <script>
+        // JavaScript to handle the toggle functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toggle-checkbox').forEach((checkbox) => {
+                checkbox.addEventListener('change', (event) => {
+                    const toggleId = event.target.id;
+                    const isChecked = event.target.checked;
+                    const date = event.target.getAttribute('data-date');
+        
+                    if (isChecked) {
+                        // Send an AJAX request to the server to trigger email reminders
+                        fetch(`/accounts/send-reminders/${date}/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token for security
+                            },
+                            body: JSON.stringify({ date: date }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log(`Reminders sent for ${date}`);
+                                // Reload the page to show success messages
+                                window.location.reload();
+                            } else {
+                                console.error(`Failed to send reminders for ${date}`);
+                                alert(`Failed to send reminders: ${data.error}`);
+                                event.target.checked = false; // Uncheck the toggle if the request fails
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while sending reminders.');
+                            event.target.checked = false; // Uncheck the toggle if an error occurs
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

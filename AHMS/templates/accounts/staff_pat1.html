@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediCare Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <style>
         body, html {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             height: 100%;
-            background-color: #edf5f9;
+            background-color: #f0f8ff;
         }
         .container {
             display: flex;
@@ -28,6 +29,7 @@
         }
         .logo {
             font-size: 24px;
+            font-family: 'Inter', sans-serif;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -38,6 +40,7 @@
             gap: 10px;
         }
         .profile span {
+            font-family: 'Inter', sans-serif;
             font-weight: 500;
         }
         .profile img {
@@ -45,15 +48,9 @@
             height: 30px;
             border-radius: 50%;
         }
-        .logo img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
         .content {
             display: flex;
             flex: 1;
-            height: calc(100vh - 64px);
         }
         .sidebar {
             width: 200px;
@@ -67,93 +64,89 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            font-family: 'Inter', sans-serif;
         }
         .menu-item img {
             width: 20px;
             height: 20px;
             margin-right: 10px;
         }
-        .menu-item.active {
-            color: #2563eb;
-            font-weight: bold;
-        }
         .main-content {
             flex-grow: 1;
-            padding: 24px;
+            padding: 30px;
+            max-width: 1200px;
         }
-        .page-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        .patient-card {
-            background-color: white;
+        .welcome-card {
+            background-color: #D2EBF2;
             border-radius: 8px;
-            border: 1px solid black;
-            padding: 16px; /* Reduced padding */
-            max-width: 1100px; /* Set a maximum width */
-            margin: 0 auto; /* Center the card */
+            padding: 20px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            font-family: 'Inter', sans-serif;
         }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .card-title {
-            font-size: 16px; /* Reduced font size */
+        .welcome-card h2 {
+            margin-top: 0;
             font-weight: 600;
         }
-        .form-group {
-            margin-bottom: 12px;
+        .patient-details {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .form-label {
-            font-size: 12px; /* Reduced font size */
-            color: #64748b;
-            margin-bottom: 4px;
+        .patient-details h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
         }
-        .form-control {
-            width: 100%;
-            height: 26px; /* Reduced height */
-            background-color: #f1f5f9;
-            border-radius: 4px;
-            border: none;
-        }
-        .form-row {
+        .detail-row {
             display: flex;
-            gap: 8px; /* Reduced gap */
+            margin-bottom: 15px;
         }
-        .form-col {
-            flex: 1;
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+            width: 300px;
         }
-        .text-area {
-            width: 550%;
-            height: 86px; /* Reduced height */
-            margin-top: 12px;
+        .detail-value {
+            font-weight: 400;
+            color: #000;
+            flex-grow: 1;
         }
         .button-group {
             display: flex;
-            gap: 8px; /* Reduced gap */
-            margin-top: 16px;
+            gap: 12px;
+            margin-top: 20px;
         }
         .btn {
             background-color: #2563eb;
             color: white;
-            padding: 6px 12px; /* Reduced padding */
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 6px;
             border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             cursor: pointer;
             font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
         }
-        .patient-image {
-            width: 120px; /* Reduced size */
-            height: 120px; /* Reduced size */
-            border-radius: 50%;
-            object-fit: cover;
-            margin-left: 16px; /* Reduced margin */
-            border: 2px solid #e2e8f0;
+        .btn.inactive {
+            background-color: transparent;
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 2px solid #2563eb; /* Blue border */
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #1e4bb5;
+            color: #fff;
+
         }
         .logout {
             margin-top: auto;
@@ -161,6 +154,62 @@
             display: flex;
             align-items: center;
         }
+        .logout img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+
+        .department-section {
+            margin-top: 20px;
+        }
+        .department-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .department-card h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
+        }
+        .chart-container {
+            margin-top: 20px;
+        }
+        .history-table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .history-table th, .history-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .history-table th {
+            background-color: #f1f5f9;
+        }
+
+
+        /* Adjust chart container size */
+        .chart-container {
+            margin-top: 20px;
+            height: 200px; /* Reduced height */
+            width: 400px;  /* Reduced width */
+        }
+
+        /* Adjust table and card sizes */
+        .department-card {
+            padding: 15px; /* Reduced padding */
+        }
+
+        .history-table {
+            font-size: 14px; /* Smaller font size */
+        }
+
     </style>
 </head>
 <body>
@@ -171,8 +220,8 @@
                 MediCare
             </div>
             <div class="profile">
-                <span>Dr. Sarah K</span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="Profile">
+                <span><a href="{% url 'staff_reg' %}"> {{ full_name }} </a></span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
             </div>
         </div>
         <div class="content">
@@ -190,54 +239,258 @@
                     Patients
                 </div>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}  Logout Rounded Left.png" alt="Logout"><a href="{% url "logouts" %}" class='btn btn-primary'>
-                    Logout
-                    </a>
+                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout">
+                    <a href="{% url 'logouts' %}" class='btn btn-primary'> Logout </a>
                 </div>
             </div>
+            
             <div class="main-content">
-                <h1 class="page-title">Charles B</h1>
-                <div class="patient-card">
-                    <div class="card-header">
-                        <div class="card-content">
-                            <h2 class="card-title">Patient Details</h2>
-                            <div class="form-group">
-                                <div class="form-label">Name</div>
-                                <div class="form-control"></div>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-label">Number</div>
-                                <div class="form-control"></div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <div class="form-label">Age</div>
-                                    <div class="form-control"></div>
-                                </div>
-                                <div class="form-col">
-                                    <div class="form-label">Gender</div>
-                                    <div class="form-control"></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-label">Date of Birth</div>
-                                <div class="form-control"></div>
-                            </div>
-                            <div class="form-control text-area"></div>
-                            <div class="button-group">
-                                <button class="btn">
-                                    <span>+</span> Reports
-                                </button>
-                                <button class="btn">
-                                    <span>+</span> Checkup
-                                </button>
-                            </div>
-                        </div>
-                        <img src="{{ MEDIA_URL }}image.jpg" alt="Patient Photo" class="patient-image">
+                <div class="button-group">
+                    <a href="{% url 'staff_pat1' patient.id %}" class="btn">Details</a>
+                    <a href="{% url 'staff_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
+                    <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
+                </div>
+
+                <div class="welcome-card">
+                    {% comment %} <h2>Welcome {{ full_name }}!</h2> {% endcomment %}
+                
+                <div class="patient-details">
+                    <h3>Patient Details</h3>
+                    <div class="detail-row">
+                        <div class="detail-label">Full Name</div>
+                        <div class="detail-value">{{ patient.full_name }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Date of Birth</div>
+                        <div class="detail-value">{{ patient.date_of_birth }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value">{{ patient.email|default:"N/A" }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Mobile Number</div>
+                        <div class="detail-value">{{ patient.mobile_number }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Gender</div>
+                        <div class="detail-value">{{ patient.gender }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Age</div>
+                        <div class="detail-value">{{ patient.age }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Blood Group</div>
+                        <div class="detail-value">{{ patient.blood_group }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Marital Status</div>
+                        <div class="detail-value">{{ patient.marital_status }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Address</div>
+                        <div class="detail-value">{{ patient.address }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Emergency Contact Name</div>
+                        <div class="detail-value">{{ patient.emergency_contact_name }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Emergency Contact Number</div>
+                        <div class="detail-value">{{ patient.emergency_contact_number }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Occupation</div>
+                        <div class="detail-value">{{ patient.occupation }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Habits</div>
+                        <div class="detail-value">{{ patient.habits|default:"N/A" }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Medical History</div>
+                        <div class="detail-value">{{ patient.medical_history }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Disease</div>
+                        <div class="detail-value">{{ patient.disease }}</div>
                     </div>
                 </div>
             </div>
+                
+ 
+             
+                <!-- Department-Specific Section -->
+                {% if department == 'Dialysis' %}
+                <div class="department-section">
+                    <div class="department-card">
+                        <h3>Weight Tracking</h3>
+                        <div class="chart-container">
+                            <canvas id="weightChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="department-card">
+                        <h3>Dialysis Tubing</h3>
+                        <div class="chart-container">
+                            <canvas id="tubingChart"></canvas>
+                        </div>
+                        <div class="tubing-history">
+                            <h4>Tubing History</h4>
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in tubing_data %}
+                                    <tr>
+                                        <td>{{ entry.date|date:"Y-m-d" }}</td>
+                                        <td>{{ entry.tubing_count }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="department-card">
+                        <h3>Water Intake</h3>
+                        <div class="chart-container">
+                            <canvas id="waterIntakeChart"></canvas>
+                        </div>
+                        <div class="water-intake-history">
+                            <h4>Water Intake History</h4>
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount (ml)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in water_intake_data %}
+                                    <tr>
+                                        <td>{{ entry.date|date:"Y-m-d" }}</td>
+                                        <td>{{ entry.amount }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
+
+    <script>
+        // Initialize the weight chart
+        const weightCtx = document.getElementById('weightChart').getContext('2d');
+        const weightChart = new Chart(weightCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for entry in weight_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
+                datasets: [{
+                    label: 'Weight (kg)',
+                    data: [{% for entry in weight_data %}{{ entry.weight }},{% endfor %}],
+                    borderColor: '#4285f4',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allow chart to resize
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize the tubing chart
+        const tubingCtx = document.getElementById('tubingChart').getContext('2d');
+        const tubingChart = new Chart(tubingCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for entry in tubing_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
+                datasets: [{
+                    label: 'Tubing Count',
+                    data: [{% for entry in tubing_data %}{{ entry.tubing_count }},{% endfor %}],
+                    backgroundColor: '#4285f4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allow chart to resize
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Tubing Count'
+                        },
+                        beginAtZero: true,
+                        max: 4
+                    }
+                }
+            }
+        });
+
+        // Initialize the water intake chart
+    const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
+    const waterChart = new Chart(waterCtx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for entry in water_intake_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
+            datasets: [{
+                label: 'Water Intake (ml)',
+                data: [{% for entry in water_intake_data %}{{ entry.amount }},{% endfor %}],
+                backgroundColor: [
+                    '#4285f4', // Color for water intake
+                    '#e0e0e0'  // Color for remaining water
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+    </script>
 </body>
 </html>

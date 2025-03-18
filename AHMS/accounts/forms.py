@@ -44,22 +44,3 @@ class WaterIntakeForm(forms.ModelForm):
     class Meta:
         model = WaterIntake
         fields = ['amount']
-
-# class StaffForm(forms.ModelForm):
-#     class Meta:
-#         model = Staff
-#         fields = [
-#             'full_name', 'email', 'mobile_number', 'gender', 'age', 'department',
-#             'specialization', 'qualification', 'years_of_experience',
-#             'working_hours_start', 'working_hours_end', 'previous_timings',
-#         ]
-#         widgets = {
-#     'working_hours_start': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-#     'working_hours_end': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-# }
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     user = self.instance.user
-    #     if user.role not in [User.DOCTOR, User.NURSE, User.ADMIN]:
-    #         raise ValidationError("Only staff roles (Doctor, Nurse, Admin) are allowed.")
-    #     return cleaned_data

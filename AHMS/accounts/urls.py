@@ -10,10 +10,19 @@ urlpatterns = [
     
     path('basestaff/', views.basestaff, name='basestaff'),  # Your login path
     
-    path('staff_dash/', views.staff_dash, name='staff_dash'),  # Your staff dashboard path
-    path('staff_app/', views.staff_app, name='staff_app'),  # Your staff dashboard path
-    path('staff_pat/', views.staff_pat, name='staff_pat'),  # Your staff dashboard path
-    path('staff_pat1/', views.staff_pat1, name='staff_pat1'),  # Your staff dashboard path
+    path('staff_dash/', views.staff_dash, name='staff_dash'), 
+    path('staff_app/', views.staff_app, name='staff_app'), 
+    path('staff_pat/', views.staff_pat, name='staff_pat'),  
+    path('staff_pat1/<int:patient_id>/', views.staff_pat1, name='staff_pat1'),
+    
+    path('staff_pat_pres/<int:patient_id>/', views.staff_pat_pres, name='staff_pat_pres'),
+    path('add_prescription/<int:patient_id>/', views.add_prescription, name='add_prescription'), 
+    
+    path('staff_pat_rep/<int:patient_id>/', views.staff_pat_rep, name='staff_pat_rep'),
+    path('add_comment/<int:patient_id>/', views.add_comment, name='add_comment'),
+    
+    
+    
     path('staff_reg/', views.staff_reg, name='staff_reg'),  # Your staff dashboard path
     path('get-schedule/', views.get_schedule, name='get_schedule'),
     path('create-appointment/', views.create_appointment, name='create_appointment'),
@@ -31,6 +40,8 @@ urlpatterns = [
     path('login_p/', views.login_p, name='login_p'),  # Your login path
     path('p_dash/', views.p_dash, name='p_dash'),
     path('p_pres/', views.p_pres, name='p_pres'),
+    path('send-reminders/<str:date>/', views.send_reminders, name='send_reminders'),
+    
     path('p_rep/', views.p_rep, name='p_rep'),
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
     

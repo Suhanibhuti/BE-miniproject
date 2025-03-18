@@ -16,6 +16,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db.models import Count
+from django.db.models.functions import TruncDate
 
 from django.core.mail import send_mail
 from django.urls import reverse
@@ -232,6 +233,7 @@ def staff_pat(request):
             patient = PatientReg.objects.get(user=patient_user)
             if patient.id not in patients_data:
                 patients_data[patient.id] = {
+                    'id': patient.id,  # Include the patient ID
                     'name': patient.full_name,
                     'contact': patient.mobile_number,
                     'last_appointment_date': appointment.date,
@@ -266,11 +268,114 @@ def staff_pat(request):
     }
     return render(request, 'accounts/staff_pat.html', context)
 
+@login_required
+def staff_pat1(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Fetch the logged-in user (doctor)
+    user = request.user
+    department = None
 
-def staff_pat1(request):
-    return render(request, 'accounts/staff_pat1.html')
+    # Check if the user is a doctor and fetch their department
+    if user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=user)
+            department = staff.department
+        except StaffD.DoesNotExist:
+            pass
+
+    # Initialize department-specific data
+    weight_data = []
+    tubing_data = []
+    water_intake_data = []
+
+    # Fetch dialysis-related data if the doctor belongs to the dialysis department
+    if department == 'Dialysis':
+        # Fetch weight tracking data
+        weight_data = WeightTracking.objects.filter(patient=patient.user).order_by('date')
+        
+        # Fetch dialysis tubing data for the current month
+        today = timezone.now().date()
+        start_of_month = today.replace(day=1)
+        end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+        tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
+        
+        # Fetch water intake data for the current day
+        water_intake_data = WaterIntake.objects.filter(patient=patient.user, date__date=today)
+
+    # Debug: Print water intake data
+    print("Water Intake Data:", water_intake_data)
+
+    # Pass the patient details and department-specific data to the template
+    context = {
+        'patient': patient,
+        'department': department,
+        'weight_data': weight_data,
+        'tubing_data': tubing_data,
+        'water_intake_data': water_intake_data,
+    }
+    return render(request, 'accounts/staff_pat1.html', context)
+@login_required
+def staff_pat_pres(request, patient_id):
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    prescriptions = Prescription.objects.filter(patient=patient.user).order_by('-prescribed_at')
+    
+    context = {
+        'patient': patient,
+        'prescriptions': prescriptions,
+    }
+    return render(request, 'accounts/staff_pat_pres.html', context)
 
 
+@login_required
+def add_prescription(request, patient_id):
+    if request.method == 'POST':
+        patient = get_object_or_404(PatientReg, id=patient_id)
+        medicine_name = request.POST.get('medicine_name')
+        dosage = request.POST.get('dosage')
+        timing = request.POST.get('timing')
+        before_after_food = request.POST.get('before_after_food')
+
+        Prescription.objects.create(
+            patient=patient.user,
+            doctor=request.user,
+            medicine_name=medicine_name,
+            dosage=dosage,
+            timing=timing,
+            before_after_food=before_after_food
+        )
+        return redirect('staff_pat_pres', patient_id=patient_id)
+
+    return redirect('staff_pat_pres', patient_id=patient_id)
+
+
+@login_required
+def staff_pat_rep(request, patient_id):
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    reports = PatientReport.objects.filter(patient=patient.user).order_by('-uploaded_at')
+    comments = DoctorComment.objects.filter(patient=patient.user).order_by('-commented_at')
+    
+    context = {
+        'patient': patient,
+        'reports': reports,
+        'comments': comments,
+    }
+    return render(request, 'accounts/staff_pat_rep.html', context)
+
+
+@login_required
+def add_comment(request, patient_id):
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    if request.method == 'POST':
+        form = DoctorCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.patient = patient.user
+            comment.doctor = request.user
+            comment.save()
+            return redirect('staff_pat_rep', patient_id=patient.id)
+    return redirect('staff_pat_rep', patient_id=patient.id)
 
 
 @login_required
@@ -660,17 +765,40 @@ def p_dash(request):
     return render(request, 'accounts/p_dash.html', context)
 
 
-
 @login_required
 def p_pres(request):
-    # Fetch prescriptions for the current patient
-    prescriptions = Prescription.objects.filter(patient=request.user).order_by('-prescribed_at')
+    # Debug: Print the current user
+    print(f"Fetching prescriptions for user: {request.user}")
 
-    # Group prescriptions by date
-    grouped_prescriptions = defaultdict(list)
+    # Fetch prescriptions for the current patient and group them by the date they were prescribed
+    prescriptions = Prescription.objects.filter(patient=request.user).annotate(
+        prescribed_date=TruncDate('prescribed_at')
+    ).order_by('-prescribed_at')
+
+    # Debug: Print the number of prescriptions found
+    # print(f"Found {prescriptions.count()} prescriptions for {request.user}")
+
+    # Group prescriptions by date and then by doctor
+    grouped_prescriptions = {}
     for prescription in prescriptions:
-        date_key = prescription.prescribed_at.date()  # Extract the date part
-        grouped_prescriptions[date_key].append(prescription)
+        date_key = prescription.prescribed_date.strftime('%Y-%m-%d')
+        
+        # Access the doctor's full name from the StaffD model
+        doctor_name = prescription.doctor.staff_profile.full_name  # Access via the related_name 'staff_profile'
+
+        # Debug: Print the doctor's name
+        # print(f"Processing prescription for doctor: {doctor_name} on {date_key}")
+
+        # Create the date group if it doesn't exist
+        if date_key not in grouped_prescriptions:
+            grouped_prescriptions[date_key] = {}
+
+        # Create the doctor group if it doesn't exist
+        if doctor_name not in grouped_prescriptions[date_key]:
+            grouped_prescriptions[date_key][doctor_name] = []
+
+        # Add the prescription to the corresponding date and doctor group
+        grouped_prescriptions[date_key][doctor_name].append(prescription)
 
     context = {
         'grouped_prescriptions': grouped_prescriptions,
@@ -678,7 +806,68 @@ def p_pres(request):
     return render(request, 'accounts/p_pres.html', context)
 
 
+@login_required
+def send_reminders(request, date):
+    if request.method == 'POST':
+        try:
+            # Fetch prescriptions for the given date
+            prescriptions = Prescription.objects.filter(
+                patient=request.user,
+                prescribed_at__date=date
+            )
 
+            # Update the `reminders_set` field for all prescriptions
+            prescriptions.update(reminders_set=True)
+
+            # Send initial email
+            patient_email = request.user.patient_profile.email
+            subject = 'Medication Reminders Added'
+            message = f'You have added reminders for your medicines prescribed on {date}.'
+            html_message = f'''
+            <html>
+                <body>
+                    <p>You have added reminders for your medicines prescribed on <strong>{date}</strong>.</p>
+                    <p>Here are your prescribed medicines and their dosages:</p>
+                    <ul>
+                        {"".join([f"<li>{prescription.medicine_name} - {prescription.dosage}</li>" for prescription in prescriptions])}
+                    </ul>
+                    <p>Thank you for using MediCare.</p>
+                </body>
+            </html>
+            '''
+            email = EmailMessage(
+                subject,
+                message,
+                f'MediCare <{settings.EMAIL_HOST_USER}>',
+                [patient_email],
+                reply_to=[settings.EMAIL_HOST_USER],
+            )
+            email.content_subtype = 'html'
+            email.body = html_message
+            email.send(fail_silently=False)
+
+            # Add success message
+            messages.success(request, f'Reminders set for {date}. Initial email sent to {patient_email}.')
+
+            return JsonResponse({'success': True})
+        except Exception as e:
+            # Debug: Print the error
+            print(f"Error: {e}")
+
+            # Add error message
+            messages.error(request, f'Failed to send reminders. Error: {e}')
+
+            return JsonResponse({'success': False, 'error': str(e)})
+    else:
+        # Debug: Print invalid request method
+        print("Invalid request method")
+
+        # Add error message
+        messages.error(request, 'Invalid request method')
+
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+    
 
 @login_required
 def p_rep(request):
@@ -809,6 +998,8 @@ def p_reg(request):
 @login_required
 def p_dialysis(request):
     return render(request, 'accounts/p_dialysis.html')
+
+
 
 
 @csrf_exempt

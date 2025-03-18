@@ -1,5 +1,7 @@
 from django.core.mail import send_mail
 from django.conf import settings
+
+
 def email():
     subject="Test email for django project"
     message="Test email for django project"

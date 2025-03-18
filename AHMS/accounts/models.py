@@ -130,9 +130,10 @@ class Prescription(models.Model):
     timing = models.CharField(max_length=50)  # e.g., "1-1-1" or "1-0-1"
     before_after_food = models.CharField(max_length=10, choices=[('before', 'Before Food'), ('after', 'After Food')])
     prescribed_at = models.DateTimeField(auto_now_add=True)
+    reminders_set = models.BooleanField(default=False)  # New field to track toggle state
 
     def __str__(self):
-        return f"{self.medicine_name} for {self.patient.username}"
+        return f"{self.medicine_name} for {self.patient.username} (Prescribed by: {self.doctor.username})"
     
     
     
