@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Patient Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f0f8ff;
+        }
+
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .admin-profile img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 64px);
+        }
+
+        .sidebar {
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+
+        .menu-item img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+
+        .logout-section {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            width: 150px;
+
+        }
+
+        .logout-section a {
+            text-decoration: none;
+            color: #fff;
+            {% comment %} display: flex; {% endcomment %}
+            align-items: center;
+        }
+
+        .logout-section img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        .content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .water-intake {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .remaining-water {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+        }
+
+        .btn-primary {
+            background: #4285f4;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .water-intake-history {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .water-intake-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tubing-history {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .tubing-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" class="logo">
+            <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare" width="24" height="24">
+            MediCare
+        </a>
+        <div class="admin-profile">
+            <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }} </a></span>
+            <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
+        </div>
+    </div>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Appointment Icon"> Details</a>
+                <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
+                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
+                <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+                <a href="{% url 'p_dialysis' %}" class="menu-item  "><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
+                <a href="{% url 'p_cardio' %}" class="menu-item active "><img src="{{ MEDIA_URL }}cardio.png" alt="Report Icon"> Cardiology</a>
+                <a href="{% url 'p_eyecare' %}" class="menu-item  "><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
+
+
+            
+            <div class="logout-section">
+                {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
+                <a href="{% url "logoutp" %}" class='btn btn-secondary'> Logout </a>
+            </div>
+        </aside>
+
+        
+</body>
+</html>

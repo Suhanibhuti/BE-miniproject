@@ -58,6 +58,10 @@ urlpatterns = [
     path('fetch_water_history/', views.fetch_water_history, name='fetch_water_history'),
     path('add_water_intake/', views.add_water_intake, name='add_water_intake'),
     
+    path('p_cardio/', views.p_cardio, name='p_cardio'),
+    path('p_eyecare/', views.p_eyecare, name='p_eyecare'),
+    
+    
     path('ad_app/', views.ad_app, name='ad_app'), 
      
     path('ad_pat/', views.ad_pat, name='ad_pat'),

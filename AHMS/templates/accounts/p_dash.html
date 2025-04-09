@@ -43,8 +43,8 @@
             border-radius: 5px;
         }
         .menu-item img {
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             margin-right: 10px;
         }
         .main-content {
@@ -60,6 +60,9 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            text-align: center;
+            width: 150px;
+            
         }
         .logout img {
             width: 18px;
@@ -136,6 +139,9 @@
             cursor: pointer;
             border: none;
             font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+
         }
         .btn-primary {
             background: #1a73e8;
@@ -225,14 +231,16 @@
         <div class="content">
             <!-- Sidebar -->
             <div class="sidebar">
-                <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Details</a>
-                <a href="#" class="menu-item active"><img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon"> Appointment</a>
-                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}prescription.png" alt="Reminder Icon"> Prescription</a>
+                <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Appointment Icon"> Details</a>
+                <a href="#" class="menu-item active"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
+                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
                 <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
-                <a href="{% url 'p_dialysis' %}" class="menu-item "><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Dialysis</a>
+                <a href="{% url 'p_dialysis' %}" class="menu-item "><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
+                <a href="{% url 'p_cardio' %}" class="menu-item "><img src="{{ MEDIA_URL }}cardio.png" alt="Report Icon"> Cardiology</a>
+                <a href="{% url 'p_eyecare' %}" class="menu-item  "><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
 
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
+                    {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logoutp" %}" class='btn btn-primary'> Logout </a>
                 </div>
             </div>

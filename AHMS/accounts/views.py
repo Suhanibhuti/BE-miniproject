@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg,PatientReport,DoctorComment,Prescription,WeightTracking,WaterIntake,DialysisTubing
-from .forms import PatientForm,PatientReportForm,DoctorCommentForm,WeightTrackingForm,WaterIntakeForm,DialysisTubingForm
+from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg,PatientReport,DoctorComment,Prescription,WeightTracking,WaterIntake,DialysisTubing,EyeExam
+from .forms import PatientForm,PatientReportForm,DoctorCommentForm,WeightTrackingForm,WaterIntakeForm,DialysisTubingForm,EyeExamForm
 from django.http import JsonResponse
 from django.contrib import messages
 from datetime import datetime, timedelta
@@ -1098,6 +1098,32 @@ def fetch_tubing_data(request):
         data = [{'week': week, 'count': tubing_data.get(week, 0)} for week in range(1, 6)]  # Max 5 weeks in a month
 
         return JsonResponse(data, safe=False)
+
+
+def p_cardio(request):
+    return render(request, 'accounts/p_cardio.html')
+
+@login_required
+def p_eyecare(request):
+    if request.method == 'POST':
+        form = EyeExamForm(request.POST)
+        if form.is_valid():
+            exam = form.save(commit=False)
+            exam.patient = request.user
+            exam.department = 'Eyecare'
+            exam.save()
+            messages.success(request, 'Eye exam data saved successfully!')
+            return redirect('p_eyecare')
+    else:
+        form = EyeExamForm()
+    
+    eye_exams = EyeExam.objects.filter(patient=request.user).order_by('-exam_date')
+    
+    context = {
+        'eye_exams': eye_exams,
+        'form': form,
+    }
+    return render(request, 'accounts/p_eyecare.html', context)
 
 
 

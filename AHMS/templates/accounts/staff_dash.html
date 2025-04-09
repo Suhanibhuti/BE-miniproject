@@ -68,10 +68,16 @@
         }
         .menu-item {
             margin-bottom: 15px;
+            padding: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
         }
         .menu-item img {
             width: 20px;
@@ -200,10 +206,7 @@
         </div>
         <div class="content">
             <div class="sidebar">
-                <div class="menu-item">
-                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard Icon">
-                    Dashboard
-                </div>
+                <a href="{% url 'staff_dash' %}" class="menu-item active"><img src="{{ MEDIA_URL }}Control Panel.png" alt="Appointment Icon"> Dashboard</a>
                 <a href="{% url 'staff_app' %}" class="menu-item">
                     <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon">
                     Appointment

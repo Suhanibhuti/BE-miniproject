@@ -63,18 +63,21 @@
         }
         .menu-item {
             margin-bottom: 15px;
+            padding: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
         }
         .menu-item img {
             width: 20px;
             height: 20px;
             margin-right: 10px;
-        }
-        .menu-item.active {
-            color: black;
-            {% comment %} font-weight: bold; {% endcomment %}
         }
         .main-content {
             flex-grow: 1;

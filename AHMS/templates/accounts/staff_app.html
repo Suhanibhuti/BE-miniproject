@@ -147,16 +147,22 @@
             gap: 8px;
         }
         .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            color: #333;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
         }
         .menu-item img {
             width: 20px;
             height: 20px;
+            margin-right: 10px;
         }
 
         .logo {
@@ -258,7 +264,7 @@
                     <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
                     Dashboard
                 </a>
-                <div class="menu-item">
+                <div class="menu-item active">
                     <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment">
                     Appointment
                 </div>

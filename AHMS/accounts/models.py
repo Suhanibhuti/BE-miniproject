@@ -163,3 +163,28 @@ class WaterIntake(models.Model):
 
     def __str__(self):
         return f"{self.patient.username} - {self.amount} ml on {self.date}"
+    
+    
+class EyeExam(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='eye_exams')
+    exam_date = models.DateField()
+    department = models.CharField(max_length=50, default='Eyecare')
+    
+    # Right eye measurements
+    right_sph = models.DecimalField(max_digits=5, decimal_places=2)
+    right_cyl = models.DecimalField(max_digits=5, decimal_places=2)
+    right_axis = models.IntegerField()
+    right_prism = models.CharField(max_length=20, blank=True, null=True)
+    
+    # Left eye measurements
+    left_sph = models.DecimalField(max_digits=5, decimal_places=2)
+    left_cyl = models.DecimalField(max_digits=5, decimal_places=2)
+    left_axis = models.IntegerField()
+    left_prism = models.CharField(max_length=20, blank=True, null=True)
+    
+    
+    class Meta:
+        ordering = ['-exam_date']  # Newest exams first
+    
+    def __str__(self):
+        return f"Eye Exam for {self.patient} on {self.exam_date}"
