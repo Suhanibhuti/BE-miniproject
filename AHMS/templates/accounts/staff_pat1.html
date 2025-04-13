@@ -125,7 +125,8 @@
             gap: 12px;
             margin-top: 20px;
         }
-        .btn {
+        
+        .button-group .btn {
             background-color: #2563eb;
             color: white;
             padding: 8px 16px;
@@ -137,35 +138,48 @@
             display: inline-block;
             transition: background-color 0.3s ease;
         }
-        .btn.inactive {
+        
+        .button-group .btn.inactive {
             background-color: transparent;
             color: #2563eb;
             padding: 8px 16px;
             border-radius: 6px;
-            border: 2px solid #2563eb; /* Blue border */
+            border: 2px solid #2563eb;
             cursor: pointer;
             font-weight: 500;
             text-decoration: none;
             display: inline-block;
             transition: background-color 0.3s ease;
         }
-        .btn:hover {
+        
+        .button-group .btn:hover {
             background-color: #1e4bb5;
             color: #fff;
-
         }
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+            background: #1a73e8;
+            color: white;
+            text-align: center;
+        }
+        
+        .logout-btn:hover {
+            background: #0d5bba;
+        }
+        
         .logout {
             margin-top: auto;
-            cursor: pointer;
             display: flex;
             align-items: center;
+            text-align: center;
+            width: 150px;
         }
-        .logout img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
 
         .department-section {
             margin-top: 20px;
@@ -237,16 +251,15 @@
                     Dashboard
                 </a>
                 <a href="{% url 'staff_app' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
                     Appointment
                 </a>
                 <div class="menu-item active">
-                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
                     Patients
                 </div>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout">
-                    <a href="{% url 'logouts' %}" class='btn btn-primary'> Logout </a>
+                    <a href="{% url 'logouts' %}" class="logout-btn">Logout</a>
                 </div>
             </div>
             

@@ -181,16 +181,18 @@
 
         .logout {
             margin-top: auto;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            text-align: center;
+            width: 150px;
+            
         }
         .logout img {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
         }
-
         .profile {
             display: flex;
             align-items: center;
@@ -243,6 +245,31 @@
             color: #721c24; /* Dark red */
         }
 
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;}
+
     </style>
 </head>
 <body>
@@ -265,15 +292,15 @@
                     Dashboard
                 </a>
                 <div class="menu-item active">
-                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
                     Appointment
                 </div>
                 <a href="{% url 'staff_pat' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
                     Patients
                 </a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout">
+                    {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
 
                 </div>

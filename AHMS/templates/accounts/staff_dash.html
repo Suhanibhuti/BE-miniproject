@@ -89,6 +89,7 @@
             padding: 20px;
             padding: 30px; /* Increased padding */
             max-width: 1200px;
+            padding-bottom: 0px;
         }
         .welcome-card {
             background-color: #D2EBF2;
@@ -97,48 +98,74 @@
             margin-bottom: 20px;
             font-family: 'Inter', sans-serif;
             margin-bottom: 30px; 
+            padding-bottom: 1px;
         }
         .welcome-card h2 {
             margin-top: 0;
             font-weight: 600;
         }
         .info-cards {
-            gap: 30px;
             display: flex;
             gap: 20px;
+            margin-bottom: 30px;
+            padding-top: 20px;
         }
         .info-card {
             background-color: #83BDD1;
             border-radius: 8px;
             padding: 20px;
+            width: 250px;
             position: relative;
             font-family: 'Inter', sans-serif;
-            width: 200px; /* Fixed width instead of flex-grow */
-            height: 70px;
+            height: 120px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
         .info-card h3 {
-            margin-top: 0;
+            margin: 0 0 15px 0;
             font-weight: 600;
+            font-size: 18px;
+        }
+        .info-card .card-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-grow: 1;
+        }
+        .info-card .card-icon {
+            width: 40px;
+            height: 40px;
+        }
+        .info-card .count {
+            font-size: 28px;
+            font-weight: 700;
         }
         .info-card a {
-            position: absolute;
-            right: 20px;
-            bottom: 2px;
-            text-decoration: none;
             color: #0066cc;
+            text-decoration: none;
             font-weight: 500;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 14px;
+        }
+        .info-card a:hover {
+            text-decoration: underline;
         }
         .logout {
             margin-top: auto;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            text-align: center;
+            width: 150px;
+            
         }
         .logout img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
         }
 
         .staff-details {
@@ -189,6 +216,32 @@
         .working-hours p {
             margin: 5px 0;
         }
+
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;}
+
     </style>
 </head>
 <body>
@@ -207,16 +260,17 @@
         <div class="content">
             <div class="sidebar">
                 <a href="{% url 'staff_dash' %}" class="menu-item active"><img src="{{ MEDIA_URL }}Control Panel.png" alt="Appointment Icon"> Dashboard</a>
+
                 <a href="{% url 'staff_app' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}Timesheet.png" alt="Appointment Icon">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon">
                     Appointment
                 </a>
                 <a href="{% url 'staff_pat' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Patients Icon">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients Icon">
                     Patients
                 </a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon">
+                    {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
 
                 </div>
@@ -283,21 +337,30 @@
  {% endif %}
  
 
+ {% comment %} <div class="main-content"> {% endcomment %}
+    <div class="info-cards">
+        <div class="info-card">
+            <h3>Appointment for you</h3>
+            <div class="card-content">
+                <img src="{{ MEDIA_URL }}appointment.png" class="card-icon" alt="Doctor Icon">
+                <span class="count">{{appointment_count }}</span>
             </div>
-            <div class="info-cards">
-                <div class="info-card">
-                    <h3>Appointment for you</h3>
-                    <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon"> {{ appointment_count }}</p>
-                    <a href="{% url 'staff_app' %}" class="menu-item">See all</a>
-                </div>
-                <div class="info-card">
-                    <h3>Patients for you</h3>
-                    <p><img src="{{ MEDIA_URL }}Account.png" alt="User Icon"> {{ patient_count }}</p>
-                    <a href="{% url 'staff_pat' %}" class="menu-item">See all</a>
-                </div>
-            </div>
-            </div>
+            <a href="{% url 'staff_app' %}">Add New</a>
         </div>
+        <div class="info-card">
+            <h3>Patients for you</h3>
+            <div class="card-content">
+                <img src="{{ MEDIA_URL }}patient.png" class="card-icon" alt="Patient Icon">
+                <span class="count">{{ patient_count }}</span>
+            </div>
+            <a href="{% url 'staff_pat' %}">Add New</a>
+        </div>
+        
+    </div>
+
+           
+        {% comment %} </div> {% endcomment %}
+    </div>
     </div>
 </body>
 </html>
