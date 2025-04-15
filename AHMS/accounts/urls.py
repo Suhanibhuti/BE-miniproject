@@ -21,6 +21,9 @@ urlpatterns = [
     path('staff_pat_rep/<int:patient_id>/', views.staff_pat_rep, name='staff_pat_rep'),
     path('add_comment/<int:patient_id>/', views.add_comment, name='add_comment'),
     
+    path('staff_pat_dialysis/<int:patient_id>/', views.staff_pat_dialysis, name='staff_pat_dialysis'),
+    path('staff_pat_eyecare/<int:patient_id>/', views.staff_pat_eyecare, name='staff_pat_eyecare'),
+    
     
     
     path('staff_reg/', views.staff_reg, name='staff_reg'),  # Your staff dashboard path

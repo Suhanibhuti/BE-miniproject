@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg,PatientReport,DoctorComment,Prescription,WeightTracking,WaterIntake,DialysisTubing,EyeExam
 from .forms import PatientForm,PatientReportForm,DoctorCommentForm,WeightTrackingForm,WaterIntakeForm,DialysisTubingForm,EyeExamForm
 from django.http import JsonResponse
@@ -275,58 +276,149 @@ def staff_pat1(request, patient_id):
     
     # Fetch the logged-in user (doctor)
     user = request.user
-    department = None
+    # department = None
 
-    # Check if the user is a doctor and fetch their department
-    if user.role == User.DOCTOR:
+    # Check if the user is a doctor from the Dialysis department
+    is_dialysis_doctor = False
+    if request.user.role == User.DOCTOR:
         try:
-            staff = StaffD.objects.get(user=user)
-            department = staff.department
+            staff = StaffD.objects.get(user=request.user)
+            is_dialysis_doctor = staff.department == 'Dialysis'
+            is_eyecare_doctor = staff.department == 'EyeCare'
+            
         except StaffD.DoesNotExist:
             pass
-
-    # Initialize department-specific data
-    weight_data = []
-    tubing_data = []
-    water_intake_data = []
-
-    # Fetch dialysis-related data if the doctor belongs to the dialysis department
-    if department == 'Dialysis':
-        # Fetch weight tracking data
-        weight_data = WeightTracking.objects.filter(patient=patient.user).order_by('date')
         
-        # Fetch dialysis tubing data for the current month
-        today = timezone.now().date()
-        start_of_month = today.replace(day=1)
-        end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
-        tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
-        
-        # Fetch water intake data for the current day
-        water_intake_data = WaterIntake.objects.filter(patient=patient.user, date__date=today)
-
-    # Debug: Print water intake data
-    print("Water Intake Data:", water_intake_data)
-
     # Pass the patient details and department-specific data to the template
     context = {
         'patient': patient,
-        'department': department,
+        # 'department': department,
+        'is_dialysis_doctor': is_dialysis_doctor,
+        'is_eyecare_doctor': is_eyecare_doctor,
+    }
+    return render(request, 'accounts/staff_pat1.html', context)
+
+
+
+@login_required
+def staff_pat_eyecare(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Fetch the logged-in user (doctor)
+    user = request.user
+    
+    # Check if the user is a doctor from the EyeCare department
+    is_eyecare_doctor = False
+    if request.user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=request.user)
+            is_eyecare_doctor = staff.department == 'EyeCare'
+        except StaffD.DoesNotExist:
+            pass
+    
+    # Get all eye exams for this patient, ordered by most recent first
+    eye_exams = EyeExam.objects.filter(patient=patient.user).order_by('-exam_date').values(
+    'exam_date',
+    'right_sph',
+    'right_cyl',
+    'right_axis',
+    'right_prism',
+    'left_sph',
+    'left_cyl',
+    'left_axis',
+    'left_prism'
+)
+    
+    # Pass the patient details and eye exam data to the template
+    context = {
+        'patient': patient,
+        'is_eyecare_doctor': is_eyecare_doctor,
+        'eye_exams': eye_exams,
+        'full_name': request.user.get_full_name() or request.user.username,
+    }
+    return render(request, 'accounts/staff_pat_eyecare.html', context)
+
+
+
+
+@login_required
+def staff_pat_dialysis(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Check if the user is a doctor and from the Dialysis department
+    is_dialysis_doctor = False
+    if request.user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=request.user)
+            is_dialysis_doctor = staff.department == 'Dialysis'
+            is_eyecare_doctor = staff.department == 'EyeCare'
+            
+        except StaffD.DoesNotExist:
+            pass
+
+    # If not a dialysis doctor, return a 403 Forbidden response
+    if not is_dialysis_doctor:
+        return HttpResponseForbidden("You don't have permission to access this page.")
+
+    # Fetch dialysis-related data
+    weight_data = WeightTracking.objects.filter(patient=patient.user).order_by('date')
+    
+    # Fetch dialysis tubing data for the current month
+    today = timezone.now().date()
+    start_of_month = today.replace(day=1)
+    end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+    tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
+    
+    # Fetch water intake data for the current day
+    water_intake_data = WaterIntake.objects.filter(patient=patient.user, date__date=today)
+
+    context = {
+        'patient': patient,
         'weight_data': weight_data,
         'tubing_data': tubing_data,
         'water_intake_data': water_intake_data,
+        'is_dialysis_doctor': is_dialysis_doctor,  # Pass this to template
+        'is_eyecare_doctor': is_eyecare_doctor,
+        
     }
-    return render(request, 'accounts/staff_pat1.html', context)
+    return render(request, 'accounts/staff_pat_dialysis.html', context)
+
+
+
+
+
+
 @login_required
 def staff_pat_pres(request, patient_id):
     patient = get_object_or_404(PatientReg, id=patient_id)
-    prescriptions = Prescription.objects.filter(patient=patient.user).order_by('-prescribed_at')
     
+    # Only get prescriptions created by the current doctor for this patient
+    prescriptions = Prescription.objects.filter(
+        patient=patient.user,
+        doctor=request.user
+    ).order_by('-prescribed_at')
+    
+    # Department checks (keep your existing logic)
+    is_dialysis_doctor = False
+    is_eyecare_doctor = False
+    if request.user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=request.user)
+            is_dialysis_doctor = staff.department == 'Dialysis'
+            is_eyecare_doctor = staff.department == 'EyeCare'
+        except StaffD.DoesNotExist:
+            pass
+
     context = {
         'patient': patient,
         'prescriptions': prescriptions,
+        'is_dialysis_doctor': is_dialysis_doctor,
+        'is_eyecare_doctor': is_eyecare_doctor,
+        'full_name': request.user.get_full_name() or request.user.username,
     }
     return render(request, 'accounts/staff_pat_pres.html', context)
-
 
 @login_required
 def add_prescription(request, patient_id):
@@ -356,10 +448,24 @@ def staff_pat_rep(request, patient_id):
     reports = PatientReport.objects.filter(patient=patient.user).order_by('-uploaded_at')
     comments = DoctorComment.objects.filter(patient=patient.user).order_by('-commented_at')
     
+    # Check if the user is a doctor from the Dialysis department
+    is_dialysis_doctor = False
+    if request.user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=request.user)
+            is_dialysis_doctor = staff.department == 'Dialysis'
+            is_eyecare_doctor = staff.department == 'EyeCare'
+            
+        except StaffD.DoesNotExist:
+            pass
+    
     context = {
         'patient': patient,
         'reports': reports,
         'comments': comments,
+        'is_dialysis_doctor': is_dialysis_doctor,
+        'is_eyecare_doctor': is_eyecare_doctor,
+        
     }
     return render(request, 'accounts/staff_pat_rep.html', context)
 

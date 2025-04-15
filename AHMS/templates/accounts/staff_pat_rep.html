@@ -456,6 +456,12 @@
             <div class="main-content">
                 <div class="button-group">
                     <a href="{% url 'staff_pat1' patient.id %}" class="btn inactive">Details</a>
+                    {% if is_dialysis_doctor %}
+                     <a href="{% url 'staff_pat_dialysis' patient.id %}" class="btn inactive">Dialysis</a>
+                    {% endif %}
+                    {% if is_eyecare_doctor %}
+                     <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
+                    {% endif %}
                     <a href="{% url 'staff_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
                     <a href="{% url 'staff_pat_rep' patient.id %}" class="btn">Report</a>
                 </div>

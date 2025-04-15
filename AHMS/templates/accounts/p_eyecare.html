@@ -92,23 +92,26 @@
             margin-top: auto;
             display: flex;
             align-items: center;
-            cursor: pointer;
             text-align: center;
             width: 150px;
-
         }
 
-        .logout-section a {
+        .logout-btn {
+            background: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
             text-decoration: none;
-            color: #fff;
-            {% comment %} display: flex; {% endcomment %}
-            align-items: center;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
         }
 
-        .logout-section img {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
+        .logout-btn:hover {
+            background: #0d5bba;
         }
 
         .content {
@@ -123,211 +126,221 @@
             margin-top: 1rem;
         }
 
-        .card {
+        /* ===================== */
+        /* EYE EXAM FORM STYLING */
+        /* ===================== */
+        .eye-exam-form-card {
             background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .eye-exam-form-card h3 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .eye-exam-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .eye-exam-date-container {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .eye-exam-input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .eye-exam-section {
+            background: #f8fafc;
             padding: 1.5rem;
             border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .eye-exam-section h4 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .eye-exam-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .eye-exam-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .eye-exam-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .eye-exam-form-group input,
+        .eye-exam-form-group select {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .eye-exam-form-group input:focus,
+        .eye-exam-form-group select:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        .eye-exam-save-btn {
+            background: #4299e1;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            align-self: flex-end;
+        }
+
+        .eye-exam-save-btn:hover {
+            background: #3182ce;
+        }
+
+        /* ======================== */
+        /* EYE EXAM RECORDS STYLING */
+        /* ======================== */
+        .eye-records-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .eye-records-container h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .eye-records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .eye-records-section {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .water-intake {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-        }
-
-        .remaining-water {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .eye-records-section h4 {
+            color: #3498db;
+            margin-bottom: 1.5rem;
             font-size: 1.2rem;
-            font-weight: bold;
             text-align: center;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
+        .eye-records-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
+        .eye-records-table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: center;
             font-weight: 500;
-            width: 150px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
         }
 
-        .btn-primary {
-            background: #4285f4;
-            color: white;
+        .eye-records-table td {
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: white;
         }
 
-        .btn-secondary {
-            background: #4285f4;
-            color: white;
+        .eye-records-table tr:last-child td {
+            border-bottom: none;
         }
 
-        .btn-danger {
-            background: #dc3545;
-            color: white;
+        .eye-records-table tr:hover td {
+            background-color: #f0f8ff;
         }
 
-        .water-intake-history {
-            margin-top: 1rem;
-            font-size: 0.9rem;
+        /* Error Styling */
+        .errorlist {
+            color: #e53e3e;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            list-style: none;
+            padding-left: 0;
         }
 
-        .water-intake-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .eye-exam-input-grid,
+            .eye-records-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .menu-item {
+                margin-bottom: 0;
+            }
+
+            .logout-section {
+                margin-top: 0;
+                width: auto;
+            }
         }
-
-        .tubing-history {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .tubing-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* Improved Eye Data Tables */
-    .eye-data-container {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-
-    .eye-data-container h3 {
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-        font-size: 1.4rem;
-        font-weight: 600;
-        border-bottom: 2px solid #e0e0e0;
-        padding-bottom: 0.5rem;
-    }
-
-    .eye-data-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-    }
-
-    .eye-data-grid > div {
-        background: #f9f9f9;
-        border-radius: 8px;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .eye-data-grid h4 {
-        color: #3498db;
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
-        text-align: center;
-    }
-
-    .eye-data-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .eye-data-table th {
-        background-color: #3498db;
-        color: white;
-        padding: 0.8rem;
-        text-align: center;
-        font-weight: 500;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-    }
-
-    .eye-data-table td {
-        padding: 0.8rem;
-        text-align: center;
-        border-bottom: 1px solid #e0e0e0;
-        background-color: white;
-    }
-
-    .eye-data-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .eye-data-table tr:hover td {
-        background-color: #f0f8ff;
-    }
-
-    .historical-data {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
-
-    .historical-data h3 {
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-        font-size: 1.4rem;
-        font-weight: 600;
-        border-bottom: 2px solid #e0e0e0;
-        padding-bottom: 0.5rem;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .eye-data-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .eye-data-table th, 
-        .eye-data-table td {
-            padding: 0.6rem;
-            font-size: 0.9rem;
-        }
-    }
-
-
-    .form-control {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        margin-top: 0.25rem;
-    }
-    
-    label {
-        font-weight: 500;
-        color: #2c3e50;
-    }
-    
-    .card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
-    }
-
-    
-
     </style>
 </head>
 <body>
@@ -337,185 +350,237 @@
             MediCare
         </a>
         <div class="admin-profile">
-            <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }} </a></span>
+            <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }}</a></span>
             <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
         </div>
     </div>
 
     <div class="main-container">
         <aside class="sidebar">
-            <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Appointment Icon"> Details</a>
-                <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
-                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
-                <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
-                <a href="{% url 'p_dialysis' %}" class="menu-item  "><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
-                <a href="{% url 'p_cardio' %}" class="menu-item "><img src="{{ MEDIA_URL }}cardio.png" alt="Report Icon"> Cardiology</a>
-                <a href="{% url 'p_eyecare' %}" class="menu-item active "><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
+            <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Details Icon"> Details</a>
+            <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
+            <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Prescription Icon"> Prescription</a>
+            <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+            <a href="{% url 'p_dialysis' %}" class="menu-item"><img src="{{ MEDIA_URL }}dialysis.png" alt="Dialysis Icon"> Dialysis</a>
+            <a href="{% url 'p_cardio' %}" class="menu-item"><img src="{{ MEDIA_URL }}cardio.png" alt="Cardiology Icon"> Cardiology</a>
+            <a href="{% url 'p_eyecare' %}" class="menu-item active"><img src="{{ MEDIA_URL }}eye.png" alt="Eyecare Icon"> Eyecare</a>
 
-            
             <div class="logout-section">
-                {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
-                <a href="{% url "logoutp" %}" class='btn btn-secondary'> Logout </a>
+                <a href="{% url 'logoutp' %}" class="logout-btn">Logout</a>
             </div>
         </aside>
 
+        <main class="content">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
 
-        <!-- Add this form section at the top of your content -->
-<main class="content">
-
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="grid-container">
-        <!-- Add New Exam Form -->
-        <div class="card">
-            <h3>Add New Eye Exam</h3>
-            <form method="post">
-                {% csrf_token %}
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <!-- Exam Date -->
-                    <div>
-                        <label for="{{ form.exam_date.id_for_label }}">Exam Date</label>
-                        {{ form.exam_date }}
-                    </div>
-                    
-                    <!-- Right Eye -->
-                    <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px;">
-                        <h4>Right Eye</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div>
-                                <label for="{{ form.right_sph.id_for_label }}">SPH</label>
-                                {{ form.right_sph }}
-                            </div>
-                            <div>
-                                <label for="{{ form.right_cyl.id_for_label }}">CYL</label>
-                                {{ form.right_cyl }}
-                            </div>
-                            <div>
-                                <label for="{{ form.right_axis.id_for_label }}">AXIS</label>
-                                {{ form.right_axis }}
-                            </div>
-                            <div>
-                                <label for="{{ form.right_prism.id_for_label }}">PRISM</label>
-                                {{ form.right_prism }}
+            <div class="grid-container">
+                <!-- Add New Exam Form -->
+                <div class="eye-exam-form-card">
+                    <h3>Add New Eye Exam</h3>
+                    <form method="post" class="eye-exam-form">
+                        {% csrf_token %}
+                        
+                        <div class="eye-exam-date-container">
+                            <div class="eye-exam-form-group">
+                                <label for="{{ form.exam_date.id_for_label }}">Exam Date</label>
+                                {{ form.exam_date }}
+                                {% if form.exam_date.errors %}
+                                    <ul class="errorlist">
+                                        {% for error in form.exam_date.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Left Eye -->
-                    <div style="background: #f0f8ff; padding: 1rem; border-radius: 8px;">
-                        <h4>Left Eye</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                            <div>
-                                <label for="{{ form.left_sph.id_for_label }}">SPH</label>
-                                {{ form.left_sph }}
+                        
+                        <div class="eye-exam-input-grid">
+                            <!-- Right Eye -->
+                            <div class="eye-exam-section">
+                                <h4>Right Eye</h4>
+                                <div class="eye-exam-fields">
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.right_sph.id_for_label }}">SPH</label>
+                                        {{ form.right_sph }}
+                                        {% if form.right_sph.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.right_sph.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.right_cyl.id_for_label }}">CYL</label>
+                                        {{ form.right_cyl }}
+                                        {% if form.right_cyl.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.right_cyl.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.right_axis.id_for_label }}">AXIS</label>
+                                        {{ form.right_axis }}
+                                        {% if form.right_axis.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.right_axis.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.right_prism.id_for_label }}">PRISM</label>
+                                        {{ form.right_prism }}
+                                        {% if form.right_prism.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.right_prism.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label for="{{ form.left_cyl.id_for_label }}">CYL</label>
-                                {{ form.left_cyl }}
-                            </div>
-                            <div>
-                                <label for="{{ form.left_axis.id_for_label }}">AXIS</label>
-                                {{ form.left_axis }}
-                            </div>
-                            <div>
-                                <label for="{{ form.left_prism.id_for_label }}">PRISM</label>
-                                {{ form.left_prism }}
+                            
+                            <!-- Left Eye -->
+                            <div class="eye-exam-section">
+                                <h4>Left Eye</h4>
+                                <div class="eye-exam-fields">
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.left_sph.id_for_label }}">SPH</label>
+                                        {{ form.left_sph }}
+                                        {% if form.left_sph.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.left_sph.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.left_cyl.id_for_label }}">CYL</label>
+                                        {{ form.left_cyl }}
+                                        {% if form.left_cyl.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.left_cyl.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.left_axis.id_for_label }}">AXIS</label>
+                                        {{ form.left_axis }}
+                                        {% if form.left_axis.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.left_axis.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                    <div class="eye-exam-form-group">
+                                        <label for="{{ form.left_prism.id_for_label }}">PRISM</label>
+                                        {{ form.left_prism }}
+                                        {% if form.left_prism.errors %}
+                                            <ul class="errorlist">
+                                                {% for error in form.left_prism.errors %}
+                                                    <li>{{ error }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Notes -->
-                    {% comment %} <div style="grid-column: span 2;">
-                        <label for="{{ form.notes.id_for_label }}">Notes</label>
-                        {{ form.notes }}
-                    </div> {% endcomment %}
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Save Exam Data</button>
-            </form>
-        </div>
-    </div>
-        
-
-    <div class="grid-container">
-        <!-- Existing Eye Exam Data Display -->
-        <div class="eye-data-container">
-            <h3>Eye Examination Records</h3>
-            <div class="eye-data-grid">
-                <!-- Right Eye Table -->
-                <div>
-                    <h4>Right Eye Measurements</h4>
-                    <table class="eye-data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>SPH</th>
-                                <th>CYL</th>
-                                <th>AXIS</th>
-                                <th>PRISM</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for exam in eye_exams %}
-                            <tr>
-                                <td>{{ exam.exam_date|date:"Y-m-d" }}</td>
-                                <td>{{ exam.right_sph }}</td>
-                                <td>{{ exam.right_cyl }}</td>
-                                <td>{{ exam.right_axis }}</td>
-                                <td>{{ exam.right_prism|default:"-" }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5">No eye exam records found</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Left Eye Table -->
-                <div>
-                    <h4>Left Eye Measurements</h4>
-                    <table class="eye-data-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>SPH</th>
-                                <th>CYL</th>
-                                <th>AXIS</th>
-                                <th>PRISM</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for exam in eye_exams %}
-                            <tr>
-                                <td>{{ exam.exam_date|date:"Y-m-d" }}</td>
-                                <td>{{ exam.left_sph }}</td>
-                                <td>{{ exam.left_cyl }}</td>
-                                <td>{{ exam.left_axis }}</td>
-                                <td>{{ exam.left_prism|default:"-" }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="5">No eye exam records found</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                        
+                        <button type="submit" class="eye-exam-save-btn">Save Exam Data</button>
+                    </form>
                 </div>
             </div>
-        </div>
+
+            <div class="grid-container">
+                <!-- Eye Exam Records Display -->
+                <div class="eye-records-container">
+                    <h3>Eye Examination Records</h3>
+                    <div class="eye-records-grid">
+                        <!-- Right Eye Table -->
+                        <div class="eye-records-section">
+                            <h4>Right Eye Measurements</h4>
+                            <table class="eye-records-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>SPH</th>
+                                        <th>CYL</th>
+                                        <th>AXIS</th>
+                                        <th>PRISM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exam in eye_exams %}
+                                    <tr>
+                                        <td>{{ exam.exam_date|date:"Y-m-d" }}</td>
+                                        <td>{{ exam.right_sph }}</td>
+                                        <td>{{ exam.right_cyl }}</td>
+                                        <td>{{ exam.right_axis }}</td>
+                                        <td>{{ exam.right_prism|default:"-" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">No eye exam records found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Left Eye Table -->
+                        <div class="eye-records-section">
+                            <h4>Left Eye Measurements</h4>
+                            <table class="eye-records-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>SPH</th>
+                                        <th>CYL</th>
+                                        <th>AXIS</th>
+                                        <th>PRISM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exam in eye_exams %}
+                                    <tr>
+                                        <td>{{ exam.exam_date|date:"Y-m-d" }}</td>
+                                        <td>{{ exam.left_sph }}</td>
+                                        <td>{{ exam.left_cyl }}</td>
+                                        <td>{{ exam.left_axis }}</td>
+                                        <td>{{ exam.left_prism|default:"-" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">No eye exam records found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-</main>
-
-
 </body>
 </html>

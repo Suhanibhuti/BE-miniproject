@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body, html {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            max-width: 1200px;
+        }
+        .welcome-card {
+            background-color: #D2EBF2;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Inter', sans-serif;
+            width: 1300px;
+        }
+        .welcome-card h2 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+        .patient-details {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .patient-details h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+            width: 300px;
+        }
+        .detail-value {
+            font-weight: 400;
+            color: #000;
+            flex-grow: 1;
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .button-group .btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button-group .btn.inactive {
+            background-color: transparent;
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 2px solid #2563eb;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button-group .btn:hover {
+            background-color: #1e4bb5;
+            color: #fff;
+        }
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+            background: #1a73e8;
+            color: white;
+            text-align: center;
+        }
+        
+        .logout-btn:hover {
+            background: #0d5bba;
+        }
+        
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 150px;
+        }
+
+        /* Eyecare Specific Styles */
+        .eye-records-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            {% comment %} width: 100%; {% endcomment %}
+        }
+    
+        .eye-records-container h3 {
+            color: #2c3e50;
+            margin-bottom: 0px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+    
+        .eye-records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+    
+        .eye-records-section {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    
+        .eye-records-section h4 {
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+    
+        .eye-records-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    
+        .eye-records-table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+    
+        .eye-records-table td {
+            padding: 0.8rem;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: white;
+        }
+    
+        .eye-records-table tr:last-child td {
+            border-bottom: none;
+        }
+    
+        .eye-records-table tr:hover td {
+            background-color: #f0f8ff;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .chart-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        /* Debug styles */
+        .debug-section {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .eye-records-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .eye-records-section {
+                padding: 1rem;
+            }
+            
+            .eye-records-table th,
+            .eye-records-table td {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Icon">
+                MediCare
+            </div>
+            <div class="profile">
+                <span><a href="{% url 'staff_reg' %}"> {{ full_name }} </a></span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'staff_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
+                </a>
+                <a href="{% url 'staff_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
+                    Appointment
+                </a>
+                <div class="menu-item active">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
+                    Patients
+                </div>
+                <div class="logout">
+                    <a href="{% url 'logouts' %}" class="logout-btn">Logout</a>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="button-group">
+                    <a href="{% url 'staff_pat1' patient.id %}" class="btn inactive">Details</a>
+                    {% if is_dialysis_doctor %}
+                     <a href="{% url 'staff_pat_dialysis' patient.id %}" class="btn inactive">Dialysis</a>
+                    {% endif %}
+                    {% if is_eyecare_doctor %}
+                     <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn">Eyecare</a>
+                    {% endif %}
+                    <a href="{% url 'staff_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
+                    <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
+                </div>
+
+
+                <div class="welcome-card">
+                <!-- Eyecare Department Section -->
+                <div class="eye-records-container">
+                    <h3>Eye Examination Records</h3>
+                    <div class="eye-records-grid">
+                        <!-- Right Eye Table -->
+                        <div class="eye-records-section">
+                            <h4>Right Eye Measurements</h4>
+                            <table class="eye-records-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>SPH</th>
+                                        <th>CYL</th>
+                                        <th>AXIS</th>
+                                        <th>PRISM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exam in eye_exams %}
+                                    <tr>
+                                        <td>{{ exam.exam_date|date:"Y-m-d" }}</td>
+                                        <td>{{ exam.right_sph|default:"-" }}</td>
+                                        <td>{{ exam.right_cyl|default:"-" }}</td>
+                                        <td>{{ exam.right_axis|default:"-" }}</td>
+                                        <td>{{ exam.right_prism|default:"-" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">No eye exam records found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Left Eye Table -->
+                        <div class="eye-records-section">
+                            <h4>Left Eye Measurements</h4>
+                            <table class="eye-records-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>SPH</th>
+                                        <th>CYL</th>
+                                        <th>AXIS</th>
+                                        <th>PRISM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for exam in eye_exams %}
+                                    <tr>
+                                        <td>{{ exam.exam_date|date:"Y-m-d" }}</td>
+                                        <td>{{ exam.left_sph|default:"-" }}</td>
+                                        <td>{{ exam.left_cyl|default:"-" }}</td>
+                                        <td>{{ exam.left_axis|default:"-" }}</td>
+                                        <td>{{ exam.left_prism|default:"-" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5">No eye exam records found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                {% comment %} <div class="debug-section">
+                    <h4>Data Debug</h4>
+                    <p>Number of exams: {{ eye_exams|length }}</p>
+                    {% for exam in eye_exams %}
+                    <p>
+                        {{ exam.exam_date|date:"Y-m-d" }} - 
+                        R: {{ exam.right_sph }}/{{ exam.right_cyl }}/{{ exam.right_axis }} | 
+                        L: {{ exam.left_sph }}/{{ exam.left_cyl }}/{{ exam.left_axis }}
+                    </p>
+                    {% endfor %}
+                </div> {% endcomment %}
+
+                {% if eye_exams %}
+                <div class="chart-grid">
+                    <!-- Vision Trend Chart -->
+                    <div class="chart-card">
+                        <h4>Vision Acuity Trend</h4>
+                        <div class="chart-container">
+                            <canvas id="visionTrendChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Current Prescription Radar Chart -->
+                    <div class="chart-card">
+                        <h4>Current Prescription Comparison</h4>
+                        <div class="chart-container">
+                            <canvas id="prescriptionChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Astigmatism Polar Chart -->
+                    <div class="chart-card">
+                        <h4>Astigmatism Visualization</h4>
+                        <div class="chart-container">
+                            <canvas id="astigmatismChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Prism Comparison Chart -->
+                    <div class="chart-card">
+                        <h4>Prism Values Comparison</h4>
+                        <div class="chart-container">
+                            <canvas id="prismChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                
+<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Check if we have exams and Chart is loaded
+                        if (typeof Chart === 'undefined') {
+                            console.error('Chart.js not loaded!');
+                            return;
+                        }
+                    
+                        {% if eye_exams %}
+                        const examData = [
+                            {% for exam in eye_exams %}
+                            {
+                                date: "{{ exam.exam_date|date:'M d' }}",
+                                right_sph: {{ exam.right_sph|default:0 }},
+                                right_cyl: {{ exam.right_cyl|default:0 }},
+                                right_axis: {{ exam.right_axis|default:0 }},
+                                left_sph: {{ exam.left_sph|default:0 }},
+                                left_cyl: {{ exam.left_cyl|default:0 }},
+                                left_axis: {{ exam.left_axis|default:0 }},
+                                right_prism: "{{ exam.right_prism|default:'' }}",
+                                left_prism: "{{ exam.left_prism|default:'' }}"
+                                }{% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                        ];
+                    
+                        console.log('Exam Data:', examData);
+                    
+                        // Helper function to create charts safely
+                        function createChart(canvasId, config) {
+                            const canvas = document.getElementById(canvasId);
+                            if (!canvas) {
+                                console.error(`Canvas element #${canvasId} not found`);
+                                return null;
+                            }
+                            
+                            const ctx = canvas.getContext('2d');
+                            return new Chart(ctx, config);
+                        }
+                    
+                        // Vision Trend Chart
+                        if (examData.length > 0) {
+                            createChart('visionTrendChart', {
+                                type: 'line',
+                                data: {
+                                    labels: examData.map(e => e.date),
+                                    datasets: [
+                                        {
+                                            label: 'Right Eye SPH',
+                                            data: examData.map(e => e.right_sph),
+                                            borderColor: '#3b82f6',
+                                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                            tension: 0.3
+                                        },
+                                        {
+                                            label: 'Left Eye SPH',
+                                            data: examData.map(e => e.left_sph),
+                                            borderColor: '#ef4444',
+                                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                            tension: 0.3
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        y: { 
+                                            reverse: true, 
+                                            title: { display: true, text: 'SPH Value' } 
+                                        },
+                                        x: { 
+                                            title: { display: true, text: 'Exam Date' } 
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+                    // Prescription Radar Chart
+                    const prescriptionCanvas = document.getElementById('prescriptionChart');
+                    if (prescriptionCanvas && examData.length > 0) {
+                        new Chart(prescriptionCanvas.getContext('2d'), {
+                            type: 'radar',
+                            data: {
+                                labels: ['SPH', 'CYL', 'AXIS'],
+                                datasets: [
+                                    {
+                                        label: 'Right Eye',
+                                        data: [
+                                            examData[0].right_sph,
+                                            examData[0].right_cyl,
+                                            examData[0].right_axis
+                                        ],
+                                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                        borderColor: '#3b82f6'
+                                    },
+                                    {
+                                        label: 'Left Eye',
+                                        data: [
+                                            examData[0].left_sph,
+                                            examData[0].left_cyl,
+                                            examData[0].left_axis
+                                        ],
+                                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                                        borderColor: '#ef4444'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    r: {
+                                        angleLines: { display: true },
+                                        suggestedMin: -10,
+                                        suggestedMax: 10
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // Astigmatism Polar Area Chart
+                    const polarCtx = document.getElementById('astigmatismChart');
+                    if (polarCtx && examData.length > 0) {
+                        new Chart(polarCtx.getContext('2d'), {
+                            type: 'polarArea',
+                            data: {
+                                labels: ['Right CYL', 'Right AXIS', 'Left CYL', 'Left AXIS'],
+                                datasets: [{
+                                    data: [
+                                        examData[0].right_cyl,
+                                        examData[0].right_axis,
+                                        examData[0].left_cyl,
+                                        examData[0].left_axis
+                                    ],
+                                    backgroundColor: [
+                                        'rgba(59, 130, 246, 0.7)',
+                                        'rgba(59, 130, 246, 0.5)',
+                                        'rgba(239, 68, 68, 0.7)',
+                                        'rgba(239, 68, 68, 0.5)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    r: { grid: { circular: true, color: 'rgba(0,0,0,0.1)' } }
+                                },
+                                plugins: { legend: { position: 'right' } }
+                            }
+                        });
+                    }
+
+
+                    // Function to extract prism value from string (e.g. "2Δ Base In" → 2)
+    const getPrismValue = (prismStr) => {
+        if (!prismStr) return 0;
+        const match = prismStr.match(/^([\d.]+)Δ/);
+        return match ? parseFloat(match[1]) : 0;
+    };
+
+    // Function to get full prism description
+    const getPrismLabel = (prismStr, eye) => {
+        return prismStr ? `${eye} Eye: ${prismStr}` : `${eye} Eye: No Prism`;
+    };
+
+                    // Prism Comparison Chart
+    const prismCtx = document.getElementById('prismChart');
+    if (prismCtx && examData.length > 0) {
+        new Chart(prismCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: examData.map(e => e.date),
+                datasets: [
+                    {
+                        label: 'Right Prism (Δ)',
+                        data: examData.map(e => getPrismValue(e.right_prism)),
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Left Prism (Δ)',
+                        data: examData.map(e => getPrismValue(e.left_prism)),
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        title: { 
+                            display: true, 
+                            text: 'Prism Value (Δ)' 
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: { grid: { display: false } }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                const data = examData[context.dataIndex];
+                                if (context.datasetIndex === 0) {
+                                    return getPrismLabel(data.right_prism, 'Right');
+                                } else {
+                                    return getPrismLabel(data.left_prism, 'Left');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+                    {% endif %}
+                });
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

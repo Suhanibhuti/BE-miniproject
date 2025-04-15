@@ -334,14 +334,25 @@
             <div class="main-content">
                 <div class="button-group">
                     <a href="{% url 'staff_pat1' patient.id %}" class="btn inactive">Details</a>
+                    {% if is_dialysis_doctor %}
+                     <a href="{% url 'staff_pat_dialysis' patient.id %}" class="btn inactive">Dialysis</a>
+                    {% endif %}
+                    {% if is_eyecare_doctor %}
+                     <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
+                    {% endif %}
                     <a href="{% url 'staff_pat_pres' patient.id %}" class="btn">Prescription</a>
                     <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
                 </div>
 
+                {% comment %} <div class="welcome-card">
+                    <h2>Prescription Management</h2>
+                    <p>Patient: {{ patient.full_name }} ({{ patient.user.username }})</p>
+                    <p>Doctor: {{ full_name }}</p>
+                </div> {% endcomment %}
 
 <!-- Prescription Form -->
 <div class="prescription-form">
-    <h3>Add Prescription</h3>
+    <h3>Add New Prescription</h3>
     <form method="post" action="{% url 'add_prescription' patient.id %}">
         {% csrf_token %}
         <input type="text" name="medicine_name" placeholder="Medicine Name" required>
@@ -358,7 +369,8 @@
 
 <!-- Prescription List -->
 <div class="prescription-list">
-    <h3>Prescriptions</h3>
+    <h3>Your Prescriptions for {{ patient.full_name }}</h3>
+    {% if prescriptions %}
     <table>
         <thead>
             <tr>
@@ -367,6 +379,7 @@
                 <th>Timing</th>
                 <th>Before/After Food</th>
                 <th>Prescribed At</th>
+                {% comment %} <th>Actions</th> {% endcomment %}
             </tr>
         </thead>
         <tbody>
@@ -375,12 +388,21 @@
                 <td>{{ prescription.medicine_name }}</td>
                 <td>{{ prescription.dosage }}</td>
                 <td>{{ prescription.timing }}</td>
-                <td>{{ prescription.before_after_food }}</td>
+                <td>{{ prescription.get_before_after_food_display }}</td>
                 <td>{{ prescription.prescribed_at|date:"Y-m-d H:i" }}</td>
+                <td>
+                    {% comment %} <form method="post" action="{% url 'delete_prescription' prescription.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button>
+                    </form> {% endcomment %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+    <p>No prescriptions found. Add your first prescription above.</p>
+    {% endif %}
 </div>
 </div>
 </div>

@@ -86,7 +86,7 @@
             background-color: #D2EBF2;
             border-radius: 8px;
             padding: 20px;
-            {% comment %} margin-bottom: 30px; {% endcomment %}
+            margin-bottom: 30px;
             margin-top: 20px;
             font-family: 'Inter', sans-serif;
         }
@@ -97,8 +97,8 @@
         .patient-details {
             background-color: #ffffff;
             border-radius: 8px;
-            padding: 15px;
-            {% comment %} margin-bottom: 20px; {% endcomment %}
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         .patient-details h3 {
@@ -265,20 +265,19 @@
             
             <div class="main-content">
                 <div class="button-group">
-                    <a href="{% url 'staff_pat1' patient.id %}" class="btn">Details</a>
+                    <a href="{% url 'staff_pat1' patient.id %}" class="btn inactive">Details</a>
                     {% if is_dialysis_doctor %}
-                     <a href="{% url 'staff_pat_dialysis' patient.id %}" class="btn inactive">Dialysis</a>
+                     <a href="{% url 'staff_pat_dialysis' patient.id %}" class="btn">Dialysis</a>
                     {% endif %}
                     {% if is_eyecare_doctor %}
-                     <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
+                    <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
                     {% endif %}
                     <a href="{% url 'staff_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
                     <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
                 </div>
 
-                <div class="welcome-card">
-                    {% comment %} <h2>Welcome {{ full_name }}!</h2> {% endcomment %}
-                
+                {% comment %} <div class="welcome-card">
+                     <h2>Welcome {{ full_name }}!</h2> 
                 <div class="patient-details">
                     <h3>Patient Details</h3>
                     <div class="detail-row">
@@ -342,12 +341,12 @@
                         <div class="detail-value">{{ patient.disease }}</div>
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
                 
  
              
-                {% comment %} <!-- Department-Specific Section -->
-                {% if department == 'Dialysis' %}
+                <!-- Department-Specific Section -->
+                {% if is_dialysis_doctor %}
                 <div class="department-section">
                     <div class="department-card">
                         <h3>Weight Tracking</h3>
@@ -408,14 +407,19 @@
                         </div>
                     </div>
                 </div>
+                {% comment %} {% endif %} {% endcomment %}
+                {% else %}
+                <div class="department-section">
+                    <p>You don't have permission to view dialysis information.</p>
+                </div>
                 {% endif %}
             </div>
         </div>
-    </div> {% endcomment %}
+    </div>
 
     <script>
         // Initialize the weight chart
-        {% comment %} const weightCtx = document.getElementById('weightChart').getContext('2d');
+        const weightCtx = document.getElementById('weightChart').getContext('2d');
         const weightChart = new Chart(weightCtx, {
             type: 'line',
             data: {
@@ -515,7 +519,7 @@
                 }
             }
         }
-    }); {% endcomment %}
+    });
     </script>
 </body>
 </html>
