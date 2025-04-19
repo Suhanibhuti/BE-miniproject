@@ -156,7 +156,7 @@
         .prescription-list h3 {
             margin-top: 0;
             font-weight: 600;
-            color: #2D6CBF;
+            color:rgb(0, 0, 0);
         }
 
         .prescription-list table {
@@ -287,6 +287,69 @@ input:checked + .slider:before {
             background: #dc3545;
             color: white;
         }
+
+
+        /* Updated Prescription Card Styles */
+        .prescription-card {
+            background-color: rgb(241 245 249);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            width: 1320px;
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .prescription-date {
+            font-weight: 600;
+            color: #2D6CBF;
+            font-size: 16px;
+        }
+
+        .doctor-name {
+            font-weight: 500;
+            color: #333;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .prescription-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .prescription-table th,
+        .prescription-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .prescription-table th {
+            background-color: #f1f5f9;
+            font-weight: 500;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: #555;
+        }
+
     </style>
 </head>
 <body>
@@ -308,7 +371,7 @@ input:checked + .slider:before {
             <!-- Sidebar -->
             <div class="sidebar">
                 <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Appointment Icon"> Details</a>
-                <a href="#" class="menu-item "><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
+                <a href="{% url 'p_dash' %}" class="menu-item "><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
                 <a href="{% url 'p_pres' %}" class="menu-item active"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
                 <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
                 <a href="{% url 'p_dialysis' %}" class="menu-item "><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
@@ -321,7 +384,6 @@ input:checked + .slider:before {
                 </div>
             </div>
 
-            <!-- Main Content -->
             <div class="prescription-list">
                 <h3>Prescriptions</h3>
 
@@ -335,19 +397,23 @@ input:checked + .slider:before {
                 </div>
                 {% endif %}
 
-
                 {% for date, doctors in grouped_prescriptions.items %}
-                <div class="date-toggle-container">
-                    <h4>Prescribed On: {{ date }}</h4>
-                    <label class="toggle-switch">
-                        <input type="checkbox" class="toggle-checkbox" id="toggle-{{ forloop.counter }}" 
-                               data-date="{{ date }}" {% if prescriptions.0.reminders_set %}checked{% endif %}>
-                        <span class="slider"></span>
-                    </label>
-                </div>
+                <div class="prescription-card">
+                    <div class="prescription-header">
+                        <span class="prescription-date">Prescribed On: {{ date }}</span>
+                        <div class="toggle-container">
+                            <span class="toggle-label">Enable Reminders</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" class="toggle-checkbox" id="toggle-{{ forloop.counter }}" 
+                                       data-date="{{ date }}" {% if prescriptions.0.reminders_set %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
                     {% for doctor_name, prescriptions in doctors.items %}
-                        <h5>Prescribed By: {{ doctor_name }}</h5>
-                        <table>
+                        <div class="doctor-name">Prescribed By: Dr. {{ doctor_name }}</div>
+                        <table class="prescription-table">
                             <thead>
                                 <tr>
                                     <th>Medicine Name</th>
@@ -368,11 +434,11 @@ input:checked + .slider:before {
                             </tbody>
                         </table>
                     {% endfor %}
+                </div>
                 {% endfor %}
             </div>
         </div>
     </div>
-
     <script>
         // JavaScript to handle the toggle functionality
         document.addEventListener('DOMContentLoaded', () => {

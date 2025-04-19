@@ -62,6 +62,9 @@ urlpatterns = [
     path('add_water_intake/', views.add_water_intake, name='add_water_intake'),
     
     path('p_cardio/', views.p_cardio, name='p_cardio'),
+    path('p_cholesterol/', views.p_cholesterol, name='p_cholesterol'),
+    path('p_ecg/', views.p_ecg, name='p_ecg'),
+    
     path('p_eyecare/', views.p_eyecare, name='p_eyecare'),
     
     

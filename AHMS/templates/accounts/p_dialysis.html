@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediCare - Patient Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', 'Poppins', sans-serif;
         }
 
         body {
             background-color: #f0f8ff;
+            height: 100%;
         }
 
         .navbar {
@@ -28,12 +29,13 @@
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             color: #000;
             display: flex;
             align-items: center;
             text-decoration: none;
+            font-family: 'Inter', sans-serif;
         }
 
         .logo img {
@@ -49,9 +51,15 @@
             font-size: 14px;
         }
 
+        .admin-profile span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
         .admin-profile img {
             width: 30px;
             height: 30px;
+            border-radius: 50%;
         }
 
         .main-container {
@@ -92,43 +100,57 @@
             margin-top: auto;
             display: flex;
             align-items: center;
-            cursor: pointer;
             text-align: center;
             width: 150px;
-
         }
 
-        
-        .logout-section a {
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
             text-decoration: none;
-            color: #fff;
-            {% comment %} display: flex; {% endcomment %}
-            align-items: center;
+            background: #1a73e8;
+            color: white;
+            text-align: center;
         }
 
-        .logout-section img {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
+        .logout-btn:hover {
+            background: #0d5bba;
         }
 
         .content {
-            padding: 2rem;
+            padding: 30px;
             overflow-y: auto;
+            max-width: 1200px;
         }
 
+        /* Updated styles to match reference page */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .card {
-            background: white;
-            padding: 1.5rem;
+            background-color: #ffffff;
             border-radius: 8px;
+            padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
+        }
+
+        .chart-container {
+            margin: 20px auto;
+            height: 250px;
+            width: 100%;
         }
 
         .water-intake {
@@ -150,56 +172,59 @@
 
         .btn-group {
             display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
             border: none;
+            cursor: pointer;
             font-weight: 500;
-            width: 150px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            width: auto;
         }
 
         .btn-primary {
-            background: #4285f4;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #4285f4;
-            color: white;
+            background-color: #2563eb;
         }
 
         .btn-danger {
-            background: #dc3545;
-            color: white;
+            background-color: #dc3545;
         }
 
-        .water-intake-history {
-            margin-top: 1rem;
-            font-size: 0.9rem;
+        .btn:hover {
+            background-color: #1e4bb5;
+            color: #fff;
         }
 
-        .water-intake-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-
+        .water-intake-history,
         .tubing-history {
             margin-top: 1rem;
             font-size: 0.9rem;
         }
 
-        .tubing-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .history-table th, 
+        .history-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .history-table th {
+            background-color: #f1f5f9;
         }
     </style>
 </head>
@@ -218,18 +243,15 @@
     <div class="main-container">
         <aside class="sidebar">
             <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Appointment Icon"> Details</a>
-                <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
-                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
-                <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
-                <a href="{% url 'p_dialysis' %}" class="menu-item  active "><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
-                <a href="{% url 'p_cardio' %}" class="menu-item "><img src="{{ MEDIA_URL }}cardio.png" alt="Report Icon"> Cardiology</a>
-                <a href="{% url 'p_eyecare' %}" class="menu-item  "><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
+            <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
+            <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
+            <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+            <a href="{% url 'p_dialysis' %}" class="menu-item active"><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
+            <a href="{% url 'p_cardio' %}" class="menu-item"><img src="{{ MEDIA_URL }}cardio.png" alt="Report Icon"> Cardiology</a>
+            <a href="{% url 'p_eyecare' %}" class="menu-item"><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
 
-
-            
             <div class="logout-section">
-                {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
-                <a href="{% url "logoutp" %}" class='btn btn-secondary'> Logout </a>
+                <a href="{% url 'logoutp' %}" class="logout-btn">Logout</a>
             </div>
         </aside>
 
@@ -238,23 +260,38 @@
                 <!-- Weight Tracking -->
                 <div class="card">
                     <h3>Weight Tracking</h3>
-                    <canvas id="weightChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="weightChart"></canvas>
+                    </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="addWeight()">+ Add Weight</button>
                         <button class="btn btn-danger" onclick="deleteWeight()">Delete Last Entry</button>
                     </div>
                 </div>
 
-                 <!-- Dialysis Tubing -->
-                 <div class="card">
+                <!-- Dialysis Tubing -->
+                <div class="card">
                     <h3>Dialysis Tubing</h3>
-                    <canvas id="tubingChart"></canvas>
-                    <div class="tubing-history" id="tubingHistory">
-                        <!-- Tubing entries will be added here dynamically -->
+                    <div class="chart-container">
+                        <canvas id="tubingChart" style="height: 290px"></canvas>
                     </div>
+                    {% comment %} <div class="tubing-history" id="tubingHistory">
+                        <h4>Tubing History</h4>
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div> {% endcomment %}
                 </div>
 
-                <!-- Water Intake -->
+                <!-- Water Intake Card -->
                 <div class="card">
                     <h3>Water Intake</h3>
                     <div class="water-intake">
@@ -271,15 +308,15 @@
                     </div>
                     <div class="water-intake-history">
                         <h4>Water Intake History</h4>
-                        <table id="waterHistoryTable" style="width: 100%;">
+                        <table class="history-table" id="waterHistoryTable">
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Amount (ml)</th>
+                                    <th>Total (ml)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Water intake history will be populated here -->
+                                <!-- Will be populated by JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -318,6 +355,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
@@ -386,26 +424,27 @@
         // Initialize the chart when the page loads
         document.addEventListener('DOMContentLoaded', initializeWeightChart);
 
-
-
         // Water Intake Chart
         const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
-        let waterConsumed = 0;
-        const totalWater = 1000; // 1 liter limit
-
         const waterChart = new Chart(waterCtx, {
             type: 'doughnut',
             data: {
                 datasets: [{
-                    data: [waterConsumed, totalWater - waterConsumed],
-                    backgroundColor: ['#4285f4', '#e0e0e0']
+                    data: [0, 1000],
+                    backgroundColor: ['#4285f4', '#e0e0e0'],
+                    borderWidth: 0
                 }]
             },
             options: {
-                cutout: '70%',
+                cutout: '75%',
                 plugins: {
-                    legend: {
-                        display: false
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + 'ml';
+                            }
+                        }
                     }
                 }
             }
@@ -425,64 +464,74 @@
             return data;
         }
 
-        // Update water intake chart and table
+        // Update water intake data
         async function updateWaterIntake() {
-            const waterData = await fetchWaterIntake();
-            waterConsumed = waterData.total_consumed || 0;
-            waterChart.data.datasets[0].data = [waterConsumed, totalWater - waterConsumed];
-            waterChart.update();
-            document.getElementById('waterRemaining').textContent = totalWater - waterConsumed;
-
-            if (waterConsumed >= totalWater) {
-                document.getElementById('waterLimitMessage').style.display = 'block';
-            } else {
-                document.getElementById('waterLimitMessage').style.display = 'none';
+            try {
+                // Get today's total
+                const todayResponse = await fetch("{% url 'fetch_water_intake' %}");
+                const todayData = await todayResponse.json();
+                const todayTotal = todayData.today_total || 0;
+                
+                // Update chart
+                waterChart.data.datasets[0].data = [todayTotal, Math.max(0, 1000 - todayTotal)];
+                waterChart.update();
+                
+                // Update remaining display
+                document.getElementById('waterRemaining').textContent = Math.max(0, 1000 - todayTotal);
+                
+                // Show/hide limit message
+                document.getElementById('waterLimitMessage').style.display = 
+                    todayTotal >= 1000 ? 'block' : 'none';
+                    
+                // Get history
+                const historyResponse = await fetch("{% url 'fetch_water_history' %}");
+                const historyData = await historyResponse.json();
+                
+                // Populate table
+                const tableBody = document.querySelector('#waterHistoryTable tbody');
+                tableBody.innerHTML = '';
+                
+                historyData.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.date}</td>
+                        <td>${entry.amount}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('Error updating water intake:', error);
             }
-
-            const historyData = await fetchWaterHistory();
-            const historyTable = document.getElementById('waterHistoryTable').getElementsByTagName('tbody')[0];
-            historyTable.innerHTML = '';
-            historyData.forEach(entry => {
-                const row = historyTable.insertRow();
-                const dateCell = row.insertCell(0);
-                const amountCell = row.insertCell(1);
-                dateCell.textContent = entry.date;
-                amountCell.textContent = entry.amount;
-            });
         }
 
-        // Add water intake entry
+        // Add water intake
         async function addWaterIntake() {
-            if (waterConsumed >= totalWater) {
-                alert('You cannot have any more water today. You have reached the limit.');
-                return;
-            }
-
-            const response = await fetch("{% url 'add_water_intake' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ amount: 200 })
-            });
-
-            if (response.ok) {
-                alert('Water intake added successfully!');
-                updateWaterIntake();
-            } else {
-                alert('Failed to add water intake.');
+            try {
+                const response = await fetch("{% url 'add_water_intake' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ amount: 200 })
+                });
+                
+                if (response.ok) {
+                    await updateWaterIntake();
+                } else {
+                    alert('Failed to add water intake');
+                }
+            } catch (error) {
+                console.error('Error adding water intake:', error);
+                alert('An error occurred');
             }
         }
 
-        // Initialize water intake data when the page loads
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', updateWaterIntake);
 
-
-
-
-
-         // Fetch tubing data for the current month
+        // Fetch tubing data for the current month
         async function fetchTubingData() {
             const response = await fetch("{% url 'fetch_tubing_data' %}");
             const data = await response.json();
@@ -510,6 +559,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
@@ -537,7 +587,6 @@
 
         // Initialize the tubing chart when the page loads
         document.addEventListener('DOMContentLoaded', initializeTubingChart);
-       
     </script>
 </body>
 </html>

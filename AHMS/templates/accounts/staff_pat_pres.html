@@ -230,23 +230,24 @@
         }
         /* Prescription-specific styles */
         .prescription-form {
-            background-color: #ffffff;
+            background-color: #deedf1;
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
             margin-top: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 1340px;
         }
 
         .prescription-form h3 {
             margin-top: 0;
             font-weight: 600;
-            color: #2D6CBF;
+            color:rgb(0, 0, 0);
         }
 
         .prescription-form input,
         .prescription-form select {
-            width: 90%;
+            width: 98%;
             padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ddd;
@@ -273,6 +274,7 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 1340px;
         }
 
         .prescription-list h3 {
@@ -362,6 +364,7 @@
             <option value="">Select Before/After Food</option>
             <option value="before">Before Food</option>
             <option value="after">After Food</option>
+            <option value="none">None</option>
         </select>
         <button type="submit">Add Prescription</button>
     </form>
@@ -390,12 +393,12 @@
                 <td>{{ prescription.timing }}</td>
                 <td>{{ prescription.get_before_after_food_display }}</td>
                 <td>{{ prescription.prescribed_at|date:"Y-m-d H:i" }}</td>
-                <td>
-                    {% comment %} <form method="post" action="{% url 'delete_prescription' prescription.id %}" style="display:inline;">
+                {% comment %}<td>
+                     <form method="post" action="{% url 'delete_prescription' prescription.id %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" style="background-color: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Delete</button>
-                    </form> {% endcomment %}
-                </td>
+                    </form> 
+                </td>{% endcomment %}
             </tr>
             {% endfor %}
         </tbody>

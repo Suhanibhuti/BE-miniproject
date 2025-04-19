@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg,PatientReport,DoctorComment,Prescription,WeightTracking,WaterIntake,DialysisTubing,EyeExam
+from .models import User,PatientReg,StaffD,WorkingHour,Appointment,NurseReg,PatientReport,DoctorComment,Prescription,WeightTracking,WaterIntake,DialysisTubing,EyeExam,BloodPressureReading,CholesterolReading,ECGReading
 from .forms import PatientForm,PatientReportForm,DoctorCommentForm,WeightTrackingForm,WaterIntakeForm,DialysisTubingForm,EyeExamForm
 from django.http import JsonResponse
 from django.contrib import messages
@@ -16,7 +16,7 @@ from .utils import email
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.db.models import Count
+from django.db.models import Count,Sum
 from django.db.models.functions import TruncDate
 
 from django.core.mail import send_mail
@@ -371,14 +371,25 @@ def staff_pat_dialysis(request, patient_id):
     end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
     tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
     
-    # Fetch water intake data for the current day
-    water_intake_data = WaterIntake.objects.filter(patient=patient.user, date__date=today)
-
+    # Fetch and aggregate water intake data by date
+    water_intake_data = WaterIntake.objects.filter(patient=patient.user) \
+        .values('date__date') \
+        .annotate(total_amount=Sum('amount')) \
+        .order_by('-date__date')
+    
+    # Calculate today's total for the chart
+    today_total = WaterIntake.objects.filter(
+        patient=patient.user,
+        date__date=timezone.now().date()
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    
     context = {
         'patient': patient,
         'weight_data': weight_data,
         'tubing_data': tubing_data,
         'water_intake_data': water_intake_data,
+        'today_total': today_total,
         'is_dialysis_doctor': is_dialysis_doctor,  # Pass this to template
         'is_eyecare_doctor': is_eyecare_doctor,
         
@@ -1150,19 +1161,28 @@ def delete_weight(request):
 def fetch_water_intake(request):
     if request.method == 'GET':
         today = timezone.now().date()
-        water_entries = WaterIntake.objects.filter(patient=request.user, date__date=today)
-        total_consumed = sum(entry.amount for entry in water_entries)
-        return JsonResponse({'total_consumed': total_consumed})
-
+        # Get today's total
+        today_total = WaterIntake.objects.filter(
+            patient=request.user, 
+            date__date=today
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        return JsonResponse({'today_total': today_total})
+    
 @csrf_exempt
 @login_required
 def fetch_water_history(request):
     if request.method == 'GET':
-        water_entries = WaterIntake.objects.filter(patient=request.user).order_by('-date')
+        # Get daily totals
+        water_data = WaterIntake.objects.filter(patient=request.user) \
+            .values('date__date') \
+            .annotate(total_amount=Sum('amount')) \
+            .order_by('-date__date')
+        
         history = [{
-            'date': entry.date.strftime('%Y-%m-%d'),
-            'amount': entry.amount
-        } for entry in water_entries]
+            'date': entry['date__date'].strftime('%Y-%m-%d'),
+            'amount': entry['total_amount']
+        } for entry in water_data]
+        
         return JsonResponse(history, safe=False)
 
 @csrf_exempt
@@ -1206,8 +1226,144 @@ def fetch_tubing_data(request):
         return JsonResponse(data, safe=False)
 
 
+@login_required
 def p_cardio(request):
-    return render(request, 'accounts/p_cardio.html')
+    if request.method == 'POST':
+        try:
+            systolic = int(request.POST.get('systolic'))
+            diastolic = int(request.POST.get('diastolic'))
+            pulse = int(request.POST.get('pulse'))
+            
+            # Determine blood pressure status
+            if systolic < 90 and diastolic < 60:
+                status = 'Hypotension'
+            elif systolic < 120 and diastolic < 80:
+                status = 'Normal'
+            elif 120 <= systolic <= 129 and diastolic < 80:
+                status = 'Elevated'
+            elif (130 <= systolic <= 139) or (80 <= diastolic <= 89):
+                status = 'Hypertension Stage 1'
+            elif systolic >= 140 or diastolic >= 90:
+                status = 'Hypertension Stage 2'
+            else:
+                status = 'Unclassified'
+                          
+            # Create and save the reading with status
+            BloodPressureReading.objects.create(
+                patient=request.user,
+                systolic=systolic,
+                diastolic=diastolic,
+                pulse=pulse,
+                status=status
+            )
+            messages.success(request, 'Blood pressure reading saved successfully!')
+            return redirect('p_cardio')
+            
+        except ValueError as e:
+            messages.error(request, 'Please enter valid numbers for all fields')
+        except Exception as e:
+            messages.error(request, 'An error occurred while saving your reading')
+
+    # Get all readings for the current user
+    bp_records = BloodPressureReading.objects.filter(patient=request.user).order_by('-record_date')
+    # Add cholesterol data to context
+    cholesterol_records = CholesterolReading.objects.filter(patient=request.user).order_by('-record_date')
+    latest_cholesterol = cholesterol_records.first() if cholesterol_records.exists() else None
+    
+    ecg_records = ECGReading.objects.filter(patient=request.user).order_by('-record_date')
+    
+    
+    # Prepare data for the chart (all readings, reversed for chronological order)
+    chart_data = {
+        'dates': [record.record_date.strftime('%Y-%m-%d %H:%M') for record in bp_records[::-1]],
+        'systolic': [record.systolic for record in bp_records[::-1]],
+        'diastolic': [record.diastolic for record in bp_records[::-1]],
+        'pulse': [record.pulse for record in bp_records[::-1]],
+    }
+    
+    return render(request, 'accounts/p_cardio.html', {
+        'bp_records': bp_records,
+        'chart_data': chart_data,
+        'cholesterol_records': cholesterol_records,
+        'latest_cholesterol': latest_cholesterol,
+        'ecg_records': ecg_records,
+        
+    })
+    
+    
+from django.template.defaulttags import register
+
+@register.filter
+def divide(value, arg):
+    try:
+        return float(value) / float(arg)
+    except (ValueError, ZeroDivisionError):
+        return None
+    
+    
+@login_required
+def p_cholesterol(request):
+    if request.method == 'POST':
+        try:
+            total = int(request.POST.get('total'))
+            ldl = int(request.POST.get('ldl'))
+            hdl = int(request.POST.get('hdl'))
+            triglycerides = int(request.POST.get('triglycerides'))
+            
+            # Determine cholesterol status
+            if total < 200 and ldl < 100 and hdl >= 60 and triglycerides < 150:
+                status = 'Optimal'
+            elif (200 <= total <= 239) or (100 <= ldl <= 159) or (150 <= triglycerides <= 199):
+                status = 'Borderline High'
+            elif total >= 240 or ldl >= 160 or triglycerides >= 200:
+                status = 'High'
+            elif hdl < 40:
+                status = 'Low HDL Risk'
+            else:
+                status = 'Unclassified'
+                          
+            # Create and save the reading with status
+            CholesterolReading.objects.create(
+                patient=request.user,
+                total=total,
+                ldl=ldl,
+                hdl=hdl,
+                triglycerides=triglycerides,
+                status=status
+            )
+            messages.success(request, 'Cholesterol reading saved successfully!')
+            return redirect('p_cardio')  # Redirect back to cardio page
+            
+        except ValueError as e:
+            messages.error(request, 'Please enter valid numbers for all fields')
+        except Exception as e:
+            messages.error(request, 'An error occurred while saving your reading')
+
+    # Always redirect back to p_cardio even for GET requests
+    return redirect('p_cardio')
+
+
+
+@login_required
+def p_ecg(request):
+    if request.method == 'POST':
+        try:
+            ECGReading.objects.create(
+                patient=request.user,
+                heart_rate=int(request.POST.get('heart_rate')),
+                pr_interval=int(request.POST.get('pr_interval')),
+                qrs_duration=int(request.POST.get('qrs_duration')),
+                qt_interval=int(request.POST.get('qt_interval')),
+                qtc=int(request.POST.get('qtc'))
+            )
+            messages.success(request, 'ECG reading saved successfully!')
+        except Exception as e:
+            messages.error(request, f'Error saving ECG reading: {str(e)}')
+        return redirect('p_cardio')
+    
+    return redirect('p_cardio')
+
+
 
 @login_required
 def p_eyecare(request):

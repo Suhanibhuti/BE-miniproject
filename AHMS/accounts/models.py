@@ -128,7 +128,7 @@ class Prescription(models.Model):
     medicine_name = models.CharField(max_length=100)
     dosage = models.CharField(max_length=50)
     timing = models.CharField(max_length=50)  # e.g., "1-1-1" or "1-0-1"
-    before_after_food = models.CharField(max_length=10, choices=[('before', 'Before Food'), ('after', 'After Food')])
+    before_after_food = models.CharField(max_length=10, choices=[('before', 'Before Food'), ('after', 'After Food'), ('none', 'None')])
     prescribed_at = models.DateTimeField(auto_now_add=True)
     reminders_set = models.BooleanField(default=False)  # New field to track toggle state
 
@@ -188,3 +188,71 @@ class EyeExam(models.Model):
     
     def __str__(self):
         return f"Eye Exam for {self.patient} on {self.exam_date}"
+    
+    
+class BloodPressureReading(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blood_pressure_readings')
+    department = models.CharField(max_length=50, default='Cardiology')
+    record_date = models.DateField(auto_now_add=True) 
+    systolic = models.PositiveIntegerField()
+    diastolic = models.PositiveIntegerField()
+    pulse = models.PositiveIntegerField()
+    status = models.CharField(max_length=50, default='Normal')
+    
+    class Meta:
+        ordering = ['-record_date']
+       
+    def __str__(self):
+        return f"BP for {self.patient} on {self.record_date}"
+    
+    
+class CholesterolReading(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cholesterol_readings')
+    department = models.CharField(max_length=50, default='Cardiology')
+    record_date = models.DateTimeField(auto_now_add=True)
+    total = models.PositiveIntegerField()  # mg/dL
+    ldl = models.PositiveIntegerField()    # mg/dL
+    hdl = models.PositiveIntegerField()    # mg/dL
+    triglycerides = models.PositiveIntegerField()  # mg/dL
+    status = models.CharField(max_length=50)
+    
+    class Meta:
+        ordering = ['-record_date']
+        verbose_name = 'Cholesterol Reading'
+        verbose_name_plural = 'Cholesterol Readings'
+       
+    def __str__(self):
+        return f"Cholesterol {self.total}/{self.ldl}/{self.hdl} for {self.patient}"
+    
+    
+class ECGReading(models.Model):
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ecg_readings')
+    record_date = models.DateTimeField(auto_now_add=True)
+    heart_rate = models.PositiveSmallIntegerField()  # bpm
+    pr_interval = models.PositiveSmallIntegerField()  # ms
+    qrs_duration = models.PositiveSmallIntegerField()  # ms
+    qt_interval = models.PositiveSmallIntegerField()  # ms
+    qtc = models.PositiveSmallIntegerField()  # ms
+    
+    @property
+    def rhythm(self):
+        """Automatically determine rhythm with severity built into the name"""
+        if self.qtc > 500:
+            return "⚠️ Prolonged QT (Critical)"
+        elif self.heart_rate > 140:
+            return "⚠️ Severe Tachycardia"
+        elif self.heart_rate > 100:
+            return "↑ Tachycardia"
+        elif self.heart_rate < 40:
+            return "⚠️ Severe Bradycardia"
+        elif self.heart_rate < 60:
+            return "↓ Bradycardia"
+        elif self.pr_interval > 200:
+            return "1st Degree AV Block"
+        elif self.qrs_duration > 120:
+            return "Bundle Branch Block"
+        return "Normal Sinus Rhythm"
+
+    class Meta:
+        ordering = ['-record_date']
+        verbose_name = 'ECG Reading'

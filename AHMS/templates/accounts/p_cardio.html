@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare - Patient Dashboard</title>
+    <title>MediCare - Patient Cardiology</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <style>
@@ -92,23 +92,26 @@
             margin-top: auto;
             display: flex;
             align-items: center;
-            cursor: pointer;
             text-align: center;
             width: 150px;
-
         }
 
-        .logout-section a {
+        .logout-btn {
+            background: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
             text-decoration: none;
-            color: #fff;
-            {% comment %} display: flex; {% endcomment %}
-            align-items: center;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
         }
 
-        .logout-section img {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
+        .logout-btn:hover {
+            background: #0d5bba;
         }
 
         .content {
@@ -118,88 +121,416 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr;
             gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* Blood Pressure Card Styling */
+        .bp-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 1370px;
+            border: 1px solid #cbd5e0;
+        }
+
+        .bp-card h3 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .bp-content {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .bp-input-section {
+            flex: 1;
+            width: 450px;
+        }
+
+        .bp-chart-section {
+            flex: 2;
+            background-color: #deedf1;
+            border-radius: 18px;
+            padding: 1rem;
+        }
+
+        .bp-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .bp-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .bp-form-group input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .bp-form-group input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        .bp-save-btn {
+            background: #4299e1;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .bp-save-btn:hover {
+            background: #3182ce;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 290px;
+            width: 100%;
+        }
+
+        /* BP Records Table */
+        .bp-records-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 2rem;
         }
 
-        .card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .water-intake {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto;
-        }
-
-        .remaining-water {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
+        .bp-records-table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
             font-weight: 500;
-            width: 150px;
         }
 
-        .btn-primary {
-            background: #4285f4;
+        .bp-records-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: white;
+        }
+
+        .bp-records-table tr:hover td {
+            background-color: #f0f8ff;
+        }
+
+        /* BP Status Indicators */
+        .bp-status {
+            display: inline-block;
+            padding: 0.50rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .normal {
+            background-color: #48bb78;
             color: white;
         }
 
-        .btn-secondary {
-            background: #4285f4;
+        .elevated {
+            background-color: #f6e05e;
+            color: #744210;
+        }
+
+        .hypertension1 {
+            background-color: #ed8936;
             color: white;
         }
 
-        .btn-danger {
-            background: #dc3545;
+        .hypertension2 {
+            background-color: #e53e3e;
             color: white;
         }
 
-        .water-intake-history {
+        .hypotension {
+            background-color: #4299e1;
+            color: white;
+        }
+
+        /* Error Styling */
+        .errorlist {
+            color: #e53e3e;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .bp-content {
+                flex-direction: column;
+            }
+            
+            .bp-input-section {
+                max-width: 100%;
+            }
+            
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .menu-item {
+                margin-bottom: 0;
+            }
+
+            .logout-section {
+                margin-top: 0;
+                width: auto;
+            }
+        }
+
+
+        /* Cholesterol Specific Styles */
+        .cholesterol-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 1370px;
             margin-top: 1rem;
-            font-size: 0.9rem;
+            border: 1px solid #cbd5e0;
         }
-
-        .water-intake-entry {
+        
+        .cholesterol-card h3 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .cholesterol-content {
             display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
+            gap: 2rem;
         }
-
-        .tubing-history {
-            margin-top: 1rem;
-            font-size: 0.9rem;
+        
+        .cholesterol-input-section {
+            flex: 1;
+            width: 450px;
         }
-
-        .tubing-entry {
+        
+        .cholesterol-chart-section {
+            flex: 2;
+            background-color: #deedf1;
+            border-radius: 18px;
+            padding: 1rem;
+        }
+        
+        /* Cholesterol Status Indicators */
+        .cholesterol-status {
+            display: inline-block;
+            padding: 0.50rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .optimal {
+            background-color: #48bb78;
+            color: white;
+        }
+        
+        .borderline {
+            background-color: #f6e05e;
+            color: #744210;
+        }
+        
+        .high {
+            background-color: #e53e3e;
+            color: white;
+        }
+        
+        .low-risk {
+            background-color: #4299e1;
+            color: white;
+        }
+        
+        /* Chart container styles */
+        .chart-container {
             display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
+            flex-direction: column;
+            gap: 1rem;
         }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+        
+        .radar-chart-wrapper {
+            height: 350px;
+            width: 100%;
+        }
+        
+        /* Tabs for switching between chart views */
+        .chart-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .chart-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .chart-tab.active {
+            border-bottom: 2px solid #4299e1;
+            color: #4299e1;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cholesterol-content {
+                flex-direction: column;
+            }
+            
+            .cholesterol-input-section {
+                max-width: 100%;
+            }
+        }
+
+
+        /* ECG Specific Styles */
+.ecg-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    width: 1370px;
+    margin-top: 2rem;
+    border: 1px solid #cbd5e0;
+}
+
+.ecg-content {
+    display: flex;
+    gap: 2rem;
+}
+
+.ecg-input-section {
+    flex: 1;
+    width: 450px;
+}
+
+.ecg-chart-section {
+    flex: 2;
+    background-color: #deedf1;
+    border-radius: 18px;
+    padding: 1rem;
+}
+
+.ecg-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.ecg-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.ecg-form-group input,
+.ecg-form-group select {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* ECG Status Indicators */
+.ecg-status {
+    display: inline-block;
+    padding: 0.50rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+}
+
+.ecg-status.normal {
+    background-color: #48bb78; /* Green */
+}
+
+.ecg-status.warning {
+    background-color: #f6e05e; /* Yellow */
+    color: #744210;
+}
+
+.ecg-status.critical {
+    background-color: #e53e3e; /* Red */
+}
+
+.ecg-records-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+}
+
+.ecg-records-table th {
+    background-color: #3498db;
+    color: white;
+    padding: 0.8rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+.ecg-records-table td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: white;
+}
+
+.highlight {
+    background-color: #fff3cd;  /* Light yellow */
+    font-weight: 500;
+}
+
+.units-row th {
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: #6c757d;
+    padding-top: 0;
+}
+
     </style>
 </head>
 <body>
@@ -209,29 +540,781 @@
             MediCare
         </a>
         <div class="admin-profile">
-            <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }} </a></span>
+            <span><a href="{% url 'p_reg' %}">{{ request.user.patient_profile.full_name }}</a></span>
             <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
         </div>
     </div>
 
     <div class="main-container">
         <aside class="sidebar">
-            <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Appointment Icon"> Details</a>
-                <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
-                <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Reminder Icon"> Prescription</a>
-                <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
-                <a href="{% url 'p_dialysis' %}" class="menu-item  "><img src="{{ MEDIA_URL }}dialysis.png" alt="Report Icon"> Dialysis</a>
-                <a href="{% url 'p_cardio' %}" class="menu-item active "><img src="{{ MEDIA_URL }}cardio.png" alt="Report Icon"> Cardiology</a>
-                <a href="{% url 'p_eyecare' %}" class="menu-item  "><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
+            <a href="{% url 'p_det' %}" class="menu-item"><img src="{{ MEDIA_URL }}Details.png" alt="Details Icon"> Details</a>
+            <a href="{% url 'p_dash' %}" class="menu-item"><img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment</a>
+            <a href="{% url 'p_pres' %}" class="menu-item"><img src="{{ MEDIA_URL }}Add Reminder.png" alt="Prescription Icon"> Prescription</a>
+            <a href="{% url 'p_rep' %}" class="menu-item"><img src="{{ MEDIA_URL }}Test Results.png" alt="Report Icon"> Report</a>
+            <a href="{% url 'p_dialysis' %}" class="menu-item"><img src="{{ MEDIA_URL }}dialysis.png" alt="Dialysis Icon"> Dialysis</a>
+            <a href="{% url 'p_cardio' %}" class="menu-item active"><img src="{{ MEDIA_URL }}cardio.png" alt="Cardiology Icon"> Cardiology</a>
+            <a href="{% url 'p_eyecare' %}" class="menu-item"><img src="{{ MEDIA_URL }}eye.png" alt="Eyecare Icon"> Eyecare</a>
 
-
-            
             <div class="logout-section">
-                {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
-                <a href="{% url "logoutp" %}" class='btn btn-secondary'> Logout </a>
+                <a href="{% url 'logoutp' %}" class="logout-btn">Logout</a>
             </div>
         </aside>
 
+        <main class="content">
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="grid-container">
+                <!-- Blood Pressure Card -->
+                <div class="bp-card">
+                    <h3>Blood Pressure Tracking</h3>
+                    
+                    <div class="bp-content">
+                        <!-- Input Section -->
+                        <div class="bp-input-section">
+                            <form method="post" action="{% url 'p_cardio' %}" class="bp-form">
+                                {% csrf_token %}
+                                
+                                <div class="bp-form-group">
+                                    <label for="systolic">Systolic (mmHg)</label>
+                                    <input type="number" id="systolic" name="systolic" required>
+                                    <small class="form-text text-muted">
+                                        Normal: &lt;120 mmHg<br>
+                                    </small>
+                                    {% if form.systolic.errors %}
+                                        <ul class="errorlist">
+                                            {% for error in form.systolic.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="bp-form-group">
+                                    <label for="diastolic">Diastolic (mmHg)</label>
+                                    <input type="number" id="diastolic" name="diastolic" required>
+                                    <small class="form-text text-muted">
+                                        Normal: &lt;80 mmHg<br>
+                                    </small>
+                                    {% if form.diastolic.errors %}
+                                        <ul class="errorlist">
+                                            {% for error in form.diastolic.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="bp-form-group">
+                                    <label for="pulse">Pulse Rate (bpm)</label>
+                                    <input type="number" id="pulse" name="pulse" required>
+                                    <small class="form-text text-muted">
+                                        Normal resting: 60-100 bpm<br>
+                                        Athletes: 40-60 bpm<br>
+                                    </small>
+                                    {% if form.pulse.errors %}
+                                        <ul class="errorlist">
+                                            {% for error in form.pulse.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                                
+                                <button type="submit" class="bp-save-btn">Save Reading</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Chart Section -->
+                        <div class="bp-chart-section">
+                            <div class="chart-wrapper">
+                                <canvas id="bpChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- History Table -->
+                    <table class="bp-records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Systolic</th>
+                                <th>Diastolic</th>
+                                <th>Pulse</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in bp_records %}
+                            <tr>
+                                <td>{{ record.record_date|date:"Y-m-d" }}</td>
+                                <td>{{ record.systolic }}</td>
+                                <td>{{ record.diastolic }}</td>
+                                <td>{{ record.pulse }}</td>
+                                <td>
+                                    {% if record.status == "Normal" %}
+                                        <span class="bp-status normal">Normal</span>
+                                    {% elif record.status == "Elevated" %}
+                                        <span class="bp-status elevated">Elevated</span>
+                                    {% elif record.status == "Hypertension Stage 1" %}
+                                        <span class="bp-status hypertension1">Hypotension Stage 1</span>
+                                    {% elif record.status == "Hypertension Stage 2" %}
+                                        <span class="bp-status hypertension2">Hypotension Stage 2</span>
+                                    {% elif record.status == "Hypotension" %}
+                                        <span class="bp-status hypotension">Hypotension</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">No blood pressure records found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <div class="grid-container">
+                <!-- Cholesterol Card -->
+                <div class="cholesterol-card">
+                    <h3>Cholesterol Tracking</h3>
+                    
+                    <div class="cholesterol-content">
+                        <!-- Input Section -->
+                        <div class="cholesterol-input-section">
+                            <form method="post" action="{% url 'p_cholesterol' %}" class="cholesterol-form">
+                                {% csrf_token %}
+                                
+                                <div class="bp-form-group">
+                                    <label for="total">Total Cholesterol (mg/dL)</label>
+                                    <input type="number" id="total" name="total" required min="50" max="500">
+                                    <small class="form-text text-muted">Normal: &lt;200 mg/dL</small>
+                                </div>
+                                
+                                <div class="bp-form-group">
+                                    <label for="ldl">LDL Cholesterol (mg/dL)</label>
+                                    <input type="number" id="ldl" name="ldl" required min="30" max="300">
+                                    <small class="form-text text-muted">Optimal: &lt;100 mg/dL</small>
+                                </div>
+                                
+                                <div class="bp-form-group">
+                                    <label for="hdl">HDL Cholesterol (mg/dL)</label>
+                                    <input type="number" id="hdl" name="hdl" required min="20" max="100">
+                                    <small class="form-text text-muted">Good: ≥60 mg/dL</small>
+                                </div>
+                                
+                                <div class="bp-form-group">
+                                    <label for="triglycerides">Triglycerides (mg/dL)</label>
+                                    <input type="number" id="triglycerides" name="triglycerides" required min="30" max="500">
+                                    <small class="form-text text-muted">Normal: &lt;150 mg/dL</small>
+                                </div>
+                                
+                                <button type="submit" class="bp-save-btn">Save Reading</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Chart Section -->
+                        <div class="cholesterol-chart-section">
+                            <div class="chart-container">
+                                <div class="chart-tabs">
+                                    <div class="chart-tab active" onclick="switchChart('radar')">Radar View</div>
+                                    <div class="chart-tab" onclick="switchChart('trend')">Trend View</div>
+                                </div>
+                                
+                                <div id="radarChartContainer" class="radar-chart-wrapper">
+                                    <canvas id="cholesterolRadarChart"></canvas>
+                                </div>
+                                
+                                <div id="trendChartContainer" class="chart-wrapper" style="display: none;">
+                                    <canvas id="cholesterolTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- History Table -->
+                    <table class="bp-records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Total</th>
+                                <th>LDL</th>
+                                <th>HDL</th>
+                                <th>Triglycerides</th>
+                                <th>Ratio</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in cholesterol_records %}
+                            <tr>
+                                <td>{{ record.record_date|date:"Y-m-d" }}</td>
+                                <td>{{ record.total }}</td>
+                                <td>{{ record.ldl }}</td>
+                                <td>{{ record.hdl }}</td>
+                                <td>{{ record.triglycerides }}</td>
+                                <td>{{ record.total|divide:record.hdl|floatformat:1 }}</td>
+                                <td>
+                                    {% if record.status == "Optimal" %}
+                                        <span class="cholesterol-status optimal">Optimal</span>
+                                    {% elif record.status == "Borderline High" %}
+                                        <span class="cholesterol-status borderline">Borderline</span>
+                                    {% elif record.status == "High" %}
+                                        <span class="cholesterol-status high">High</span>
+                                    {% elif record.status == "Low HDL Risk" %}
+                                        <span class="cholesterol-status low-risk">Low HDL</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7">No cholesterol records found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+           <!-- ECG Card -->
+<div class="ecg-card">
+    <h3>ECG Tracking</h3>
+    
+    <div class="ecg-content">
+        <!-- Input Section -->
+        <div class="ecg-input-section">
+            <form method="post" action="{% url 'p_ecg' %}" class="ecg-form">
+                {% csrf_token %}
+                
+                <!-- Numeric Parameters -->
+                <div class="ecg-form-group">
+                    <label for="heart_rate">Heart Rate (bpm)</label>
+                    <input type="number" id="heart_rate" name="heart_rate" min="30" max="200" required>
+                    <small class="form-text text-muted">
+                        Normal: 60–100 bpm<br>
+                       
+                    </small>
+                </div>
+                
+                <div class="ecg-form-group">
+                    <label for="pr_interval">PR Interval (ms)</label>
+                    <input type="number" id="pr_interval" name="pr_interval" min="80" max="300" required>
+                    <small class="form-text text-muted">Normal: 120–200 ms</small>
+                </div>
+                
+                <div class="ecg-form-group">
+                    <label for="qrs_duration">QRS Duration (ms)</label>
+                    <input type="number" id="qrs_duration" name="qrs_duration" min="60" max="200" required>
+                    <small class="form-text text-muted">Normal: <120 ms</small>
+                </div>
+                
+                <div class="ecg-form-group">
+                    <label for="qt_interval">QT Interval (ms)</label>
+                    <input type="number" id="qt_interval" name="qt_interval" min="300" max="600" required>
+                    <small class="form-text text-muted">Normal: 350–440 ms</small>
+                </div>
+                
+                <div class="ecg-form-group">
+                    <label for="qtc">QTc Interval (ms)</label>
+                    <input type="number" id="qtc" name="qtc" min="300" max="600" required>
+                    <small class="form-text text-muted">
+                        Normal: <450 ms (men), <460 ms (women)<br>
+                        {% comment %} Prolonged: >500 ms (risk of arrhythmia) {% endcomment %}
+                    </small>
+                </div>
+                
+                <button type="submit" class="bp-save-btn">Save ECG Reading</button>
+            </form>
+        </div>
         
+        <!-- Chart Section -->
+        <div class="ecg-chart-section">
+            <div class="chart-container">
+                <div class="chart-tabs">
+                    <div class="chart-tab active" onclick="switchEcgChart('rate')">Heart Rate</div>
+                    <div class="chart-tab" onclick="switchEcgChart('qtc')">QTc Trends</div>
+                    <div class="chart-tab" onclick="switchEcgChart('intervals')">Intervals</div>
+                </div>
+                
+                <div id="ecgRateChartContainer" class="chart-wrapper">
+                    <canvas id="ecgRateChart"></canvas>
+                </div>
+                
+                <div id="ecgQtcChartContainer" class="chart-wrapper" style="display: none;">
+                    <canvas id="ecgQtcChart"></canvas>
+                </div>
+                
+                <div id="ecgIntervalsChartContainer" class="chart-wrapper" style="display: none;">
+                    <canvas id="ecgIntervalsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- History Table - Comprehensive Version -->
+<table class="ecg-records-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>HR(bpm)</th>
+            <th>PR(ms)</th>
+            <th>QRS(ms)</th>
+            <th>QT(ms)</th>
+            <th>QTc(ms)</th>
+            <th>Rhythm</th>
+        </tr>
+        {% comment %} <tr class="units-row">
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr> {% endcomment %}
+    </thead>
+    <tbody>
+        {% for record in ecg_records %}
+        <tr>
+            <td>{{ record.record_date|date:"M d" }}</td>
+            <td class="{% if record.heart_rate > 100 or record.heart_rate < 60 %}highlight{% endif %}">
+                {{ record.heart_rate }}
+            </td>
+            <td class="{% if record.pr_interval > 200 %}highlight{% endif %}">
+                {{ record.pr_interval }}
+            </td>
+            <td class="{% if record.qrs_duration > 120 %}highlight{% endif %}">
+                {{ record.qrs_duration }}
+            </td>
+            <td>{{ record.qt_interval }}</td>
+            <td class="{% if record.qtc > 450 %}highlight{% endif %}">
+                {{ record.qtc }}
+            </td>
+            <td>
+                {% if "⚠️" in record.rhythm %}
+                    <span class="ecg-status critical">{{ record.rhythm }}</span>
+                {% elif "↑" in record.rhythm or "↓" in record.rhythm %}
+                    <span class="ecg-status warning">{{ record.rhythm }}</span>
+                {% else %}
+                    <span class="ecg-status normal">{{ record.rhythm }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7">No ECG records found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+
+
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prepare data for the chart
+            const dates = [];
+            const systolicData = [];
+            const diastolicData = [];
+            
+            {% for record in bp_records %}
+                dates.push("{{ record.record_date|date:'Y-m-d' }}");
+                systolicData.push({{ record.systolic }});
+                diastolicData.push({{ record.diastolic }});
+            {% endfor %}
+            
+            // Create the chart
+            const ctx = document.getElementById('bpChart').getContext('2d');
+            const bpChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Systolic (mmHg)',
+                            data: systolicData,
+                            borderColor: '#e53e3e',
+                            backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Diastolic (mmHg)',
+                            data: diastolicData,
+                            borderColor: '#4299e1',
+                            backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 200,
+                            title: {
+                                display: true,
+                                text: 'Blood Pressure (mmHg)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Radar Chart Data
+            const latestRecord = {% if latest_cholesterol %}{
+                total: {{ latest_cholesterol.total }},
+                ldl: {{ latest_cholesterol.ldl }},
+                hdl: {{ latest_cholesterol.hdl }},
+                triglycerides: {{ latest_cholesterol.triglycerides }}
+            }{% else %}null{% endif %};
+            
+            // Create Radar Chart if we have data
+            if (latestRecord) {
+                const radarCtx = document.getElementById('cholesterolRadarChart').getContext('2d');
+                const radarChart = new Chart(radarCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Total Cholesterol', 'LDL', 'HDL', 'Triglycerides'],
+                        datasets: [
+                            {
+                                label: 'Your Levels',
+                                data: [latestRecord.total, latestRecord.ldl, latestRecord.hdl, latestRecord.triglycerides],
+                                backgroundColor: 'rgba(229, 62, 62, 0.5)',
+                                borderColor: 'rgba(229, 62, 62, 0.5)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(229, 62, 62, 0.5)'
+                            },
+                            {
+                                label: 'Optimal Levels',
+                                data: [200, 100, 60, 150],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(54, 162, 235, 1)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: {
+                                    display: true
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 300,
+                                ticks: {
+                                    stepSize: 50
+                                }
+                            }
+                        },
+                        elements: {
+                            line: {
+                                tension: 0.1
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Prepare data for trend chart
+            const cholesterolDates = [];
+            const totalData = [];
+            const ldlData = [];
+            const hdlData = [];
+            const triglyceridesData = [];
+            
+            {% for record in cholesterol_records %}
+                cholesterolDates.push("{{ record.record_date|date:'Y-m-d' }}");
+                totalData.push({{ record.total }});
+                ldlData.push({{ record.ldl }});
+                hdlData.push({{ record.hdl }});
+                triglyceridesData.push({{ record.triglycerides }});
+            {% endfor %}
+            
+            // Create Trend Chart if we have data
+            if (cholesterolDates.length > 0) {
+                const trendCtx = document.getElementById('cholesterolTrendChart').getContext('2d');
+                const trendChart = new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: cholesterolDates,
+                        datasets: [
+                            {
+                                label: 'Total Cholesterol',
+                                data: totalData,
+                                borderColor: '#e53e3e',
+                                backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'LDL',
+                                data: ldlData,
+                                borderColor: '#ed8936',
+                                backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'HDL',
+                                data: hdlData,
+                                borderColor: '#48bb78',
+                                backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Triglycerides',
+                                data: triglyceridesData,
+                                borderColor: '#4299e1',
+                                backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 0,
+                                max: 300,
+                                title: {
+                                    display: true,
+                                    text: 'mg/dL'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        function switchChart(chartType) {
+            const radarTab = document.querySelector('.chart-tab:nth-child(1)');
+            const trendTab = document.querySelector('.chart-tab:nth-child(2)');
+            const radarContainer = document.getElementById('radarChartContainer');
+            const trendContainer = document.getElementById('trendChartContainer');
+            
+            if (chartType === 'radar') {
+                radarTab.classList.add('active');
+                trendTab.classList.remove('active');
+                radarContainer.style.display = 'block';
+                trendContainer.style.display = 'none';
+            } else {
+                radarTab.classList.remove('active');
+                trendTab.classList.add('active');
+                radarContainer.style.display = 'none';
+                trendContainer.style.display = 'block';
+            }
+        }
+        
+
+
+        // ECG Chart Logic
+document.addEventListener('DOMContentLoaded', function() {
+    // Prepare ECG data
+    const ecgDates = [];
+    const heartRateData = [];
+    const qtcData = [];
+    const prData = [];
+    const qrsData = [];
+    const qtData = [];
+    
+    {% for record in ecg_records %}
+        ecgDates.push("{{ record.record_date|date:'Y-m-d' }}");
+        heartRateData.push({{ record.heart_rate }});
+        qtcData.push({{ record.qtc }});
+        prData.push({{ record.pr_interval }});
+        qrsData.push({{ record.qrs_duration }});
+        qtData.push({{ record.qt_interval }});
+    {% endfor %}
+    
+    // Heart Rate Chart
+    const rateCtx = document.getElementById('ecgRateChart').getContext('2d');
+    const rateChart = new Chart(rateCtx, {
+        type: 'line',
+        data: {
+            labels: ecgDates,
+            datasets: [{
+                label: 'Heart Rate (bpm)',
+                data: heartRateData,
+                borderColor: '#e53e3e',
+                backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 40,
+                    max: 150,
+                    title: { display: true, text: 'Heart Rate (bpm)' }
+                }
+            },
+            plugins: {
+                annotation: {
+                    annotations: {
+                        normalMin: {
+                            type: 'line',
+                            yMin: 60,
+                            yMax: 60,
+                            borderColor: '#48bb78',
+                            borderWidth: 1,
+                            label: {
+                                content: 'Normal Range',
+                                position: 'left'
+                            }
+                        },
+                        normalMax: {
+                            type: 'line',
+                            yMin: 100,
+                            yMax: 100,
+                            borderColor: '#48bb78',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // QTc Chart
+    const qtcCtx = document.getElementById('ecgQtcChart').getContext('2d');
+    const qtcChart = new Chart(qtcCtx, {
+        type: 'line',
+        data: {
+            labels: ecgDates,
+            datasets: [{
+                label: 'QTc Interval (ms)',
+                data: qtcData,
+                borderColor: '#3182ce',
+                backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 300,
+                    max: 600,
+                    title: { display: true, text: 'QTc (ms)' }
+                }
+            },
+            plugins: {
+                annotation: {
+                    annotations: {
+                        dangerZone: {
+                            type: 'line',
+                            yMin: 500,
+                            yMax: 500,
+                            borderColor: '#e53e3e',
+                            borderWidth: 2,
+                            label: {
+                                content: 'Danger Zone',
+                                position: 'left'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Intervals Chart
+    const intervalsCtx = document.getElementById('ecgIntervalsChart').getContext('2d');
+    const intervalsChart = new Chart(intervalsCtx, {
+        type: 'line',
+        data: {
+            labels: ecgDates,
+            datasets: [
+                {
+                    label: 'PR Interval (ms)',
+                    data: prData,
+                    borderColor: '#ed8936',
+                    backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                    tension: 0.1
+                },
+                {
+                    label: 'QRS Duration (ms)',
+                    data: qrsData,
+                    borderColor: '#48bb78',
+                    backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                    tension: 0.1
+                },
+                {
+                    label: 'QT Interval (ms)',
+                    data: qtData,
+                    borderColor: '#4299e1',
+                    backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                    tension: 0.1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 0,
+                    max: 600,
+                    title: { display: true, text: 'Duration (ms)' }
+                }
+            }
+        }
+    });
+});
+
+function switchEcgChart(chartType) {
+    const tabs = document.querySelectorAll('.ecg-chart-section .chart-tab');
+    const containers = [
+        document.getElementById('ecgRateChartContainer'),
+        document.getElementById('ecgQtcChartContainer'),
+        document.getElementById('ecgIntervalsChartContainer')
+    ];
+    
+    tabs.forEach((tab, index) => {
+        if ((chartType === 'rate' && index === 0) || 
+            (chartType === 'qtc' && index === 1) ||
+            (chartType === 'intervals' && index === 2)) {
+            tab.classList.add('active');
+            containers[index].style.display = 'block';
+        } else {
+            tab.classList.remove('active');
+            containers[index].style.display = 'none';
+        }
+    });
+}
+
+
+    </script>
 </body>
 </html>

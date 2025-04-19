@@ -86,9 +86,10 @@
             background-color: #D2EBF2;
             border-radius: 8px;
             padding: 20px;
-            margin-bottom: 30px;
+            {% comment %} margin-bottom: 30px; {% endcomment %}
             margin-top: 20px;
             font-family: 'Inter', sans-serif;
+            width: 1340px;
         }
         .welcome-card h2 {
             margin-top: 0;
@@ -181,55 +182,61 @@
             width: 150px;
         }
 
-        .department-section {
-            margin-top: 20px;
+        /* CHART SECTION STYLES (ONLY THIS PART CHANGED) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            {% comment %} margin-top: 2rem; {% endcomment %}
         }
+
         .department-card {
             background-color: #ffffff;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            {% comment %} margin-bottom: 20px; {% endcomment %}
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        .department-card h3 {
-            margin-top: 0;
-            font-weight: 600;
-            color: #2D6CBF;
-        }
+
         .chart-container {
-            margin-top: 20px;
+            margin: 20px auto;
+            height: 250px;
+            width: 100%;
         }
+
+        .water-intake {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .remaining-water {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
         .history-table {
-            width: 50%;
+            width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
         }
+
         .history-table th, .history-table td {
             padding: 8px;
             border: 1px solid #ddd;
             text-align: left;
         }
+
         .history-table th {
             background-color: #f1f5f9;
         }
-
-
-        /* Adjust chart container size */
-        .chart-container {
-            margin-top: 20px;
-            height: 200px; /* Reduced height */
-            width: 400px;  /* Reduced width */
-        }
-
-        /* Adjust table and card sizes */
-        .department-card {
-            padding: 15px; /* Reduced padding */
-        }
-
-        .history-table {
-            font-size: 14px; /* Smaller font size */
-        }
-
     </style>
 </head>
 <body>
@@ -276,78 +283,12 @@
                     <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
                 </div>
 
-                {% comment %} <div class="welcome-card">
-                     <h2>Welcome {{ full_name }}!</h2> 
-                <div class="patient-details">
-                    <h3>Patient Details</h3>
-                    <div class="detail-row">
-                        <div class="detail-label">Full Name</div>
-                        <div class="detail-value">{{ patient.full_name }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Date of Birth</div>
-                        <div class="detail-value">{{ patient.date_of_birth }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Email</div>
-                        <div class="detail-value">{{ patient.email|default:"N/A" }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Mobile Number</div>
-                        <div class="detail-value">{{ patient.mobile_number }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Gender</div>
-                        <div class="detail-value">{{ patient.gender }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Age</div>
-                        <div class="detail-value">{{ patient.age }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Blood Group</div>
-                        <div class="detail-value">{{ patient.blood_group }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Marital Status</div>
-                        <div class="detail-value">{{ patient.marital_status }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Address</div>
-                        <div class="detail-value">{{ patient.address }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Emergency Contact Name</div>
-                        <div class="detail-value">{{ patient.emergency_contact_name }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Emergency Contact Number</div>
-                        <div class="detail-value">{{ patient.emergency_contact_number }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Occupation</div>
-                        <div class="detail-value">{{ patient.occupation }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Habits</div>
-                        <div class="detail-value">{{ patient.habits|default:"N/A" }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Medical History</div>
-                        <div class="detail-value">{{ patient.medical_history }}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Disease</div>
-                        <div class="detail-value">{{ patient.disease }}</div>
-                    </div>
-                </div>
-            </div> {% endcomment %}
-                
- 
-             
-                <!-- Department-Specific Section -->
-                {% if is_dialysis_doctor %}
-                <div class="department-section">
+
+                <div class="welcome-card">
+
+                <!-- Only the chart grid section has been modified below -->
+                <div class="grid-container">
+                    <!-- Weight Tracking -->
                     <div class="department-card">
                         <h3>Weight Tracking</h3>
                         <div class="chart-container">
@@ -355,12 +296,13 @@
                         </div>
                     </div>
 
+                    <!-- Dialysis Tubing -->
                     <div class="department-card">
                         <h3>Dialysis Tubing</h3>
                         <div class="chart-container">
                             <canvas id="tubingChart"></canvas>
                         </div>
-                        <div class="tubing-history">
+                        {% comment %} <div class="tubing-history">
                             <h4>Tubing History</h4>
                             <table class="history-table">
                                 <thead>
@@ -378,41 +320,45 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
 
-                    <div class="department-card">
-                        <h3>Water Intake</h3>
-                        <div class="chart-container">
-                            <canvas id="waterIntakeChart"></canvas>
-                        </div>
-                        <div class="water-intake-history">
-                            <h4>Water Intake History</h4>
-                            <table class="history-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Amount (ml)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for entry in water_intake_data %}
-                                    <tr>
-                                        <td>{{ entry.date|date:"Y-m-d" }}</td>
-                                        <td>{{ entry.amount }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <!-- Water Intake Card -->
+<div class="department-card">
+    <h3>Water Intake</h3>
+    <div class="water-intake">
+        <canvas id="waterIntakeChart"></canvas>
+        <div class="remaining-water">
+            <span id="waterRemaining">0</span>ml
+        </div>
+    </div>
+    <div class="water-intake-history">
+        <h4>Water Intake History</h4>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Total Amount (ml)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in water_intake_data %}
+                <tr>
+                    <td>{{ entry.date__date|date:"Y-m-d" }}</td>
+                    <td>{{ entry.total_amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">No water intake data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
                     </div>
                 </div>
-                {% comment %} {% endif %} {% endcomment %}
-                {% else %}
-                <div class="department-section">
-                    <p>You don't have permission to view dialysis information.</p>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
@@ -433,7 +379,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Allow chart to resize
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false
@@ -470,7 +416,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false, // Allow chart to resize
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         display: false
@@ -495,31 +441,32 @@
             }
         });
 
-        // Initialize the water intake chart
-    const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
-    const waterChart = new Chart(waterCtx, {
-        type: 'doughnut',
-        data: {
-            labels: [{% for entry in water_intake_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
-            datasets: [{
-                label: 'Water Intake (ml)',
-                data: [{% for entry in water_intake_data %}{{ entry.amount }},{% endfor %}],
-                backgroundColor: [
-                    '#4285f4', // Color for water intake
-                    '#e0e0e0'  // Color for remaining water
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
+        // Use today's total for the chart
+const todayWaterConsumed = {{ today_total }};
+const totalWater = 1000; // 1 liter limit
+
+// Initialize the water intake chart
+const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
+const waterChart = new Chart(waterCtx, {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [todayWaterConsumed, Math.max(0, totalWater - todayWaterConsumed)],
+            backgroundColor: ['#4285f4', '#e0e0e0']
+        }]
+    },
+    options: {
+        cutout: '70%',
+        plugins: {
+            legend: {
+                display: false
             }
         }
-    });
+    }
+});
+
+// Update remaining water display (show 0 if over limit)
+document.getElementById('waterRemaining').textContent = Math.max(0, totalWater - todayWaterConsumed);
     </script>
 </body>
 </html>
