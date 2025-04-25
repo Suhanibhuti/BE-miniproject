@@ -23,6 +23,7 @@ urlpatterns = [
     
     path('staff_pat_dialysis/<int:patient_id>/', views.staff_pat_dialysis, name='staff_pat_dialysis'),
     path('staff_pat_eyecare/<int:patient_id>/', views.staff_pat_eyecare, name='staff_pat_eyecare'),
+    path('staff_pat_cardio/<int:patient_id>/', views.staff_pat_cardio, name='staff_pat_cardio'),
     
     
     
@@ -41,7 +42,12 @@ urlpatterns = [
     path('admin_dash/', views.admin_dash, name='admin_dash'),
     
     path('login_p/', views.login_p, name='login_p'),  # Your login path
+    
     path('p_dash/', views.p_dash, name='p_dash'),
+    path('get_doctors_by_department/', views.get_doctors_by_department, name='get_doctors_by_department'),
+    path('get_doctor_details/', views.get_doctor_details, name='get_doctors_by_department'),
+    
+    
     path('p_pres/', views.p_pres, name='p_pres'),
     path('send-reminders/<str:date>/', views.send_reminders, name='send_reminders'),
     
@@ -59,7 +65,9 @@ urlpatterns = [
     
     path('fetch_water_intake/', views.fetch_water_intake, name='fetch_water_intake'),
     path('fetch_water_history/', views.fetch_water_history, name='fetch_water_history'),
+    
     path('add_water_intake/', views.add_water_intake, name='add_water_intake'),
+    path('delete-water-intake/', views.delete_water_intake, name='delete_water_intake'),
     
     path('p_cardio/', views.p_cardio, name='p_cardio'),
     path('p_cholesterol/', views.p_cholesterol, name='p_cholesterol'),

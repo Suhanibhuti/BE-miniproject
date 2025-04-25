@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Page</title>
+    <title>MediCare - Appointment</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body, html {
@@ -17,10 +17,12 @@
             display: flex;
             height: 100vh;
             flex-direction: column;
+            position: relative;
         }
         .content {
             display: flex;
             flex: 1;
+            overflow: hidden; 
         }
         .sidebar {
             width: 200px;
@@ -28,6 +30,9 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: fixed; 
+            height: calc(100vh - 64px);
+            overflow-y: auto; 
         }
         .menu-item {
             margin-bottom: 15px;
@@ -54,16 +59,30 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            margin-left: 245px; 
+            overflow-y: auto; 
+            height: calc(100vh - 64px);
         }
         .logout {
-            margin-top: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 150px; /* Same as sidebar width */
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
+            margin-top: 0;
             display: flex;
-            align-items: center;
-            cursor: pointer;
-            text-align: center;
-            width: 150px;
+            justify-content: center; 
             
         }
+
+
+        .logout a {
+            width: 100%;
+            text-align: center;
+        }
+
         .logout img {
             width: 18px;
             height: 18px;
@@ -113,16 +132,15 @@
         }
         .subform-group{
             display: flex;
-            
             flex-direction: row;
-
+            gap: 10px;
+            align-items: flex-end;
         }
         .input-field {
             flex: 1;
-         
         }
         .input-field input {
-            width: 50%;
+            width: 100%;
             padding: 8px;
             border: 1px solid #d0e2ec;
             border-radius: 5px;
@@ -141,7 +159,6 @@
             font-weight: 500;
             width: 155px;
             text-decoration: none;
-
         }
         .btn-primary {
             background: #1a73e8;
@@ -164,7 +181,6 @@
             box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
         }
         .appointment-table h3 {
-           
             padding: 8px;
             margin: 0;
             font-weight: 600;
@@ -182,7 +198,7 @@
             border-bottom: 1px solid #ddd;
         }
         .table th {
-            background-color: #e6f3f8;
+            background-color: #d3d3d3;
             color: #333;
         }
         .table-row.completed td {
@@ -199,20 +215,101 @@
         }
     
         .status-accepted {
-            background-color: #dcfce7; /* Light green */
-            color: #155724; /* Dark green */
+            background-color: #dcfce7;
+            color: #155724;
         }
     
         .status-rejected {
-            background-color: #fee2e2; /* Light red */
-            color: #721c24; /* Dark red */
+            background-color: #fee2e2;
+            color: #721c24;
         }
     
         .status-pending {
-            background-color: #dbeafe; /* Light blue */
-            color: #1e40af; /* Dark blue */
+            background-color: #dbeafe;
+            color: #1e40af;
         }
 
+        /* New styles for doctor selection form */
+        .doctor-selection-form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doctor-selection-form .input-field select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d0e2ec;
+            border-radius: 5px;
+            background-color: #eaf5fb;
+            font-size: 14px;
+            color: #000;
+        }
+        
+        .doctor-selection-form .input-field select:disabled {
+            opacity: 1;
+            color: #666;
+        }
+        
+        .doctor-selection-form .input-field select option {
+            color: #000;
+            background-color: #fff;
+        }
+        
+        .doctor-details {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #1a73e8;
+        }
+        
+        .doctor-details p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Original styling for the appointment form */
+        .original-appointment-form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .upcoming-appointment-form {
+            background-color: #ddeff4;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+            padding-top: 0px;
+        }
+        
+        .original-appointment-form .form-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-direction: column;
+        }
+        
+        .original-appointment-form .subform-group {
+            display: flex;
+            flex-direction: row;
+        }
+        
+        .original-appointment-form .input-field {
+            flex: 1;
+        }
+        
+        .original-appointment-form .input-field input {
+            width: 50%;
+            padding: 8px;
+            border: 1px solid #d0e2ec;
+            border-radius: 5px;
+            background-color: #eaf5fb;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -240,11 +337,9 @@
                 <a href="{% url 'p_eyecare' %}" class="menu-item  "><img src="{{ MEDIA_URL }}eye.png" alt="Report Icon"> Eyecare</a>
 
                 <div class="logout">
-                    {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
-                    <a href="{% url "logoutp" %}" class='btn btn-primary'> Logout </a>
+                    <a href="{% url 'logoutp' %}" class='btn btn-primary'> Logout </a>
                 </div>
             </div>
-
 
             <!-- Main Content -->
             <div class="main-content">
@@ -253,35 +348,45 @@
                     <h2>Appointment</h2>
                 </div>
 
-                <div class="appointment-form">
+                <!-- Doctor Selection Form -->
+                <div class="doctor-selection-form">
                     <div class="form-group">
-                        <div class ="subform-group">
-                        <div class="input-field">
-                            <label for="doctor">Doctor</label>
-                            <input type="text" id="doctor" placeholder="Enter Doctor">
-                        </div>
+                        <div class="subform-group">
+                            <div class="input-field">
+                                <label for="department">Department</label>
+                                <select id="department" name="department">
+                                    <option value="">Select Department</option>
+                                    {% for dept in departments %}
+                                    <option value="{{ dept }}">{{ dept }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-field">
+                                <label for="doctor">Doctor</label>
+                                <select id="doctor" name="doctor" disabled>
+                                    <option value="">Select Doctor</option>
+                                </select>
+                            </div>
                             <div class="form-buttons">
-                                <button class="btn btn-primary" id="check-availability" >🔍 Check Schedule</button>
-     
+                                <button class="btn btn-primary" id="check-availability" style="height: 40px;">🔍 Check Schedule</button>
                             </div>
                         </div> 
-                            <div class="input-field">
-                                <label for="description"></label>
-                                <input type="text" id="description" placeholder=" Working Hours" readonly>
+                        <div id="doctor-details-container" style="display: none;">
+                            <div class="doctor-details">
+                                <p><strong>Specialization:</strong> <span id="doctor-specialization"></span></p>
+                                <p><strong>Qualification:</strong> <span id="doctor-qualification"></span></p>
+                                <p><strong>Working Hours:</strong> <span id="doctor-working-hours"></span></p>
                             </div>
-                       
+                        </div>
                     </div>
-                   
                 </div>
 
-
-
-                <!-- Appointment Form -->
-                <div class="appointment-form">
+                <!-- Appointment Form - Using original styling -->
+                <div class="original-appointment-form">
                     <div class="form-group">
                         <div class="input-field">
-                            <label for="doctor">Doctor</label>
-                            <input type="text" id="doctor-input" name="doctor" placeholder="Enter Doctor">
+                            <label for="doctor-input">Doctor</label>
+                            <input type="text" id="doctor-input" name="doctor" placeholder="Doctor will be auto-filled" readonly>
                         </div>
                         <div class="subform-group">
                             <div class="input-field">
@@ -299,198 +404,258 @@
                         </div>
                     </div>
                     <div class="form-buttons">
-                        {% comment %} <button class="btn btn-check" id="check-availability" >🔍 Check Doctor Availability</button> {% endcomment %}
-
-                        <button class="btn btn-primary" id="create-appointment"> Make Appointment</button>
-                        
+                        <button class="btn btn-primary" id="create-appointment">Make Appointment</button>
                     </div>
                 </div>
-
                     
-               <!-- Upcoming Appointments Table -->
-<h3>Upcoming Appointments</h3>
-<div class="appointment-table">
-    <table class="table" id="upcoming-appointments">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Doctor</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th> <!-- Add Status Column -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in upcoming_appointments %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ appointment.doctor.full_name }}</td>
-                <td>{{ appointment.date }}</td>
-                <td>{{ appointment.start_time }}</td>
-                <td>
-                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
-                        {{ appointment.get_status_display }}
-                    </span>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No upcoming appointments.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                <!-- Upcoming Appointments Table -->
+                <div class="upcoming-appointment-form">
+                    <h3>Upcoming Appointments</h3>
+                <div class="appointment-table">
+                    <table class="table" id="upcoming-appointments">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in upcoming_appointments %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ appointment.doctor.full_name }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.start_time }}</td>
+                                <td>
+                                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">No upcoming appointments.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
 
-<!-- Old Appointments Table -->
-<h3>Old Appointments</h3>
-<div class="appointment-table">
-    <table class="table" id="old-appointments">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Doctor</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th> <!-- Add Status Column -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in old_appointments %}
-            <tr class="table-row completed">
-                <td>{{ forloop.counter }}</td>
-                <td>{{ appointment.doctor.full_name }}</td>
-                <td>{{ appointment.date }}</td>
-                <td>{{ appointment.start_time }}</td>
-                <td>
-                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
-                        {{ appointment.get_status_display }}
-                    </span>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">No old appointments.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                <!-- Old Appointments Table -->
+                <div class="upcoming-appointment-form">
+                    <h3>Old Appointments</h3>
 
+                <div class="appointment-table">
+                    <table class="table" id="old-appointments">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in old_appointments %}
+                            <tr class="table-row completed">
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ appointment.doctor.full_name }}</td>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.start_time }}</td>
+                                <td>
+                                    <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% elif appointment.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">No old appointments.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Reload the page every 5 minutes (300,000 milliseconds)
-        setTimeout(function () {
-            location.reload();
-        }, 300000); // 5 minutes
-
-        // Function to format time in 24-hour format
-        function formatTime(timeString) {
-            const [hours, minutes] = timeString.split(':');
-            return `${hours}:${minutes}`; // Ensures 24-hour format
-        }
-
-        // Check Schedule Button
         document.addEventListener('DOMContentLoaded', function () {
+            const departmentSelect = document.querySelector('#department');
+            const doctorSelect = document.querySelector('#doctor');
             const checkScheduleButton = document.querySelector('#check-availability');
-            const doctorInput = document.querySelector('#doctor');
-            const resultField = document.querySelector('#description');
+            const doctorDetailsContainer = document.querySelector('#doctor-details-container');
+            const doctorInput = document.querySelector('#doctor-input');
+            const dateInput = document.querySelector('#date');
+            const timeInput = document.querySelector('#time');
+            const descriptionInput = document.querySelector('#appointment-description');
 
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
 
-            console.log('Check Schedule Button:', checkScheduleButton);
-            console.log('Doctor Input:', doctorInput);
-            console.log('Result Field:', resultField);
-
-            if (!checkScheduleButton || !doctorInput || !resultField ) {
-                console.error('One or more elements are missing in the DOM.');
-                return;
-            }
-
-            checkScheduleButton.addEventListener('click', function () {
-                const doctorName = doctorInput.value.trim();
-
-                if (!doctorName) {
-                    resultField.value = "Please enter a doctor's name.";
-                    return;
-                }
-
-                fetch(`/accounts/get-schedule/?name=${encodeURIComponent(doctorName)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            resultField.value = `Working Hours: ${data.schedule.working_hours}`;
-                        } else {
-                            resultField.value = data.message || "Doctor's schedule not found.";
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching schedule:', error);
-                        resultField.value = "An error occurred while fetching the schedule.";
-                    });
-            });
-        });
-
-        // Create Appointment Button
-        document.addEventListener('DOMContentLoaded', function () {
-            const createAppointmentButton = document.querySelector('#create-appointment');
-
-            createAppointmentButton.addEventListener('click', function (event) {
-                event.preventDefault();
-
-                // Collect form data
-                const doctor = document.querySelector('#doctor-input').value.trim();
-                const date = document.querySelector('#date').value.trim();
-                const time = document.querySelector('#time').value.trim();
-                const description = document.querySelector('#appointment-description').value.trim();
-
-                // Validate inputs
-                if (!doctor || !date || !time || !description) {
-                    alert('Please fill in all fields.');
-                    return;
-                }
-
-                // Prepare data for submission
-                const formData = new FormData();
-                formData.append('doctor', doctor);
-                formData.append('date', date);
-                formData.append('time', time);
-                formData.append('description', description);
-
-                // Send data to backend
-                fetch('/accounts/create-appointment/', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token for Django
-                    },
-                    body: formData,
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            alert(data.message);
-                            // Clear form fields and reload the page
-                            document.querySelector('#doctor-input').value = '';
-                            document.querySelector('#date').value = '';
-                            document.querySelector('#time').value = '';
-                            document.querySelector('#appointment-description').value = '';
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                            if (data.suggested_time) {
-                                alert(`Next available slot: ${data.suggested_time}`);
+            // When department changes, load doctors for that department
+            departmentSelect.addEventListener('change', function() {
+                const department = this.value;
+                doctorSelect.disabled = !department;
+                doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
+                doctorDetailsContainer.style.display = 'none';
+                doctorInput.value = '';
+                
+                if (department) {
+                    fetch(`/accounts/get_doctors_by_department/?department=${encodeURIComponent(department)}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
                             }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.status === 'success') {
+                                data.doctors.forEach(doctor => {
+                                    const option = document.createElement('option');
+                                    option.value = doctor.id;
+                                    option.textContent = doctor.full_name;
+                                    doctorSelect.appendChild(option);
+                                });
+                            } else {
+                                console.error('Server error:', data.message);
+                                alert("Error: " + (data.message || "No doctors found for this department."));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching doctors:', error);
+                            alert("Error loading doctors. Please try again.");
+                        });
+                }
+            });
+
+            // When doctor is selected, update the doctor input in the appointment form
+            doctorSelect.addEventListener('change', function() {
+                if (this.value) {
+                    const selectedOption = this.options[this.selectedIndex];
+                    doctorInput.value = selectedOption.textContent;
+                } else {
+                    doctorInput.value = '';
+                }
+                doctorDetailsContainer.style.display = 'none';
+            });
+
+            // Check Schedule Button - shows doctor details
+            checkScheduleButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const doctorId = doctorSelect.value;
+                
+                if (!doctorId) {
+                    alert("Please select a doctor first.");
+                    return;
+                }
+
+                fetch(`/accounts/get_doctor_details/?id=${encodeURIComponent(doctorId)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            document.getElementById('doctor-specialization').textContent = data.specialization;
+                            document.getElementById('doctor-qualification').textContent = data.qualification;
+                            
+                            // Format working hours
+                            let workingHoursHtml = '';
+                            if (data.working_hours && data.working_hours.length > 0) {
+                                data.working_hours.forEach(hour => {
+                                    workingHoursHtml += `${hour.start_time} - ${hour.end_time}<br>`;
+                                });
+                            } else {
+                                workingHoursHtml = 'No working hours defined';
+                            }
+                            document.getElementById('doctor-working-hours').innerHTML = workingHoursHtml;
+                            
+                            doctorDetailsContainer.style.display = 'block';
+                        } else {
+                            alert(data.message || "Doctor details not found.");
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error creating appointment. Please try again.');
+                        console.error('Error fetching doctor details:', error);
+                        alert("An error occurred while fetching doctor details.");
                     });
             });
+
+// Create Appointment Button
+document.querySelector('#create-appointment').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    // Collect form data
+    const doctorId = doctorSelect.value;
+    const doctorName = doctorInput.value.trim();
+    const date = document.querySelector('#date').value.trim();
+    const time = document.querySelector('#time').value.trim();
+    const description = document.querySelector('#appointment-description').value.trim();
+
+    // Validate inputs
+    if (!doctorId || !doctorName || !date || !time || !description) {
+        alert('Please fill in all fields and select a doctor first.');
+        return;
+    }
+
+    // Prepare data for submission
+    const formData = new FormData();
+    formData.append('doctor_id', doctorId);
+    formData.append('doctor', doctorName);  // Using 'doctor' to match your backend
+    formData.append('date', date);
+    formData.append('time', time);
+    formData.append('description', description);
+
+    // Send data to backend
+    fetch('/accounts/create-appointment/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            // Clear form fields and reload the page
+            document.querySelector('#date').value = today;
+            document.querySelector('#time').value = '';
+            document.querySelector('#appointment-description').value = '';
+            location.reload();
+        } else {
+            alert(data.message);
+            if (data.suggested_time) {
+                const confirmReschedule = confirm(`This time is not available. Would you like to book at ${data.suggested_time} instead?`);
+                if (confirmReschedule) {
+                    const [suggestedStart] = data.suggested_time.split(' - ');
+                    document.querySelector('#time').value = suggestedStart;
+                }
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating appointment. Please try again.');
+    });
+});
+
+            // Auto-refresh every 5 minutes
+            setTimeout(function () {
+                location.reload();
+            }, 300000);
         });
     </script>
-    
 </body>
 </html>

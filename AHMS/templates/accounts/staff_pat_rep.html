@@ -478,6 +478,9 @@
                     {% if is_eyecare_doctor %}
                      <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
                     {% endif %}
+                    {% if is_cardio_doctor %}
+                    <a href="{% url 'staff_pat_cardio' patient.id %}" class="btn inactive">Cardiology</a>
+                    {% endif %}
                     <a href="{% url 'staff_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
                     <a href="{% url 'staff_pat_rep' patient.id %}" class="btn">Report</a>
                 </div>

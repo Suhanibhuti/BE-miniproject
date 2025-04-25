@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare - Patient Dashboard</title>
+    <title>MediCare - Dialysis</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <style>
@@ -29,13 +29,12 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #000;
             display: flex;
             align-items: center;
             text-decoration: none;
-            font-family: 'Inter', sans-serif;
         }
 
         .logo img {
@@ -97,11 +96,17 @@
         }
 
         .logout-section {
-            margin-top: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 250px; /* Same as sidebar width */
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
+            margin-top: 0;
             display: flex;
-            align-items: center;
-            text-align: center;
-            width: 150px;
+            {% comment %} justify-content: center; {% endcomment %}
+            justify-content: flex-start;
         }
 
         .logout-btn {
@@ -115,6 +120,7 @@
             background: #1a73e8;
             color: white;
             text-align: center;
+            
         }
 
         .logout-btn:hover {
@@ -292,35 +298,37 @@
                 </div>
 
                 <!-- Water Intake Card -->
-                <div class="card">
-                    <h3>Water Intake</h3>
-                    <div class="water-intake">
-                        <canvas id="waterIntakeChart"></canvas>
-                        <div class="remaining-water">
-                            <span id="waterRemaining">1000</span>ml
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="addWaterIntake()">+ Add 200ml</button>
-                    </div>
-                    <div id="waterLimitMessage" style="color: red; margin-top: 1rem; display: none;">
-                        You cannot have any more water today. You have reached the limit.
-                    </div>
-                    <div class="water-intake-history">
-                        <h4>Water Intake History</h4>
-                        <table class="history-table" id="waterHistoryTable">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Total (ml)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Will be populated by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<div class="card">
+    <h3>Water Intake</h3>
+    <div class="water-intake">
+        <canvas id="waterIntakeChart"></canvas>
+        <div class="remaining-water">
+            <span id="waterRemaining">1000</span>ml
+            <span>remaining</span>
+        </div>
+    </div>
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="addWaterIntake()">+ Add 200ml</button>
+        <button class="btn btn-danger" onclick="deleteWaterIntake()">Delete Last Entry</button>
+    </div>
+    <div id="waterLimitMessage" style="color: red; margin-top: 1rem; display: none;">
+        You cannot have any more water today. You have reached the limit.
+    </div>
+    <div class="water-intake-history">
+        <h4>Water Intake History</h4>
+        <table class="history-table" id="waterHistoryTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Total (ml)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</div>
             </div>
         </main>
     </div>
@@ -504,6 +512,32 @@
                 console.error('Error updating water intake:', error);
             }
         }
+
+
+        // Delete the last water intake entry
+async function deleteWaterIntake() {
+    if (confirm('Are you sure you want to delete the last water intake entry?')) {
+        try {
+            const response = await fetch("{% url 'delete_water_intake' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+            
+            if (response.ok) {
+                await updateWaterIntake();
+                alert('Last water intake entry deleted successfully!');
+            } else {
+                alert('Failed to delete water intake entry.');
+            }
+        } catch (error) {
+            console.error('Error deleting water intake:', error);
+            alert('An error occurred while deleting the entry.');
+        }
+    }
+}
 
         // Add water intake
         async function addWaterIntake() {

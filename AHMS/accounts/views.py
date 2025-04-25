@@ -285,6 +285,8 @@ def staff_pat1(request, patient_id):
             staff = StaffD.objects.get(user=request.user)
             is_dialysis_doctor = staff.department == 'Dialysis'
             is_eyecare_doctor = staff.department == 'EyeCare'
+            is_cardio_doctor = staff.department == 'Cardiology'
+            
             
         except StaffD.DoesNotExist:
             pass
@@ -295,6 +297,7 @@ def staff_pat1(request, patient_id):
         # 'department': department,
         'is_dialysis_doctor': is_dialysis_doctor,
         'is_eyecare_doctor': is_eyecare_doctor,
+        "is_cardio_doctor": is_cardio_doctor,
     }
     return render(request, 'accounts/staff_pat1.html', context)
 
@@ -354,6 +357,8 @@ def staff_pat_dialysis(request, patient_id):
             staff = StaffD.objects.get(user=request.user)
             is_dialysis_doctor = staff.department == 'Dialysis'
             is_eyecare_doctor = staff.department == 'EyeCare'
+            is_cardio_doctor = staff.department == 'Cardiology'
+        
             
         except StaffD.DoesNotExist:
             pass
@@ -392,13 +397,45 @@ def staff_pat_dialysis(request, patient_id):
         'today_total': today_total,
         'is_dialysis_doctor': is_dialysis_doctor,  # Pass this to template
         'is_eyecare_doctor': is_eyecare_doctor,
-        
+        "is_cardio_doctor": is_cardio_doctor,
     }
     return render(request, 'accounts/staff_pat_dialysis.html', context)
 
 
+@login_required
+def staff_pat_cardio(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Check if the user is a doctor and from the Cardiology department
+    is_cardio_doctor = False
+    if request.user.role == User.DOCTOR:
+        try:
+            staff = StaffD.objects.get(user=request.user)
+            is_cardio_doctor = staff.department == 'Cardiology'
+        except StaffD.DoesNotExist:
+            pass
 
+    # If not a cardiology doctor, return a 403 Forbidden response
+    if not is_cardio_doctor:
+        return HttpResponseForbidden("You don't have permission to access this page.")
 
+    # Get all readings for the patient
+    bp_records = BloodPressureReading.objects.filter(patient=patient.user).order_by('-record_date')
+    cholesterol_records = CholesterolReading.objects.filter(patient=patient.user).order_by('-record_date')
+    latest_cholesterol = cholesterol_records.first() if cholesterol_records.exists() else None
+    ecg_records = ECGReading.objects.filter(patient=patient.user).order_by('-record_date')
+    
+    context = {
+        'patient': patient,
+        'bp_records': bp_records,
+        'cholesterol_records': cholesterol_records,
+        'latest_cholesterol': latest_cholesterol,
+        'ecg_records': ecg_records,
+        'is_cardio_doctor': is_cardio_doctor,
+        'full_name': request.user.get_full_name(),
+    }
+    return render(request, 'accounts/staff_pat_cardio.html', context)
 
 
 @login_required
@@ -419,6 +456,9 @@ def staff_pat_pres(request, patient_id):
             staff = StaffD.objects.get(user=request.user)
             is_dialysis_doctor = staff.department == 'Dialysis'
             is_eyecare_doctor = staff.department == 'EyeCare'
+            is_cardio_doctor = staff.department == 'Cardiology'
+        
+            
         except StaffD.DoesNotExist:
             pass
 
@@ -428,6 +468,7 @@ def staff_pat_pres(request, patient_id):
         'is_dialysis_doctor': is_dialysis_doctor,
         'is_eyecare_doctor': is_eyecare_doctor,
         'full_name': request.user.get_full_name() or request.user.username,
+        "is_cardio_doctor": is_cardio_doctor,
     }
     return render(request, 'accounts/staff_pat_pres.html', context)
 
@@ -466,6 +507,8 @@ def staff_pat_rep(request, patient_id):
             staff = StaffD.objects.get(user=request.user)
             is_dialysis_doctor = staff.department == 'Dialysis'
             is_eyecare_doctor = staff.department == 'EyeCare'
+            is_cardio_doctor = staff.department == 'Cardiology'
+       
             
         except StaffD.DoesNotExist:
             pass
@@ -476,7 +519,7 @@ def staff_pat_rep(request, patient_id):
         'comments': comments,
         'is_dialysis_doctor': is_dialysis_doctor,
         'is_eyecare_doctor': is_eyecare_doctor,
-        
+        "is_cardio_doctor": is_cardio_doctor,
     }
     return render(request, 'accounts/staff_pat_rep.html', context)
 
@@ -570,114 +613,6 @@ def staff_reg(request):
     return render(request, 'accounts/staff_reg.html')
 
 
-
-from django.http import JsonResponse
-
-def get_schedule(request):
-    doctor_name = request.GET.get('name')
-    try:
-        doctor = StaffD.objects.get(full_name=doctor_name)
-        working_hours = WorkingHour.objects.filter(staff=doctor)
-
-        if not working_hours.exists():
-            return JsonResponse({'status': 'error', 'message': 'No working hours found for this doctor.'})
-
-        # Combine working hours into a string
-        hours = [
-            f"{hour.start_time.strftime('%I:%M %p')} to {hour.end_time.strftime('%I:%M %p')}" 
-            for hour in working_hours
-        ]
-        schedule = {
-            'name': doctor.full_name,
-            'working_hours': ', '.join(hours)
-        }
-        return JsonResponse({'status': 'success', 'schedule': schedule})
-    except StaffD.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Doctor not found'})
-
-
-
-from django.db.models import Q
-
-def create_appointment(request):
-    if request.method == 'POST':
-        doctor_name = request.POST.get('doctor')
-        patient_id = request.user.id  # Assuming the user is authenticated
-        date = request.POST.get('date')
-        start_time = request.POST.get('time')
-        description = request.POST.get('description')
-
-        try:
-            # Convert start_time to time object and calculate end_time
-            start_time_obj = datetime.strptime(start_time, '%H:%M').time()
-            end_time = (datetime.combine(datetime.today(), start_time_obj) + timedelta(minutes=15)).time()
-
-            # Fetch doctor instance
-            doctor = StaffD.objects.get(full_name=doctor_name)
-
-            # Check for overlapping appointments
-            overlapping_appointments = Appointment.objects.filter(
-                doctor=doctor,
-                date=date,
-                start_time__lt=end_time,
-                end_time__gt=start_time_obj,
-            )
-            if overlapping_appointments.exists():
-                # Suggest the next available time slot
-                existing_appointments = Appointment.objects.filter(
-                    doctor=doctor,
-                    date=date
-                ).order_by('start_time')
-
-                # Find a gap between appointments
-                for i in range(len(existing_appointments) - 1):
-                    current_end = existing_appointments[i].end_time
-                    next_start = existing_appointments[i + 1].start_time
-
-                    # Check if there's at least a 15-minute gap
-                    if (datetime.combine(datetime.today(), next_start) - datetime.combine(datetime.today(), current_end)).seconds >= 15 * 60:
-                        suggested_start = current_end
-                        suggested_end = (datetime.combine(datetime.today(), suggested_start) + timedelta(minutes=15)).time()
-                        return JsonResponse({
-                            'status': 'error',
-                            'message': 'Appointment conflicts with an existing one.',
-                            'suggested_time': f'{suggested_start.strftime("%H:%M")} - {suggested_end.strftime("%H:%M")}'
-                        })
-
-                # If no gaps, suggest a time after the last appointment
-                if existing_appointments.exists():
-                    last_end = existing_appointments.last().end_time
-                    suggested_start = last_end
-                    suggested_end = (datetime.combine(datetime.today(), suggested_start) + timedelta(minutes=15)).time()
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': 'Appointment conflicts with an existing one.',
-                        'suggested_time': f'{suggested_start.strftime("%H:%M")} - {suggested_end.strftime("%H:%M")}'
-                    })
-
-                # If no appointments exist
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Appointment conflicts with an existing one, but no suggestions are available.'
-                })
-
-            # Create new appointment
-            Appointment.objects.create(
-                doctor=doctor,
-                patient_id=patient_id,
-                date=date,
-                start_time=start_time_obj,
-                end_time=end_time,
-                description=description,
-            )
-            return JsonResponse({'status': 'success', 'message': 'Appointment created successfully.'})
-
-        except StaffD.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Doctor not found.'})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
 
 
@@ -848,37 +783,186 @@ def admin_dash(request):
 
 
 
+from django.http import JsonResponse
+
+def get_schedule(request):
+    doctor_name = request.GET.get('name')
+    try:
+        doctor = StaffD.objects.get(full_name=doctor_name)
+        working_hours = WorkingHour.objects.filter(staff=doctor)
+
+        if not working_hours.exists():
+            return JsonResponse({'status': 'error', 'message': 'No working hours found for this doctor.'})
+
+        # Combine working hours into a string
+        hours = [
+            f"{hour.start_time.strftime('%I:%M %p')} to {hour.end_time.strftime('%I:%M %p')}" 
+            for hour in working_hours
+        ]
+        schedule = {
+            'name': doctor.full_name,
+            'working_hours': ', '.join(hours)
+        }
+        return JsonResponse({'status': 'success', 'schedule': schedule})
+    except StaffD.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Doctor not found'})
+
+
+
+from django.db.models import Q
+
+def create_appointment(request):
+    if request.method == 'POST':
+        doctor_id = request.POST.get('doctor_id')
+        doctor_name = request.POST.get('doctor')
+        patient_id = request.user.id  # Assuming the user is authenticated
+        date = request.POST.get('date')
+        start_time = request.POST.get('time')
+        description = request.POST.get('description')
+
+        try:
+            # Convert start_time to time object and calculate end_time
+            start_time_obj = datetime.strptime(start_time, '%H:%M').time()
+            end_time = (datetime.combine(datetime.today(), start_time_obj) + timedelta(minutes=15)).time()
+
+            # Fetch doctor instance
+            doctor = StaffD.objects.get(full_name=doctor_name)
+
+            # Check for overlapping appointments
+            overlapping_appointments = Appointment.objects.filter(
+                doctor=doctor,
+                date=date,
+                start_time__lt=end_time,
+                end_time__gt=start_time_obj,
+            )
+            if overlapping_appointments.exists():
+                # Suggest the next available time slot
+                existing_appointments = Appointment.objects.filter(
+                    doctor=doctor,
+                    date=date
+                ).order_by('start_time')
+
+                # Find a gap between appointments
+                for i in range(len(existing_appointments) - 1):
+                    current_end = existing_appointments[i].end_time
+                    next_start = existing_appointments[i + 1].start_time
+
+                    # Check if there's at least a 15-minute gap
+                    if (datetime.combine(datetime.today(), next_start) - datetime.combine(datetime.today(), current_end)).seconds >= 15 * 60:
+                        suggested_start = current_end
+                        suggested_end = (datetime.combine(datetime.today(), suggested_start) + timedelta(minutes=15)).time()
+                        return JsonResponse({
+                            'status': 'error',
+                            'message': 'Appointment conflicts with an existing one.',
+                            'suggested_time': f'{suggested_start.strftime("%H:%M")} - {suggested_end.strftime("%H:%M")}'
+                        })
+
+                # If no gaps, suggest a time after the last appointment
+                if existing_appointments.exists():
+                    last_end = existing_appointments.last().end_time
+                    suggested_start = last_end
+                    suggested_end = (datetime.combine(datetime.today(), suggested_start) + timedelta(minutes=15)).time()
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Appointment conflicts with an existing one.',
+                        'suggested_time': f'{suggested_start.strftime("%H:%M")} - {suggested_end.strftime("%H:%M")}'
+                    })
+
+                # If no appointments exist
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Appointment conflicts with an existing one, but no suggestions are available.'
+                })
+
+            # Create new appointment
+            Appointment.objects.create(
+                doctor=doctor,
+                patient_id=patient_id,
+                date=date,
+                start_time=start_time_obj,
+                end_time=end_time,
+                description=description,
+            )
+            return JsonResponse({'status': 'success', 'message': 'Appointment created successfully.'})
+
+        except StaffD.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Doctor not found.'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+
+
+
+def get_doctors_by_department(request):
+    department = request.GET.get('department', '')
+    if not department:
+        return JsonResponse({'status': 'error', 'message': 'Department parameter is required'}, status=400)
+    
+    try:
+        doctors = StaffD.objects.filter(department=department).values('id', 'full_name')
+        return JsonResponse({
+            'status': 'success',
+            'doctors': list(doctors)
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+def get_doctor_details(request):
+    doctor_id = request.GET.get('id', '')
+    if not doctor_id:
+        return JsonResponse({'status': 'error', 'message': 'Doctor ID is required'}, status=400)
+    
+    try:
+        doctor = StaffD.objects.get(id=doctor_id)
+        working_hours = WorkingHour.objects.filter(staff=doctor).values( 'start_time', 'end_time')
+        
+        return JsonResponse({
+            'status': 'success',
+            'specialization': doctor.specialization,
+            'qualification': doctor.qualification,
+            # 'experience': f"{doctor.years_of_experience} years",
+            'working_hours': list(working_hours)
+        })
+    except StaffD.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Doctor not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+        
+        
 
 @login_required
 def p_dash(request):
     current_time = timezone.now()
-
-    # Fetch upcoming appointments
+    
+    # Get unique departments from StaffD model
+    departments = StaffD.objects.values_list('department', flat=True).distinct()
+    
     upcoming_appointments = Appointment.objects.filter(
-        Q(patient=request.user, date__gt=current_time.date()) |  # Future dates
-        Q(patient=request.user, date=current_time.date(), start_time__gt=current_time.time())  # Today but future time
+        Q(patient=request.user, date__gt=current_time.date()) |
+        Q(patient=request.user, date=current_time.date(), start_time__gt=current_time.time())
     ).order_by('date', 'start_time')
 
-    # Fetch old appointments
     old_appointments = Appointment.objects.filter(
-        Q(patient=request.user, date__lt=current_time.date()) |  # Past dates
-        Q(patient=request.user, date=current_time.date(), end_time__lte=current_time.time())  # Today but time has elapsed
+        Q(patient=request.user, date__lt=current_time.date()) |
+        Q(patient=request.user, date=current_time.date(), end_time__lte=current_time.time())
     ).order_by('-date', '-start_time')
-
-    # Format time in 24-hour format for display
-    for appointment in upcoming_appointments:
-        appointment.start_time = appointment.start_time.strftime('%H:%M')
-        appointment.end_time = appointment.end_time.strftime('%H:%M')
-
-    for appointment in old_appointments:
-        appointment.start_time = appointment.start_time.strftime('%H:%M')
-        appointment.end_time = appointment.end_time.strftime('%H:%M')
 
     context = {
         'upcoming_appointments': upcoming_appointments,
         'old_appointments': old_appointments,
+        'departments': departments,
     }
-
     return render(request, 'accounts/p_dash.html', context)
 
 
@@ -1197,6 +1281,16 @@ def add_water_intake(request):
                 amount=amount,
                 date=timezone.now()
             )
+            return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
+
+@csrf_exempt
+@login_required
+def delete_water_intake(request):
+    if request.method == 'POST':
+        last_entry = WaterIntake.objects.filter(patient=request.user).order_by('-date').first()
+        if last_entry:
+            last_entry.delete()
             return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 

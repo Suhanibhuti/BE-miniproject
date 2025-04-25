@@ -252,6 +252,45 @@ class ECGReading(models.Model):
         elif self.qrs_duration > 120:
             return "Bundle Branch Block"
         return "Normal Sinus Rhythm"
+    
+    
+    @property
+    def health_score(self):
+        """Calculate a simple health score (0-100)"""
+        score = 100
+        
+        # Heart rate deductions
+        if self.heart_rate > 140 or self.heart_rate < 40:
+            score -= 50
+        elif self.heart_rate > 120 or self.heart_rate < 50:
+            score -= 30
+        elif self.heart_rate > 100 or self.heart_rate < 60:
+            score -= 15
+            
+        # QTc deductions
+        if self.qtc > 500:
+            score -= 40
+        elif self.qtc > 450:
+            score -= 20
+            
+        # Other intervals
+        if self.pr_interval > 200:
+            score -= 15
+        if self.qrs_duration > 120:
+            score -= 15
+            
+        return max(0, min(100, score))
+    
+    @property
+    def health_status(self):
+        """Get a simple health status"""
+        score = self.health_score
+        if score >= 80:
+            return ('good', 'Healthy')
+        elif score >= 50:
+            return ('fair', 'Fair')
+        else:
+            return ('poor', 'Needs Attention')
 
     class Meta:
         ordering = ['-record_date']

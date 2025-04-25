@@ -89,24 +89,29 @@
         }
 
         .logout-section {
-            margin-top: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 250px; /* Same as sidebar width */
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
+            margin-top: 0;
             display: flex;
-            align-items: center;
-            text-align: center;
-            width: 150px;
+            {% comment %} justify-content: center; {% endcomment %}
+            justify-content: flex-start;
         }
 
         .logout-btn {
-            background: #1a73e8;
-            color: white;
             padding: 0.5rem 1rem;
             border-radius: 4px;
+            cursor: pointer;
             border: none;
             font-weight: 500;
-            cursor: pointer;
+            width: 150px;
             text-decoration: none;
-            display: inline-block;
-            width: 100%;
+            background: #1a73e8;
+            color: white;
             text-align: center;
         }
 
@@ -874,6 +879,8 @@
             <th>QT(ms)</th>
             <th>QTc(ms)</th>
             <th>Rhythm</th>
+            <th>Health Score</th>
+            <th>Health Status</th>
         </tr>
         {% comment %} <tr class="units-row">
             <th></th>
@@ -911,10 +918,18 @@
                     <span class="ecg-status normal">{{ record.rhythm }}</span>
                 {% endif %}
             </td>
+            <td>{{ record.health_score }}</td>
+            <td>
+                {% with status=record.health_status %}
+                    <span class="ecg-status {% if status.0 == 'good' %}normal{% elif status.0 == 'fair' %}warning{% else %}critical{% endif %}">
+                        {{ status.1 }}
+                    </span>
+                {% endwith %}
+            </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="7">No ECG records found</td>
+            <td colspan="9">No ECG records found</td>
         </tr>
         {% endfor %}
     </tbody>

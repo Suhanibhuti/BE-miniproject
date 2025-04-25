@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare - Patient Dashboard</title>
+    <title>MediCare - Eyecare</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <style>
@@ -16,6 +16,7 @@
 
         body {
             background-color: #f0f8ff;
+            padding-top: 50px;
         }
 
         .navbar {
@@ -25,6 +26,11 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #d2ebf2;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
 
         .logo {
@@ -57,7 +63,9 @@
         .main-container {
             display: grid;
             grid-template-columns: 250px 1fr;
-            min-height: calc(100vh - 64px);
+            {% comment %} min-height: calc(100vh - 64px); {% endcomment %}
+            position: relative;
+            height: calc(100vh - 64px); 
         }
 
         .sidebar {
@@ -65,6 +73,10 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: relative;
+            height: 100%;
+            overflow-y: auto;
+            padding-bottom: 80px;
         }
 
         .menu-item {
@@ -89,11 +101,20 @@
         }
 
         .logout-section {
+            {% comment %} position: sticky; {% endcomment %}
+            {% comment %} bottom: 20px; {% endcomment %}
             margin-top: auto;
             display: flex;
             align-items: center;
             text-align: center;
-            width: 150px;
+            {% comment %} width: 150px; {% endcomment %}
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 250px; /* Same as sidebar width */
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
         }
 
         .logout-btn {
@@ -106,7 +127,7 @@
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            width: 100%;
+            width: 150px;
             text-align: center;
         }
 
@@ -333,7 +354,8 @@
             }
 
             .menu-item {
-                margin-bottom: 0;
+                {% comment %} margin-bottom: 0; {% endcomment %}
+                margin: 5px;
             }
 
             .logout-section {
