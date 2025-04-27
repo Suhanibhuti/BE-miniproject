@@ -235,6 +235,186 @@
             .highlight {
                 background-color: #ffff99 !important; /* Yellow background for highlighting */
             }
+            select {
+                width: 100%;
+                padding: 8px 16px;
+                border-radius: 6px;
+                border: 1px solid #e2e8f0;
+                margin-bottom: 15px;
+                background-color: white;
+            }
+
+
+
+
+
+
+            /* Patient Modal Styles */
+.edit-modal-content,
+.add-modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 750px;
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 20px;
+}
+
+.edit-modal-header,
+.add-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-modal-header h2,
+.add-modal-header h2 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.5rem;
+    flex-grow: 1;
+}
+
+.edit-modal-body,
+.add-modal-body {
+    padding: 30px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.edit-modal-footer,
+.add-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    text-align: right;
+}
+
+.edit-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.edit-modal-column,
+.add-modal-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-modal-label,
+.add-modal-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.edit-modal-input[type="text"],
+.edit-modal-input[type="email"],
+.edit-modal-input[type="password"],
+.edit-modal-input[type="number"],
+.edit-modal-input[type="date"],
+.edit-modal-input select,
+.edit-modal-input textarea,
+.add-modal-input[type="text"],
+.add-modal-input[type="email"],
+.add-modal-input[type="password"],
+.add-modal-input[type="number"],
+.add-modal-input[type="date"],
+.add-modal-input select,
+.add-modal-input textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.edit-modal-input:focus,
+.add-modal-input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.edit-modal-btn,
+.add-modal-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+}
+
+.edit-modal-btn-cancel,
+.add-modal-btn-cancel {
+    background-color: #f1f5f9;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.edit-modal-btn-cancel:hover,
+.add-modal-btn-cancel:hover {
+    background-color: #e2e8f0;
+}
+
+.edit-modal-btn-save,
+.add-modal-btn-submit {
+    background-color: #4299e1;
+    color: white;
+    border: 1px solid #4299e1;
+    margin-left: 10px;
+}
+
+.edit-modal-btn-save:hover,
+.add-modal-btn-submit:hover {
+    background-color: #3182ce;
+}
+
+/* Modal Close Button */
+.edit-modal-header .close,
+.add-modal-header .close {
+    color: #6b7280;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+}
+
+.edit-modal-header .close:hover,
+.add-modal-header .close:hover {
+    color: #4a5568;
+}
+
+/* Textarea specific styling */
+.edit-modal-input textarea,
+.add-modal-input textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Make the add patient modal slightly narrower */
+.add-modal-content {
+    width: 500px;
+}
+
+
+
     </style>
 </head>
 <body>
@@ -272,6 +452,10 @@
                     <img src="{{ MEDIA_URL }}appointment.png" alt="">
                     Appointment
                 </a>
+                {% comment %} <a href="{% url 'ad_rep' %}" class="menu-item ">
+                    <img src="{{ MEDIA_URL }}Test Results.png" alt="">
+                    Report
+                </a> {% endcomment %}
                 <div class="logout">
                     {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
@@ -328,21 +512,21 @@
                                 <td class="operation-icons">
                                     <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20" onclick="openEditModal(
                                         '{{ patient.id }}', 
-                                        '{{ patient.full_name }}', 
-                                        '{{ patient.date_of_birth|date:"Y-m-d" }}', 
-                                        '{{ patient.email }}', 
-                                        '{{ patient.mobile_number }}', 
-                                        '{{ patient.gender }}', 
-                                        '{{ patient.age }}', 
-                                        '{{ patient.blood_group }}', 
-                                        '{{ patient.marital_status }}', 
-                                        '{{ patient.address }}', 
-                                        '{{ patient.emergency_contact_name }}', 
-                                        '{{ patient.emergency_contact_number }}', 
-                                        '{{ patient.occupation }}', 
-                                        '{{ patient.habits }}', 
-                                        '{{ patient.medical_history }}', 
-                                        '{{ patient.disease }}'
+                                        '{{ patient.full_name|escapejs }}', 
+                                        '{{ patient.date_of_birth|date:"Y-m-d"|escapejs }}', 
+                                        '{{ patient.email|escapejs }}', 
+                                        '{{ patient.mobile_number|escapejs }}', 
+                                        '{{ patient.gender|escapejs }}', 
+                                        '{{ patient.age|escapejs }}', 
+                                        '{{ patient.blood_group|escapejs }}', 
+                                        '{{ patient.marital_status|escapejs }}', 
+                                        '{{ patient.address|escapejs }}', 
+                                        '{{ patient.emergency_contact_name|escapejs }}', 
+                                        '{{ patient.emergency_contact_number|escapejs }}', 
+                                        '{{ patient.occupation|escapejs }}', 
+                                        '{{ patient.habits|escapejs }}', 
+                                        '{{ patient.medical_history|escapejs }}', 
+                                        '{{ patient.disease|escapejs }}'
                                     )">
                                     <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20" onclick="deletePatient('{{ patient.id }}')">
                                 </td>
@@ -361,78 +545,111 @@
 
 <!-- Edit Patient Modal -->
 <div id="editModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
             <h2>Edit Patient Details</h2>
             <span class="close" onclick="closeEditModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="edit-modal-body">
             <form id="editForm" method="post" action="{% url 'edit_patient' 0 %}">
                 {% csrf_token %}
                 <input type="hidden" id="patientId" name="patientId">
                 
-                <label for="full_name">Full Name:</label>
-                <input type="text" id="full_name" name="full_name" required>
+                <div class="edit-modal-grid">
+                    <!-- First Column -->
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="full_name">Full Name:</label>
+                        <input class="edit-modal-input" type="text" id="full_name" name="full_name" required>
+                        
+                        <label class="edit-modal-label" for="date_of_birth">Date of Birth:</label>
+                        <input class="edit-modal-input" type="date" id="date_of_birth" name="date_of_birth" required>
+                        
+                        <label class="edit-modal-label" for="email">Email:</label>
+                        <input class="edit-modal-input" type="email" id="email" name="email" required>
+                        
+                        <label class="edit-modal-label" for="mobile_number">Mobile Number:</label>
+                        <input class="edit-modal-input" type="text" id="mobile_number" name="mobile_number" required>
+                    </div>
+                    
+                    <!-- Second Column -->
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="gender">Gender:</label>
+                        <select class="edit-modal-input" id="gender" name="gender" required>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                        
+                        <label class="edit-modal-label" for="age">Age:</label>
+                        <input class="edit-modal-input" type="number" id="age" name="age" required>
+                        
+                        <label class="edit-modal-label" for="blood_group">Blood Group:</label>
+                        <input class="edit-modal-input" type="text" id="blood_group" name="blood_group" required>
+                        
+                        <label class="edit-modal-label" for="marital_status">Marital Status:</label>
+                        <select class="edit-modal-input" id="marital_status" name="marital_status" required>
+                            <option value="single">Single</option>
+                            <option value="married">Married</option>
+                        </select>
+                    </div>
+                </div>
                 
-                <label for="date_of_birth">Date of Birth:</label>
-                <input type="date" id="date_of_birth" name="date_of_birth" required>
+                <div class="edit-modal-grid">
+                    <!-- Third Column -->
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="address">Address:</label>
+                        <textarea class="edit-modal-input" type="text" id="address" name="address" required></textarea>
+                        
+                        <label class="edit-modal-label" for="emergency_contact_name">Emergency Contact Name:</label>
+                        <input class="edit-modal-input" type="text" id="emergency_contact_name" name="emergency_contact_name" required>
+                    </div>
+                    
+                    <!-- Fourth Column -->
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="emergency_contact_number">Emergency Contact Number:</label>
+                        <input class="edit-modal-input" type="text" id="emergency_contact_number" name="emergency_contact_number" required>
+                        
+                        <label class="edit-modal-label" for="occupation">Occupation:</label>
+                        <input class="edit-modal-input" type="text" id="occupation" name="occupation" required>
+                    </div>
+                </div>
                 
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <div class="edit-modal-grid">
+                    <!-- Fifth Column -->
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="habits">Habits:</label>
+                        <input class="edit-modal-input" type="text" id="habits" name="habits">
+                    </div>
+                    
+                    <!-- Sixth Column -->
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="disease">Disease:</label>
+                        <input class="edit-modal-input" type="text" id="disease" name="disease">
+                    </div>
+                </div>
                 
-                <label for="mobile_number">Mobile Number:</label>
-                <input type="text" id="mobile_number" name="mobile_number" required>
+                <div class="edit-modal-grid">
+                    <!-- Full width medical history -->
+                    <div class="edit-modal-column ">
+                        <label class="edit-modal-label" for="medical_history">Medical History:</label>
+                        <input class="edit-modal-input" type="text" id="medical_history" name="medical_history"></input>
+                    </div>
+                </div>
                 
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                </select>
-                
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" required>
-                
-                <label for="blood_group">Blood Group:</label>
-                <input type="text" id="blood_group" name="blood_group" required>
-                
-                <label for="marital_status">Marital Status:</label>
-                <select id="marital_status" name="marital_status" required>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                </select>
-                
-                <label for="address">Address:</label>
-                <textarea id="address" name="address" required></textarea>
-                
-                <label for="emergency_contact_name">Emergency Contact Name:</label>
-                <input type="text" id="emergency_contact_name" name="emergency_contact_name" required>
-                
-                <label for="emergency_contact_number">Emergency Contact Number:</label>
-                <input type="text" id="emergency_contact_number" name="emergency_contact_number" required>
-                
-                <label for="occupation">Occupation:</label>
-                <input type="text" id="occupation" name="occupation" required>
-                
-                <label for="habits">Habits:</label>
-                <input type="text" id="habits" name="habits">
-                
-                <label for="medical_history">Medical History:</label>
-                <textarea id="medical_history" name="medical_history"></textarea>
-                
-                <label for="disease">Disease:</label>
-                <input type="text" id="disease" name="disease">
-                
-                <label for="new_password">New Password:</label>
-                <input type="password" id="new_password" name="new_password">
+                <!-- Full width password field -->
+                <div class="full-width-field">
+                    <label class="edit-modal-label" for="new_password">New Password:</label>
+                    <input class="edit-modal-input" type="password" id="new_password" name="new_password">
+                </div>
             </form>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeEditModal()">Cancel</button>
-            <button onclick="submitEditForm()">Save Changes</button>
+        <div class="edit-modal-footer">
+            <button class="edit-modal-btn edit-modal-btn-cancel" onclick="closeEditModal()">Cancel</button>
+            <button class="edit-modal-btn edit-modal-btn-save" onclick="submitEditForm()">Save Changes</button>
         </div>
     </div>
 </div>
+
 
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
@@ -453,48 +670,49 @@
 
 <!-- Add Patient Modal -->
 <div id="addPatientModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
+    <div class="add-modal-content">
+        <div class="add-modal-header">
             <h2>Add New Patient</h2>
             <span class="close" onclick="closeAddPatientModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="add-modal-body">
             <form id="addPatientForm" method="post" action="{% url 'add_patient' %}">
                 {% csrf_token %}
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label class="add-modal-label" for="username">Username:</label>
+                <input class="add-modal-input" type="text" id="username" name="username" required>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label class="add-modal-label" for="password">Password:</label>
+                <input class="add-modal-input" type="password" id="password" name="password" required>
 
-                <input type="hidden" id="role" name="role" value="patient"> <!-- Default role -->
+                <input type="hidden" id="role" name="role" value="patient">
             </form>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeAddPatientModal()">Cancel</button>
-            <button onclick="submitAddPatientForm()">Add Patient</button>
+        <div class="add-modal-footer">
+            <button class="add-modal-btn add-modal-btn-cancel" onclick="closeAddPatientModal()">Cancel</button>
+            <button class="add-modal-btn add-modal-btn-submit" onclick="submitAddPatientForm()">Add Patient</button>
         </div>
     </div>
 </div>
 
+
 <script>
     function openEditModal(id, full_name, date_of_birth, email, mobile_number, gender, age, blood_group, marital_status, address, emergency_contact_name, emergency_contact_number, occupation, habits, medical_history, disease) {
         document.getElementById('patientId').value = id;
-        document.getElementById('full_name').value = full_name;
-        document.getElementById('date_of_birth').value = date_of_birth;
-        document.getElementById('email').value = email;
-        document.getElementById('mobile_number').value = mobile_number;
-        document.getElementById('gender').value = gender;
-        document.getElementById('age').value = age;
-        document.getElementById('blood_group').value = blood_group;
-        document.getElementById('marital_status').value = marital_status;
-        document.getElementById('address').value = address;
-        document.getElementById('emergency_contact_name').value = emergency_contact_name;
-        document.getElementById('emergency_contact_number').value = emergency_contact_number;
-        document.getElementById('occupation').value = occupation;
-        document.getElementById('habits').value = habits;
-        document.getElementById('medical_history').value = medical_history;
-        document.getElementById('disease').value = disease;
+        document.getElementById('full_name').value = full_name || '';
+        document.getElementById('date_of_birth').value = date_of_birth || '';
+        document.getElementById('email').value = email || '';
+        document.getElementById('mobile_number').value = mobile_number || '';
+        document.getElementById('gender').value = gender || 'male';
+        document.getElementById('age').value = age || '';
+        document.getElementById('blood_group').value = blood_group || '';
+        document.getElementById('marital_status').value = marital_status || 'single';
+        document.getElementById('address').value = address || '';
+        document.getElementById('emergency_contact_name').value = emergency_contact_name || '';
+        document.getElementById('emergency_contact_number').value = emergency_contact_number || '';
+        document.getElementById('occupation').value = occupation || '';
+        document.getElementById('habits').value = habits || '';
+        document.getElementById('medical_history').value = medical_history || '';
+        document.getElementById('disease').value = disease || '';
     
         // Update the form action URL
         const form = document.getElementById('editForm');

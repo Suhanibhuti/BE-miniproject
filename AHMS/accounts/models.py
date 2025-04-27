@@ -63,6 +63,7 @@ class StaffD(models.Model):
     gender = models.CharField(max_length=10)
     age = models.PositiveIntegerField()
     department = models.CharField(max_length=50)
+    sub_department = models.CharField(max_length=100, default='General')
     specialization = models.CharField(max_length=100)
     qualification = models.CharField(max_length=100)
     years_of_experience = models.CharField(max_length=10)
@@ -105,6 +106,7 @@ class NurseReg(models.Model):
     gender = models.CharField(max_length=10,  null=True, blank=True)
     age = models.IntegerField()
     department = models.CharField(max_length=100)
+    sub_department = models.CharField(max_length=100, default='General')
     qualification = models.CharField(max_length=100)
     blood_group = models.CharField(max_length=5, null=True, blank=True)
 

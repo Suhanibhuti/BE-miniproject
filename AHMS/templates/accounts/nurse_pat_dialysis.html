@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        body, html {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            max-width: 1200px;
+        }
+        .welcome-card {
+            background-color: #D2EBF2;
+            border-radius: 8px;
+            padding: 20px;
+            {% comment %} margin-bottom: 30px; {% endcomment %}
+            margin-top: 20px;
+            font-family: 'Inter', sans-serif;
+            width: 1340px;
+        }
+        .welcome-card h2 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+        .patient-details {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .patient-details h3 {
+            margin-top: 0;
+            font-weight: 600;
+            color: #2D6CBF;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #555;
+            width: 300px;
+        }
+        .detail-value {
+            font-weight: 400;
+            color: #000;
+            flex-grow: 1;
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .button-group .btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button-group .btn.inactive {
+            background-color: transparent;
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 2px solid #2563eb;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button-group .btn:hover {
+            background-color: #1e4bb5;
+            color: #fff;
+        }
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+            background: #1a73e8;
+            color: white;
+            text-align: center;
+        }
+        
+        .logout-btn:hover {
+            background: #0d5bba;
+        }
+        
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 150px;
+        }
+
+        /* CHART SECTION STYLES (ONLY THIS PART CHANGED) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            {% comment %} margin-top: 2rem; {% endcomment %}
+        }
+
+        .department-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            {% comment %} margin-bottom: 20px; {% endcomment %}
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container {
+            margin: 20px auto;
+            height: 250px;
+            width: 100%;
+        }
+
+        .water-intake {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .remaining-water {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .history-table th, .history-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .history-table th {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Icon">
+                MediCare
+            </div>
+            <div class="profile">
+                <span><a href="{% url 'staff_reg' %}"> {{ full_name }} </a></span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'nurse_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
+                </a>
+                <a href="{% url 'nurse_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
+                    Appointment
+                </a>
+                <a href="{% url 'nurse_pat' %}" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
+                    Patients
+                </a>
+                <div class="logout">
+                    <a href="{% url 'logouts' %}" class="logout-btn">Logout</a>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="button-group">
+                    <a href="{% url 'nurse_pat1' patient.id %}" class="btn inactive">Details</a>
+                    {% if is_dialysis_nurse %}
+                     <a href="{% url 'nurse_pat_dialysis' patient.id %}" class="btn">Dialysis</a>
+                    {% endif %}
+                    {% if is_eyecare_nurse %}
+                    <a href="{% url 'nurse_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
+                    {% endif %}
+                    {% if is_cardio_nurse %}
+                    <a href="{% url 'nurse_pat_cardio' patient.id %}" class="btn inactive">Cardiology</a>
+                    {% endif %}
+                    <a href="{% url 'nurse_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
+                    <a href="{% url 'nurse_pat_rep' patient.id %}" class="btn inactive">Report</a> 
+                </div>
+
+
+                <div class="welcome-card">
+
+                <!-- Only the chart grid section has been modified below -->
+                <div class="grid-container">
+                    <!-- Weight Tracking -->
+                    <div class="department-card">
+                        <h3>Weight Tracking</h3>
+                        <div class="chart-container">
+                            <canvas id="weightChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Dialysis Tubing -->
+                    <div class="department-card">
+                        <h3>Dialysis Tubing</h3>
+                        <div class="chart-container">
+                            <canvas id="tubingChart"></canvas>
+                        </div>
+                        {% comment %} <div class="tubing-history">
+                            <h4>Tubing History</h4>
+                            <table class="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for entry in tubing_data %}
+                                    <tr>
+                                        <td>{{ entry.date|date:"Y-m-d" }}</td>
+                                        <td>{{ entry.tubing_count }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> {% endcomment %}
+                    </div>
+
+                    <!-- Water Intake Card -->
+<div class="department-card">
+    <h3>Water Intake</h3>
+    <div class="water-intake">
+        <canvas id="waterIntakeChart"></canvas>
+        <div class="remaining-water">
+            <span id="waterRemaining">0</span>ml
+        </div>
+    </div>
+    <div class="water-intake-history">
+        <h4>Water Intake History</h4>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Total Amount (ml)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in water_intake_data %}
+                <tr>
+                    <td>{{ entry.date__date|date:"Y-m-d" }}</td>
+                    <td>{{ entry.total_amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">No water intake data available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the weight chart
+        const weightCtx = document.getElementById('weightChart').getContext('2d');
+        const weightChart = new Chart(weightCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for entry in weight_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
+                datasets: [{
+                    label: 'Weight (kg)',
+                    data: [{% for entry in weight_data %}{{ entry.weight }},{% endfor %}],
+                    borderColor: '#4285f4',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize the tubing chart
+        const tubingCtx = document.getElementById('tubingChart').getContext('2d');
+        const tubingChart = new Chart(tubingCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for entry in tubing_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
+                datasets: [{
+                    label: 'Tubing Count',
+                    data: [{% for entry in tubing_data %}{{ entry.tubing_count }},{% endfor %}],
+                    backgroundColor: '#4285f4'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Tubing Count'
+                        },
+                        beginAtZero: true,
+                        max: 4
+                    }
+                }
+            }
+        });
+
+        // Use today's total for the chart
+const todayWaterConsumed = {{ today_total }};
+const totalWater = 1000; // 1 liter limit
+
+// Initialize the water intake chart
+const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
+const waterChart = new Chart(waterCtx, {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [todayWaterConsumed, Math.max(0, totalWater - todayWaterConsumed)],
+            backgroundColor: ['#4285f4', '#e0e0e0']
+        }]
+    },
+    options: {
+        cutout: '70%',
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Update remaining water display (show 0 if over limit)
+document.getElementById('waterRemaining').textContent = Math.max(0, totalWater - todayWaterConsumed);
+    </script>
+</body>
+</html>

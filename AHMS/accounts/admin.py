@@ -29,7 +29,7 @@ class WorkingHourInline(admin.TabularInline):
     
 @admin.register(StaffD)
 class StaffD(admin.ModelAdmin):
-    list_display = ('full_name', 'email', 'department', 'years_of_experience')
+    list_display = ('full_name', 'department','sub_department','specialization', 'years_of_experience')
 
 @admin.register(WorkingHour)
 class WorkingHourAdmin(admin.ModelAdmin):
@@ -42,7 +42,7 @@ class AppointmentAdmin(admin.ModelAdmin):
 
 
 class NurseAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'email', 'mobile_number', 'department')
+    list_display = ('full_name', 'department', 'sub_department', 'mobile_number')
 
 admin.site.register(NurseReg, NurseAdmin)
 admin.site.register(PatientReport)

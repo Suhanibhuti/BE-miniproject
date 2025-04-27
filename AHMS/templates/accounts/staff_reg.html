@@ -56,18 +56,26 @@
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium">Department</label>
-                    <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="department" required>
-                        <option disabled selected>Select Department</option>
-                        <option>Dialysis</option>
-                        <option>Cardiology</option>
-                        <option>EyeCare</option>
-                        <option>Gynaecology</option>
-                        <option>General OPD</option>
+                    <select id="department" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="department" required onchange="updateSubDepartments()">
+                        <option disabled selected value="">Select Department</option>
+                        <option value="Dialysis">Dialysis</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="EyeCare">EyeCare</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium">Sub-department</label>
+                    <select id="sub-department" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="sub_department" required onchange="updateSpecialization()">
+                        <option disabled selected value="">Select Sub-department</option>
+                        <!-- Options will be populated by JavaScript -->
                     </select>
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium">Specialization</label>
-                    <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" placeholder="Enter Specialization" name="specialization" required>
+                    <select id="specialization" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="specialization" required>
+                        <option disabled selected value="">Select Specialization</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
                 </div>
                 <div>
                     <label class="block text-gray-700 font-medium">Qualification</label>
@@ -102,6 +110,81 @@
 
         </form>
     </div>
+    <script>
+// Define department structure
+const departmentStructure = {
+    "Dialysis": {
+        "Nephrology": ["Nephrologist"],
+        "Hemodialysis Unit": ["Dialysis Nurse/Tech"],
+        "Peritoneal Dialysis": ["PD Nurse"],
+        "Interventional Radiology": ["IR Specialist"],
+        "Nutrition": ["Renal Dietitian"]
+    },
+    "Cardiology": {
+        "Heart Failure Clinic": ["Heart Failure Specialist"],
+        "Electrophysiology (EP)": ["EP Cardiologist"],
+        "Interventional Cardiology": ["Interventional Cardiologist"],
+        "Preventive Cardiology": ["Preventive Cardiologist"],
+        "Vascular Medicine": ["Vascular Specialist"]
+    },
+    "EyeCare": {
+        "Retina Services": ["Retina Specialist"],
+        "Glaucoma Services": ["Glaucoma Specialist"],
+        "Cataract Services": ["Cataract Surgeon"],
+        "General Ophthalmology": ["Comprehensive Eye Specialist"],
+        "Optometry": ["Optometrist"]
+    }
+};
+
+function updateSubDepartments() {
+    const departmentSelect = document.getElementById('department');
+    const subDepartmentSelect = document.getElementById('sub-department');
+    const specializationSelect = document.getElementById('specialization');
+    
+    // Clear previous options
+    subDepartmentSelect.innerHTML = '<option disabled selected value="">Select Sub-department</option>';
+    specializationSelect.innerHTML = '<option disabled selected value="">Select Specialization</option>';
+    
+    const selectedDepartment = departmentSelect.value;
+    
+    if (selectedDepartment && departmentStructure[selectedDepartment]) {
+        // Add new options
+        Object.keys(departmentStructure[selectedDepartment]).forEach(subDept => {
+            const option = document.createElement('option');
+            option.value = subDept;
+            option.textContent = subDept;
+            subDepartmentSelect.appendChild(option);
+        });
+    }
+}
+
+function updateSpecialization() {
+    const departmentSelect = document.getElementById('department');
+    const subDepartmentSelect = document.getElementById('sub-department');
+    const specializationSelect = document.getElementById('specialization');
+    
+    // Clear previous options
+    specializationSelect.innerHTML = '<option disabled selected value="">Select Specialization</option>';
+    
+    const selectedDepartment = departmentSelect.value;
+    const selectedSubDepartment = subDepartmentSelect.value;
+    
+    if (selectedDepartment && selectedSubDepartment && 
+        departmentStructure[selectedDepartment] && 
+        departmentStructure[selectedDepartment][selectedSubDepartment]) {
+        
+        // Add new options
+        departmentStructure[selectedDepartment][selectedSubDepartment].forEach(spec => {
+            const option = document.createElement('option');
+            option.value = spec;
+            option.textContent = spec;
+            specializationSelect.appendChild(option);
+        });
+    }
+}
+
+
+    </script>
     <script src="{% static 'staff_regjs.js' %}"></script>
 </body>
 </html>

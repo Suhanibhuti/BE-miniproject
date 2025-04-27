@@ -25,10 +25,11 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #d2ebf2;
-        }
-        .content {
-            display: flex;
-            flex: 1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
         .sidebar {
             width: 200px;
@@ -36,18 +37,76 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            padding-bottom: 80px;
+            top: 50px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            color: #000;
+            text-decoration: none;
+        }
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+            padding-top: 60px;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .menu-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
         }
         .main-content {
-            flex: 1;
-            padding-top: 32px;
-            max-width: 1200px;
-            margin: 0 auto;
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: 240px;
+            width: calc(100% - 240px);
         }
-        .header {
+        .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
         }
         .search-add {
             display: flex;
@@ -62,9 +121,15 @@
             padding: 8px 16px 8px 36px;
             border-radius: 6px;
             border: 1px solid #e2e8f0;
-            background-color: #CED7D9;
+            background-color: #f8f9fa;
             width: 100%;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        .search-container input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
         }
         .search-container img {
             position: absolute;
@@ -85,204 +150,213 @@
             gap: 8px;
             cursor: pointer;
             font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .add-btn:hover {
+            background-color: #1a4d8c;
         }
         .add-btn img {
             width: 16px;
             height: 16px;
         }
         .table-container {
-            background-color: w#E2F4F8;
+            margin-top: 20px;
+            background-color: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 32px;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         table {
             width: 100%;
             border-collapse: collapse;
         }
         th {
-            background-color: #83BDD1;
-            text-align: left;
+            background-color: #77bad3;
             padding: 12px 16px;
+            text-align: left;
             font-weight: 600;
-            font-size: 14px;
-            color: #333;
+            color: #000000;
         }
         td {
             padding: 12px 16px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
         }
-        .operation-btn {
-            padding: 4px 12px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+        .logout {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+        }
+        .logout a {
+            background: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 150px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .logout a:hover {
+            background: #0d5bba;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        /* Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
             font-size: 12px;
             font-weight: 500;
+            text-transform: uppercase;
+            display: inline-block;
         }
-        .operation-btn.accept {
-            background-color: #dcfce7;
-            color: black;
-            border: black;
+        .status-pending {
+            color: #ff9800;
+            background-color: #fff3e0;
         }
-        .operation-btn.edit {
-            background-color: #dbeafe;
-            color: black;
+        .status-accepted {
+            color: #4caf50;
+            background-color: #e8f5e9;
         }
-        .operation-btn.reject {
-            background-color: #fee2e2;
-            color: black;
+        .status-rejected {
+            color: #f44336;
+            background-color: #ffebee;
         }
-        .operation-btn img {
-            width: 12px;
-            height: 12px;
+        .status-completed {
+            color: #2196f3;
+            background-color: #e3f2fd;
         }
+        
+        /* Operation buttons */
         .operation-container {
             display: flex;
             gap: 8px;
         }
-        .menu-item {
-            margin-bottom: 15px;
-            padding: 10px;
+        .operation-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
-            text-decoration: none;
-            color: #000;
-        }
-        .menu-item.active {
-            background-color: #a7d7e8;
-            border-radius: 5px;
-        }
-        .menu-item img {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-family: 'Inter', sans-serif;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-        }
-
-        .logout {
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            text-align: center;
-            width: 150px;
-            
-        }
-        .logout img {
-            width: 18px;
-            height: 18px;
-            margin-right: 8px;
-        }
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .profile span {
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-        }
-        .profile img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-
-        .alert {
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 4px;
+            gap: 6px;
             font-size: 12px;
             font-weight: 500;
-            text-transform: uppercase;
+            transition: all 0.2s ease;
         }
-    
-        .status-accepted {
-            background-color: #dcfce7; /* Light green */
-            color: #155724; /* Dark green */
+        .operation-btn.accept {
+            background-color: #e8f5e9;
+            color: #2e7d32;
         }
-    
-        .status-rejected {
-            background-color: #fee2e2; /* Light red */
-            color: #721c24; /* Dark red */
+        .operation-btn.accept:hover {
+            background-color: #c8e6c9;
+        }
+        .operation-btn.edit {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .operation-btn.edit:hover {
+            background-color: #bbdefb;
+        }
+        .operation-btn.reject {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .operation-btn.reject:hover {
+            background-color: #ffcdd2;
+        }
+        .operation-btn img {
+            width: 14px;
+            height: 14px;
         }
 
-
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
-            font-weight: 500;
-            width: 150px;
-            text-decoration: none;
-
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .search-add {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-container {
+                width: 100%;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            .logout {
+                position: static;
+                width: 100%;
+                padding: 15px 0;
+                justify-content: center;
+            }
         }
-        .btn-primary {
-            background: #1a73e8;
-            color: white;
-        }
-        .btn-secondary {
-            background: #4285f4;
-            color: white;
-        }
-        .btn-check {
-            background-color: #1e88e5;
-        }
-        .btn-appointment {
-            background-color: #1a73e8;}
-
     </style>
 </head>
 <body>
     <div class="container">
         <div class="navbar">
             <div class="logo">
-                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Health" >
-
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Health">
                 MediCare
             </div>
             <div class="profile">
                 <span><a href="{% url 'staff_reg' %}"> {{ full_name }} </a></span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Profile">
             </div>
         </div>
         <div class="content">
@@ -300,34 +374,32 @@
                     Patients
                 </a>
                 <div class="logout">
-                    {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout"> {% endcomment %}
-                    <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
-
+                    <a href="{% url 'logouts' %}" class="btn btn-primary">Logout</a>
                 </div>
             </div>
             <div class="main-content">
-                <div class="header">
-                    <h2 style="margin: 0; font-size: 24px; font-weight: 600;">Appointments</h2>
-
-                    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-                    <div class="search-add">
+                <div class="section-header">
+                    <h2 class="section-title">Appointments</h2>
+                    {% comment %} <div class="search-add">
                         <div class="search-container">
                             <img src="{{ MEDIA_URL }}Search.png" alt="Search">
                             <input type="text" placeholder="Search ID/Date">
                         </div>
-                        
-                       
-                    </div>
+                    </div> {% endcomment %}
                 </div>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Upcoming Appointments -->
+                <h3>Upcoming Appointments</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -363,7 +435,7 @@
                                             </a>
                                         </div>
                                     {% else %}
-                                        <span class="status-badge {% if appointment.status == 'accepted' %}status-accepted{% else %}status-rejected{% endif %}">
+                                        <span class="status-badge status-{{ appointment.status|lower }}">
                                             {{ appointment.status|title }}
                                         </span>
                                     {% endif %}
@@ -371,14 +443,15 @@
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="7">No upcoming appointments.</td>
+                                <td colspan="7" style="text-align: center;">No upcoming appointments.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                <h2 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 600;">History</h2>
+                <!-- Past Appointments -->
+                <h3>Appointment History</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -401,11 +474,15 @@
                                 <td>{{ appointment.start_time }}</td>
                                 <td>{{ appointment.end_time }}</td>
                                 <td>{{ appointment.description }}</td>
-                                <td>{{ appointment.status }}</td>
+                                <td>
+                                    <span class="status-badge status-{{ appointment.status|lower }}">
+                                        {{ appointment.status|title }}
+                                    </span>
+                                </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="6">No old appointments.</td>
+                                <td colspan="7" style="text-align: center;">No past appointments.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -414,9 +491,5 @@
             </div>
         </div>
     </div>
-
-
-
-
 </body>
 </html>

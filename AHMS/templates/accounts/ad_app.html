@@ -17,6 +17,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            {% comment %} padding-top: 50px; /* Add this for fixed navbar */ {% endcomment %}
         }
         .navbar {
             background-color: #e6f3f8;
@@ -25,6 +26,11 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #d2ebf2;
+            position: fixed; /* Add this */
+            top: 0; /* Add this */
+            left: 0; /* Add this */
+            right: 0; /* Add this */
+            z-index: 1000; /* Add this */
         }
         .logo {
             font-size: 24px;
@@ -49,6 +55,11 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: fixed; /* Add this */
+            height: calc(100vh - 60px); /* Adjusted height */
+            overflow-y: auto;
+            padding-bottom: 80px; /* Space for logout button */
+            top: 50px; /* Position below navbar */
         }
         .menu-item {
             margin-bottom: 15px;
@@ -72,6 +83,9 @@
             flex-grow: 1;
             padding: 20px;
             background-color: #edf5f9;
+            margin-left: 245px; /* Match sidebar width */
+            margin-top: 45px; /* Match navbar height */
+            width: calc(100% - 200px); /* Account for sidebar */
         }
         .section-header {
             display: flex;
@@ -146,20 +160,39 @@
             color: #ef6c00;
         }
         .logout {
-            margin-top: auto;
+            position: fixed; /* Changed from margin-top */
+            bottom: 0; /* Position at bottom */
+            left: 0; /* Align with sidebar */
+            width: 150px; /* Match sidebar width */
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100; /* Ensure it stays above */
             display: flex;
             align-items: center;
-            cursor: pointer;
-            text-align: center;
-            width: 150px;
-            
+            justify-content: center;
         }
         .logout img {
             width: 18px;
             height: 18px;
             margin-right: 8px;
         }
-
+        .logout a {
+            background: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 150px;
+            text-align: center;
+        }
+        
+        .logout a:hover {
+            background: #0d5bba;
+        }
         .btn {
             padding: 0.5rem 1rem;
             border-radius: 4px;
@@ -168,7 +201,6 @@
             font-weight: 500;
             width: 150px;
             text-decoration: none;
-
         }
         .btn-primary {
             background: #1a73e8;
@@ -182,30 +214,27 @@
             background-color: #1e88e5;
         }
         .btn-appointment {
-            background-color: #1a73e8;}
-
-            .status-badge {
-                padding: 4px 12px;
-                border-radius: 4px;
-                font-size: 12px;
-                font-weight: 500;
-                text-transform: uppercase;
-            }
-        
-            .status-accepted {
-                background-color: #dcfce7; /* Light green */
-                color: #155724; /* Dark green */
-            }
-        
-            .status-rejected {
-                background-color: #fee2e2; /* Light red */
-                color: #721c24; /* Dark red */
-            }
-        
-            .status-pending {
-                background-color: #dbeafe; /* Light blue */
-                color: #1e40af; /* Dark blue */
-            }
+            background-color: #1a73e8;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        .status-accepted {
+            background-color: #dcfce7;
+            color: #155724;
+        }
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #721c24;
+        }
+        .status-pending {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
     </style>
 </head>
 <body>
@@ -243,6 +272,10 @@
                     <img src="{{ MEDIA_URL }}appointment.png" alt="">
                     Appointment
                 </a>
+                {% comment %} <a href="{% url 'ad_rep' %}" class="menu-item ">
+                    <img src="{{ MEDIA_URL }}Test Results.png" alt="">
+                    Report
+                </a> {% endcomment %}
                 <div class="logout">
                     {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
@@ -280,7 +313,7 @@
                             {% for appointment in upcoming_appointments %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ appointment.patient.username }}</td>
+                                <td>{{ appointment.patient.patient_profile.full_name }}</td>
                                 <td>{{ appointment.doctor.full_name }}</td>
                                 <td>{{ appointment.doctor.department }}</td>
                                 <td>{{ appointment.date }}</td>
@@ -323,7 +356,7 @@
                             {% for appointment in old_appointments %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ appointment.patient.username }}</td>
+                                <td>{{ appointment.patient.patient_profile.full_name }}</td>
                                 <td>{{ appointment.doctor.full_name }}</td>
                                 <td>{{ appointment.doctor.department }}</td>
                                 <td>{{ appointment.date }}</td>

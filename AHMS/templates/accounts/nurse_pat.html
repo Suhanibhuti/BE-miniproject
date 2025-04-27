@@ -3,168 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nurse patient</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'nurse_patstyle.css' %}" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #edf5f9;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile span {
+            font-weight: 500;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #edf5f9;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .search-add {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+        .search-container input {
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: #CED7D9;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .search-container img {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+        }
+        .add-btn {
+            background-color: #2D6CBF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .add-btn img {
+            width: 16px;
+            height: 16px;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th {
+            background-color: #83BDD1;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            width: 150px;
+        }
+        .logout img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;
+        }
+        a {
+            color:rgb(0, 0, 0);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="navbar">
             <div class="logo">
-                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Icon">
                 MediCare
             </div>
-            <div class="admin-profile">
+            <div class="profile">
                 <span><a href="{% url 'nurse_reg' %}"> {{ full_name }} </a></span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin" width="30" height="30">
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Nurse Profile">
             </div>
         </div>
         <div class="content">
             <div class="sidebar">
                 <a href="{% url 'nurse_dash' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}dashboard-removebg-preview.png" alt="Dashboard Icon">
-                  <span>Dashboard</span>  
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
                 </a>
-            
-                <div class="menu-item">
-                    <img src="{{ MEDIA_URL }}patient-removebg-preview.png" alt="Patients Icon">
-                   <b>Patients</b> 
-                </div>
                 <a href="{% url 'nurse_app' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}appointment-removebg-preview.png" alt="Appointment Icon">
-                    <span> Appointment</span>
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
+                    Appointment
+                </a>
+                <a href="{% url 'nurse_pat' %}" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
+                    Patients
                 </a>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}logout-removebg-preview.png" alt="Logout Icon">
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
-
                 </div>
             </div>
             <div class="main-content">
-                <div class="main-content">
-                    <div class="section-header">
-                        <h2 class="section-title"><b> Patients</b></h2>
-                        <div class="search-add">
-                            <div class="search-container">
-                                <img src="{{ MEDIA_URL }}search_ion-removebg-preview.png" alt="Search">
-                                <input type="text" placeholder="Search Patients">
-                            </div>
-                            <button class="add-btn">
-                                <img src="{{ MEDIA_URL }}plus_sign-removebg-preview.png" alt="Add Icon">
-                                Add Patients
-                            </button>
-                        </div>
+                <div class="section-header">
+                    <h1 class="section-title">Patients</h1>
+                    <div class="search-add">
+                        {% comment %} <div class="search-container">
+                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                            <input type="text" placeholder="Search Patients">
+                        </div> {% endcomment %}
+                        {% comment %} <button class="add-btn">
+                            <img src="{{ MEDIA_URL }}plus_sign-removebg-preview.png" alt="Add">
+                            Add Patient
+                        </button> {% endcomment %}
                     </div>
-    
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th><b>ID</b></th>
-                                    <th><b>Name</b></th>
-                                    <th><b>Contact</b></th>
-                                    <th><b>Date</b></th>
-                                    <th><b>Time</b></th>
-                                    <th>
-                                        <b>Status</b>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td><a href=" {% url 'nurse_pat1' %}"> Charles B </a></td>
-                                    <td>1234567890</td>
-                                    <td>10-10-2024</td>
-                                    <td>12:30 PM</td>
-                                    <td class="status-completed">COMPLETED</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Vivian J</td>
-                                    <td>1234567890</td>
-                                    <td>9-10-2024</td>
-                                    <td>9:30 AM</td>
-                                    <td class="status-completed">COMPLETED</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Jame C</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Joshua M</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>8:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Bernard P</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>Joy C</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>7</td>
-                                    <td>Jessica K</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>8</td>
-                                    <td>Troy C</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>9</td>
-                                    <td>Molly TC</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                                <tr>
-                                    <td>10</td>
-                                    <td>Jiol C</td>
-                                    <td>1234567890</td>
-                                    <td>8-10-2024</td>
-                                    <td>1:30 PM</td>
-                                    <td class="status-cancelled">CANCELLED</td>
-                                </tr>
-                             
-                            </tbody>
-                        </table>
-                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Last Appointment Date</th>
+                                <th>Upcoming Appointment Date</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patient in patients_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td><a href="{% url 'nurse_pat1' patient.id %}">{{ patient.name }}</a></td>
+                                <td>{{ patient.contact }}</td>
+                                <td>{{ patient.last_appointment_date|date:"Y-m-d" }}</td>
+                                <td>
+                                    {% if patient.upcoming_appointment_date %}
+                                        {{ patient.upcoming_appointment_date|date:"Y-m-d" }}
+                                    {% else %}
+                                        No upcoming appointment
+                                    {% endif %}
+                                </td>
+                                <td>{{ patient.email }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6">No patients found with appointments in your department.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    
-            </div> 
-        </div>   
-      
-    </div> 
-
+    </div>
 </body>
 </html>

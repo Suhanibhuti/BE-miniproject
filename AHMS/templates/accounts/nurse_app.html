@@ -4,13 +4,301 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nurse Appointment</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'nurse_appstyle.css' %}" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <style>
+        body, html {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            padding-bottom: 80px;
+            top: 50px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            color: #000;
+            text-decoration: none;
+        }
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+            {% comment %} padding-top: 60px; {% endcomment %}
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .menu-item img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: 245px;
+            margin-top: 40px;
+            width: calc(100% - 200px);
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .search-add {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .search-container {
+            position: relative;
+            width: 250px;
+        }
+        .search-container input {
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            background-color: #f8f9fa;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        .search-container input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+        .search-container img {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+        }
+        .add-btn {
+            background-color: #2D6CBF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .add-btn:hover {
+            background-color: #1a4d8c;
+        }
+        .add-btn img {
+            width: 16px;
+            height: 16px;
+        }
+        .table-container {
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #77bad3;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #000000;
+        }
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+        .logout {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logout a {
+            background: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 150px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .logout a:hover {
+            background: #0d5bba;
+        }
+        .messages {
+            margin-bottom: 20px;
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+        }
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            .search-add {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-container {
+                width: 100%;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        .status-pending {
+            color: #ff9800;
+            background-color: #fff3e0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-accepted {
+            color: #4caf50;
+            background-color: #e8f5e9;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-rejected {
+            color: #f44336;
+            background-color: #ffebee;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
-
     <div class="container">
         <div class="navbar">
             <div class="logo">
@@ -18,122 +306,146 @@
                 MediCare
             </div>
             <div class="profile">
-                <span><b>{{ request.user.nursereg.full_name }}</b> </span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="User Profile">
+                <span><a href="{% url 'nurse_reg' %}">{{ full_name }}</a></span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Nurse Profile">
             </div>
         </div>
         <div class="content">
             <div class="sidebar">
                 <a href="{% url 'nurse_dash' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}dashboard-removebg-preview.png" alt="Dashboard Icon">
-                  <span>Dashboard</span>  
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
                 </a>
-            
+                <a href="{% url 'nurse_app' %}" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
+                    Appointment
+                </a>
                 <a href="{% url 'nurse_pat' %}" class="menu-item">
-                    <img src="{{ MEDIA_URL }}patient-removebg-preview.png" alt="Patients Icon">
-                   <span>Patients</span> 
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
+                    Patients
                 </a>
-                <div class="menu-item">
-                    <img src="{{ MEDIA_URL }}appointment-removebg-preview.png" alt="Appointment Icon">
-                    <b> Appointment</b>
-                </div>
                 <div class="logout">
-                    <img src="{{ MEDIA_URL }}logout-removebg-preview.png" alt="Logout Icon">
-                    <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
-
+                    <a href="{% url 'logouts' %}" class='btn btn-primary'>Logout</a>
                 </div>
             </div>
             <div class="main-content">
-                <div class="main-content">
-                    <div class="section-header">
-                        <h2 class="section-title"><b>Appointment List</b></h2>
-                        <div class="search-add">
-                            {% comment %} <div class="search-container">
-                                <img src="{{ MEDIA_URL }}search_ion-removebg-preview.png" alt="Search">
-                                <input type="text" placeholder="Search Patients">
-                            </div> {% endcomment %}
-                         
+                <div class="section-header">
+                    <h2 class="section-title">Appointments - {{ nurse_data.department }} ({{ nurse_data.sub_department }})</h2>
+                    {% comment %} <div class="search-add">
+                        <div class="search-container">
+                            <img src="{{ MEDIA_URL }}Search.png" alt="Search">
+                            <input type="text" placeholder="Search appointments...">
                         </div>
+                    </div> {% endcomment %}
+                </div>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
                     </div>
-    
-                    <!-- Upcoming Appointments -->
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Upcoming Appointments -->
                 <h3>Upcoming Appointments</h3>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th><b>ID</b></th>
-                                <th><b>Patient</b></th>
-                                <th><b>Doctor</b></th>
-                                <th><b>Date</b></th>
-                                <th><b>Start Time</b></th>
-                                <th><b>End Time</b></th>
-                                <th><b>Description</b></th>
+                                <th>ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for appointment in upcoming_appointments %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ appointment.patient.username }}</td>
+                                <!-- In both tables (upcoming and past appointments) -->
+                                <td>
+                                    {% with patient=appointment.patient %}
+                                        {% if patient.patient_profile %}
+                                            {{ patient.patient_profile.full_name }}
+                                        {% else %}
+                                            {{ patient.get_full_name|default:patient.username }}
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
                                 <td>{{ appointment.doctor.full_name }}</td>
-                                <td>{{ appointment.date }}</td>
-                                <td>{{ appointment.start_time }}</td>
-                                <td>{{ appointment.end_time }}</td>
-                                <td>{{ appointment.description }}</td>
+                                <td>{{ appointment.date|date:"Y-m-d" }}</td>
+                                <td>{{ appointment.start_time|time:"H:i" }} - {{ appointment.end_time|time:"H:i" }}</td>
+                                <td>
+                                    <span class="status-{{ appointment.status|lower }}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td>{{ appointment.description|default:"-" }}</td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="7">No upcoming appointments.</td>
+                                <td colspan="7" style="text-align: center;">No upcoming appointments in your department.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Old Appointments -->
-                <h3>Old Appointments</h3>
+                <!-- Past Appointments -->
+                <h3>Past Appointments</h3>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th><b>ID</b></th>
-                                <th><b>Patient</b></th>
-                                <th><b>Doctor</b></th>
-                                <th><b>Date</b></th>
-                                <th><b>Start Time</b></th>
-                                <th><b>End Time</b></th>
-                                <th><b>Description</b></th>
+                                <th>ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for appointment in old_appointments %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ appointment.patient.username }}</td>
+                                <!-- In both tables (upcoming and past appointments) -->
+                                <td>
+                                    {% with patient=appointment.patient %}
+                                        {% if patient.patient_profile %}
+                                            {{ patient.patient_profile.full_name }}
+                                        {% else %}
+                                            {{ patient.get_full_name|default:patient.username }}
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
                                 <td>{{ appointment.doctor.full_name }}</td>
-                                <td>{{ appointment.date }}</td>
-                                <td>{{ appointment.start_time }}</td>
-                                <td>{{ appointment.end_time }}</td>
-                                <td>{{ appointment.description }}</td>
+                                <td>{{ appointment.date|date:"Y-m-d" }}</td>
+                                <td>{{ appointment.start_time|time:"H:i" }} - {{ appointment.end_time|time:"H:i" }}</td>
+                                <td>
+                                    <span class="status-{{ appointment.status|lower }}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td>{{ appointment.description|default:"-" }}</td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="7">No old appointments.</td>
+                                <td colspan="7" style="text-align: center;">No past appointments in your department.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-          
-                </div>
             </div>
         </div>
-    
-            </div> 
-        </div>   
-      
-    </div> 
-
+    </div>
 </body>
 </html>

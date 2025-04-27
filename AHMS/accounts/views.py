@@ -32,6 +32,12 @@ def logouts(request):
     logout(request)    
     return redirect('staff_login')
 
+def basestaff(request):
+    return render(request, 'accounts/basestaff.html')
+
+def landing(request):
+    return render(request, 'accounts/landing.html')
+
 # Create your views here.
 
 # def patient_login(request):
@@ -102,11 +108,7 @@ def login_p(request):
     return render(request, 'accounts/login_p.html')
 
 
-def basestaff(request):
-    return render(request, 'accounts/basestaff.html')
 
-def landing(request):
-    return render(request, 'accounts/landing.html')
 
 
 @login_required
@@ -472,6 +474,8 @@ def staff_pat_pres(request, patient_id):
     }
     return render(request, 'accounts/staff_pat_pres.html', context)
 
+
+
 @login_required
 def add_prescription(request, patient_id):
     if request.method == 'POST':
@@ -548,6 +552,7 @@ def staff_reg(request):
         gender = request.POST.get('gender')
         age = request.POST.get('age')
         department = request.POST.get('department')
+        sub_department = request.POST.get('sub_department')
         specialization = request.POST.get('specialization')
         qualification = request.POST.get('qualification')
         yrofexp = request.POST.get('yrofexp')
@@ -564,6 +569,7 @@ def staff_reg(request):
             staff.gender = gender
             staff.age = age
             staff.department = department
+            staff.sub_department = sub_department
             staff.specialization = specialization
             staff.qualification = qualification
             staff.years_of_experience = yrofexp
@@ -591,6 +597,7 @@ def staff_reg(request):
                     gender=gender,
                     age=age,
                     department=department,
+                    sub_department=sub_department,
                     specialization=specialization,
                     qualification=qualification,
                     years_of_experience=yrofexp
@@ -643,65 +650,373 @@ def nurse_dash(request):
     }
     return render(request, 'accounts/nurse_dash.html', context)
 
+
+
 @login_required
 def nurse_pat(request):
+    # Fetch the logged-in nurse's details
     try:
-        # Fetch the NurseReg record for the current user
         nurse = NurseReg.objects.get(user=request.user)
         full_name = nurse.full_name
-        nurse_data = {
-            'full_name': nurse.full_name,
-            'mobile_number': nurse.mobile_number,
-            'email': nurse.email,
-            'gender': nurse.gender,
-            'age': nurse.age,
-            'department': nurse.department,
-            'qualification': nurse.qualification,
-            'blood_group': nurse.blood_group,
-        }
-    except NurseReg.DoesNotExist:
-        full_name = "User"  # Default value if no NurseReg record exists
-        nurse_data = None
+        
+        # Get doctors in the same department and sub-department
+        doctors = StaffD.objects.filter(
+            department=nurse.department,
+            sub_department=nurse.sub_department
+        )
+        
+        # Get appointments for these doctors
+        appointments = Appointment.objects.filter(doctor__in=doctors)
+        
+        # Extract unique patients and their relevant appointment details
+        patients_data = {}
+        for appointment in appointments:
+            patient_user = appointment.patient
+            try:
+                patient = PatientReg.objects.get(user=patient_user)
+                if patient.id not in patients_data:
+                    patients_data[patient.id] = {
+                        'id': patient.id,
+                        'name': patient.full_name,
+                        'contact': patient.mobile_number,
+                        'last_appointment_date': appointment.date,
+                        'upcoming_appointment_date': None,
+                        'email': patient.email,
+                    }
+                else:
+                    # Update the last appointment date if this appointment is more recent
+                    if appointment.date > patients_data[patient.id]['last_appointment_date']:
+                        patients_data[patient.id]['last_appointment_date'] = appointment.date
+            except PatientReg.DoesNotExist:
+                continue
 
-    # Pass the full_name and nurse_data to the template
+        # Check for upcoming appointments
+        for appointment in appointments:
+            if appointment.date > timezone.now().date():  # Future appointment
+                patient_user = appointment.patient
+                try:
+                    patient = PatientReg.objects.get(user=patient_user)
+                    if patient.id in patients_data:
+                        patients_data[patient.id]['upcoming_appointment_date'] = appointment.date
+                except PatientReg.DoesNotExist:
+                    continue
+
+        patients_list = list(patients_data.values())
+        
+    except NurseReg.DoesNotExist:
+        full_name = "User"
+        patients_list = []
+
     context = {
         'full_name': full_name,
-        'nurse_data': nurse_data,
+        'patients_list': patients_list,
     }
-    return render(request, 'accounts/nurse_pat.html',context)
+    return render(request, 'accounts/nurse_pat.html', context)
 
-def nurse_pat1(request):
-    return render(request, 'accounts/nurse_pat1.html')
+
+
+
+@login_required
+def nurse_pat1(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Fetch the nurse's details
+    try:
+        nurse = NurseReg.objects.get(user=request.user)
+        nurse_data = {
+            'department': nurse.department,
+            'sub_department': nurse.sub_department
+        }
+        full_name = nurse.full_name
+    except NurseReg.DoesNotExist:
+        nurse_data = {}
+        full_name = "User"
+
+    context = {
+        'patient': patient,
+        'nurse_data': nurse_data,
+        'full_name': full_name,
+    }
+    return render(request, 'accounts/nurse_pat1.html', context)
+
+@login_required
+def nurse_pat_dialysis(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Check if the user is a nurse and from the Dialysis department
+    is_dialysis_nurse = False
+    is_eyecare_nurse = False
+    is_cardio_nurse = False
+    
+    if request.user.role == User.NURSE:
+        try:
+            nurse = NurseReg.objects.get(user=request.user)
+            is_dialysis_nurse = nurse.department == 'Dialysis'
+            is_eyecare_nurse = nurse.department == 'EyeCare'
+            is_cardio_nurse = nurse.department == 'Cardiology'
+        except NurseReg.DoesNotExist:
+            pass
+
+    # If not a dialysis nurse, return a 403 Forbidden response
+    if not is_dialysis_nurse:
+        return HttpResponseForbidden("You don't have permission to access this page.")
+
+    # Fetch dialysis-related data
+    weight_data = WeightTracking.objects.filter(patient=patient.user).order_by('date')
+    
+    # Fetch dialysis tubing data for the current month
+    today = timezone.now().date()
+    start_of_month = today.replace(day=1)
+    end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+    tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
+    
+    # Fetch and aggregate water intake data by date
+    water_intake_data = WaterIntake.objects.filter(patient=patient.user) \
+        .values('date__date') \
+        .annotate(total_amount=Sum('amount')) \
+        .order_by('-date__date')
+    
+    # Calculate today's total for the chart
+    today_total = WaterIntake.objects.filter(
+        patient=patient.user,
+        date__date=timezone.now().date()
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    context = {
+        'patient': patient,
+        'weight_data': weight_data,
+        'tubing_data': tubing_data,
+        'water_intake_data': water_intake_data,
+        'today_total': today_total,
+        'is_dialysis_nurse': is_dialysis_nurse,
+        'is_eyecare_nurse': is_eyecare_nurse,
+        'is_cardio_nurse': is_cardio_nurse,
+        'full_name': request.user.get_full_name() or nurse.full_name if 'nurse' in locals() else '',
+    }
+    return render(request, 'accounts/nurse_pat_dialysis.html', context)
+
+
+
+@login_required
+def nurse_pat_eyecare(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Check if the user is a nurse from the EyeCare department
+    is_eyecare_nurse = False
+    if request.user.role == User.NURSE:
+        try:
+            nurse = NurseReg.objects.get(user=request.user)
+            is_eyecare_nurse = nurse.department == 'EyeCare'
+        except NurseReg.DoesNotExist:
+            pass
+    
+    # Get all eye exams for this patient, ordered by most recent first
+    eye_exams = EyeExam.objects.filter(patient=patient.user).order_by('-exam_date').values(
+        'exam_date',
+        'right_sph',
+        'right_cyl',
+        'right_axis',
+        'right_prism',
+        'left_sph',
+        'left_cyl',
+        'left_axis',
+        'left_prism'
+    )
+    
+    # Pass the patient details and eye exam data to the template
+    context = {
+        'patient': patient,
+        'is_eyecare_nurse': is_eyecare_nurse,
+        'eye_exams': eye_exams,
+        'full_name': request.user.get_full_name() or request.user.username,
+    }
+    return render(request, 'accounts/nurse_pat_eyecare.html', context)
+
+
+@login_required
+def nurse_pat_cardio(request, patient_id):
+    # Fetch the patient details based on the patient_id
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Check if the user is a nurse from the Cardiology department
+    is_cardio_nurse = False
+    if request.user.role == User.NURSE:
+        try:
+            nurse = NurseReg.objects.get(user=request.user)
+            is_cardio_nurse = nurse.department == 'Cardiology'
+        except NurseReg.DoesNotExist:
+            pass
+
+    # If not a cardiology nurse, return a 403 Forbidden response
+    if not is_cardio_nurse:
+        return HttpResponseForbidden("You don't have permission to access this page.")
+
+    # Get all readings for the patient
+    bp_records = BloodPressureReading.objects.filter(patient=patient.user).order_by('-record_date')
+    cholesterol_records = CholesterolReading.objects.filter(patient=patient.user).order_by('-record_date')
+    latest_cholesterol = cholesterol_records.first() if cholesterol_records.exists() else None
+    ecg_records = ECGReading.objects.filter(patient=patient.user).order_by('-record_date')
+    
+    context = {
+        'patient': patient,
+        'bp_records': bp_records,
+        'cholesterol_records': cholesterol_records,
+        'latest_cholesterol': latest_cholesterol,
+        'ecg_records': ecg_records,
+        'is_cardio_nurse': is_cardio_nurse,
+        'full_name': request.user.get_full_name(),
+    }
+    return render(request, 'accounts/nurse_pat_cardio.html', context)
+
+
+@login_required
+def nurse_pat_pres(request, patient_id):
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Get all prescriptions for this patient
+    prescriptions = Prescription.objects.filter(
+        patient=patient.user
+    ).order_by('-prescribed_at')
+    
+    # Department checks for nurse
+    is_dialysis_nurse = False
+    is_eyecare_nurse = False
+    is_cardio_nurse = False
+    
+    if request.user.role == User.NURSE:
+        try:
+            nurse = NurseReg.objects.get(user=request.user)
+            is_dialysis_nurse = nurse.department == 'Dialysis'
+            is_eyecare_nurse = nurse.department == 'EyeCare'
+            is_cardio_nurse = nurse.department == 'Cardiology'
+            
+            # Filter prescriptions to only show those from doctors in the same department
+            if nurse.department:
+                prescriptions = prescriptions.filter(
+                    doctor__staff_profile__department=nurse.department,
+                    doctor__staff_profile__sub_department=nurse.sub_department
+                ).select_related('doctor__staff_profile')
+        except NurseReg.DoesNotExist:
+            pass
+
+    # Group prescriptions by date and doctor
+    grouped_prescriptions = {}
+    for prescription in prescriptions:
+        date_key = prescription.prescribed_at.strftime('%Y-%m-%d')
+        
+        # Get doctor's name safely
+        doctor_name = "Unknown Doctor"
+        if hasattr(prescription.doctor, 'staff_profile') and prescription.doctor.staff_profile:
+            doctor_name = prescription.doctor.staff_profile.full_name or prescription.doctor.get_full_name()
+        else:
+            doctor_name = prescription.doctor.get_full_name()
+        
+        if date_key not in grouped_prescriptions:
+            grouped_prescriptions[date_key] = {}
+            
+        if doctor_name not in grouped_prescriptions[date_key]:
+            grouped_prescriptions[date_key][doctor_name] = []
+            
+        grouped_prescriptions[date_key][doctor_name].append(prescription)
+
+    context = {
+        'patient': patient,
+        'grouped_prescriptions': grouped_prescriptions,
+        'is_dialysis_nurse': is_dialysis_nurse,
+        'is_eyecare_nurse': is_eyecare_nurse,
+        'is_cardio_nurse': is_cardio_nurse,
+        'full_name': request.user.get_full_name() or request.user.username,
+    }
+    return render(request, 'accounts/nurse_pat_pres.html', context)
+
+
+@login_required
+def nurse_pat_rep(request, patient_id):
+    patient = get_object_or_404(PatientReg, id=patient_id)
+    
+    # Get reports uploaded by the patient
+    reports = PatientReport.objects.filter(patient=patient.user).order_by('-uploaded_at')
+    
+    # Department checks for nurse
+    is_dialysis_nurse = False
+    is_eyecare_nurse = False
+    is_cardio_nurse = False
+    
+    if request.user.role == User.NURSE:
+        try:
+            nurse = NurseReg.objects.get(user=request.user)
+            is_dialysis_nurse = nurse.department == 'Dialysis'
+            is_eyecare_nurse = nurse.department == 'EyeCare'
+            is_cardio_nurse = nurse.department == 'Cardiology'
+            
+            # Filter comments to only show those from doctors in the same department/sub-department
+            comments = DoctorComment.objects.filter(
+                patient=patient.user,
+                doctor__staff_profile__department=nurse.department,
+                doctor__staff_profile__sub_department=nurse.sub_department
+            ).order_by('-commented_at')
+        except NurseReg.DoesNotExist:
+            comments = DoctorComment.objects.none()
+    
+    context = {
+        'patient': patient,
+        'reports': reports,
+        'comments': comments,
+        'is_dialysis_nurse': is_dialysis_nurse,
+        'is_eyecare_nurse': is_eyecare_nurse,
+        'is_cardio_nurse': is_cardio_nurse,
+        'full_name': request.user.get_full_name() or request.user.username,
+    }
+    return render(request, 'accounts/nurse_pat_rep.html', context)
+
+
 
 @login_required
 def nurse_app(request):
     try:
-        # Fetch the current nurse's department
         nurse = NurseReg.objects.get(user=request.user)
-        department = nurse.department
-
-        # Fetch all doctors in the same department
-        doctors_in_department = StaffD.objects.filter(department=department)
-
-        # Fetch upcoming appointments (date >= today)
+        full_name = nurse.full_name
+        nurse_data = {
+            'department': nurse.department,
+            'sub_department': nurse.sub_department
+        }
+        
+        doctors = StaffD.objects.filter(
+            department=nurse.department,
+            sub_department=nurse.sub_department
+        )
+        
+        today = timezone.now().date()
+        
+        # Corrected select_related with proper related_name
         upcoming_appointments = Appointment.objects.filter(
-            doctor__in=doctors_in_department,
-            date__gte=timezone.now().date()
+            doctor__in=doctors,
+            date__gte=today
+        ).select_related(
+            'patient__patient_profile',  # Using the correct related_name
+            'doctor'
         ).order_by('date', 'start_time')
-
-        # Fetch old appointments (date < today)
+        
         old_appointments = Appointment.objects.filter(
-            doctor__in=doctors_in_department,
-            date__lt=timezone.now().date()
+            doctor__in=doctors,
+            date__lt=today
+        ).select_related(
+            'patient__patient_profile',  # Using the correct related_name
+            'doctor'
         ).order_by('-date', '-start_time')
-
+        
     except NurseReg.DoesNotExist:
-        # If no nurse record exists, show no appointments
+        full_name = "User"
+        nurse_data = {}
         upcoming_appointments = []
         old_appointments = []
 
-    # Pass the data to the template
     context = {
+        'full_name': full_name,
+        'nurse_data': nurse_data,
         'upcoming_appointments': upcoming_appointments,
         'old_appointments': old_appointments,
     }
@@ -718,6 +1033,7 @@ def nurse_reg(request):
         gender = request.POST.get('gender')
         age = request.POST.get('age')
         department = request.POST.get('department')
+        sub_department = request.POST.get('sub_department')  # New field
         qualification = request.POST.get('qualification')
         blood_group = request.POST.get('blood_group')
         
@@ -726,37 +1042,37 @@ def nurse_reg(request):
             nurse = NurseReg.objects.get(user=request.user)
             # Update existing Nurse entry
             nurse.full_name = full_name
-            # nurse.email = email if email else None  # Set email to None if empty
             nurse.email = email 
             nurse.mobile_number = mobile_number
             nurse.gender = gender
             nurse.age = age
             nurse.department = department
+            nurse.sub_department = sub_department  # New field
             nurse.qualification = qualification
             nurse.blood_group = blood_group
             nurse.save()
 
             messages.success(request, 'Nurse details updated successfully!')
-            return redirect('nurse_dash')  # Redirect to nurse dashboard or profile page
+            return redirect('nurse_dash')
 
         except NurseReg.DoesNotExist:
             # Create new Nurse entry
             try:
                 nurse = NurseReg.objects.create(
-                    user=request.user,  # Associate with the logged-in user
+                    user=request.user,
                     full_name=full_name,
                     email=email, 
-                    # email=email if email else None,  # Set email to None if empty
                     mobile_number=mobile_number,
                     gender=gender,
                     age=age,
                     department=department,
+                    sub_department=sub_department,  # New field
                     qualification=qualification,
                     blood_group=blood_group
                 )
                                 
                 messages.success(request, 'Nurse registration successful!')
-                return redirect('nurse_dash')  # Redirect to nurse dashboard or profile page
+                return redirect('nurse_dash')
 
             except Exception as e:
                 messages.error(request, f"Error: {e}")
@@ -765,23 +1081,253 @@ def nurse_reg(request):
     return render(request, 'accounts/nurse_reg.html')
 
 
-
+# Add this at the top of your views.py
+DEPARTMENT_STRUCTURE = {
+    "Cardiology": [
+        "Heart Failure Clinic",
+        "Electrophysiology (EP)",
+        "Interventional Cardiology",
+        "Preventive Cardiology",
+        "Vascular Medicine"
+    ],
+    "EyeCare": [
+        "Retina Services",
+        "Glaucoma Services",
+        "Cataract Services",
+        "General Ophthalmology",
+        "Optometry"
+    ],
+    "Dialysis": [
+        "Nephrology",
+        "Hemodialysis Unit",
+        "Peritoneal Dialysis",
+        "Interventional Radiology",
+        "Nutrition"
+    ],
+    # Add other departments as needed
+}
 
 def admin_dash(request):
     # Query the database to get counts
     total_doctors = StaffD.objects.count()
     total_patients = PatientReg.objects.count()
     total_nurse = NurseReg.objects.count()
+    total_appointment = Appointment.objects.count()
+    patients = PatientReg.objects.all().select_related('user')
     
-    # Pass the counts to the template
+    # Get all departments from our predefined structure
+    departments = sorted(DEPARTMENT_STRUCTURE.keys())
+    
+    # Get actual sub-departments that have data
+    sub_departments_with_data = {}
+    doctors = StaffD.objects.all()
+    for doctor in doctors:
+        if doctor.department and doctor.department in DEPARTMENT_STRUCTURE:
+            if doctor.department not in sub_departments_with_data:
+                sub_departments_with_data[doctor.department] = set()
+            if doctor.sub_department:
+                sub_departments_with_data[doctor.department].add(doctor.sub_department)
+    
+    # Convert sets to sorted lists
+    for dept in sub_departments_with_data:
+        sub_departments_with_data[dept] = sorted(sub_departments_with_data[dept])
+    
+    # Pass the counts and departments to the template
     context = {
         'total_doctors': total_doctors,
         'total_patients': total_patients,
         'total_nurse': total_nurse,
+        'total_appointment': total_appointment,
+        'departments': departments,
+        'sub_departments_json': json.dumps(DEPARTMENT_STRUCTURE),  # Send the full structure
+        'patients': patients,
     }
     return render(request, 'accounts/admin_dash.html', context)
 
 
+
+def get_department_data(request):
+    department = request.GET.get('department', '')
+    sub_department = request.GET.get('sub_department', '')
+    
+    if not department:
+        return JsonResponse({'error': 'Department is required'}, status=400)
+    
+    try:
+        # Get doctors in the selected department and sub-department
+        doctors_query = StaffD.objects.filter(department=department)
+        if sub_department and sub_department != "all":
+            doctors_query = doctors_query.filter(sub_department=sub_department)
+        
+        doctors = list(doctors_query.values('id', 'full_name'))
+        
+        # Get appointments for these doctors
+        appointments = Appointment.objects.filter(
+            doctor_id__in=[doc['id'] for doc in doctors]
+        ).select_related('patient').order_by('-date')
+        
+        # Get unique counts
+        unique_doctors = len({doc['id'] for doc in doctors})
+        unique_patients = len({app.patient_id for app in appointments})
+        total_appointments = appointments.count()
+        
+        # Prepare response data
+        data = []
+        for appointment in appointments:
+            doctor = next((doc for doc in doctors if doc['id'] == appointment.doctor_id), None)
+            
+            # Get patient name from related PatientReg if exists, otherwise use username
+            patient_name = "Unknown"
+            if hasattr(appointment.patient, 'patient_profile'):
+                patient_name = appointment.patient.patient_profile.full_name
+            elif hasattr(appointment.patient, 'get_full_name'):
+                patient_name = appointment.patient.get_full_name()
+            elif hasattr(appointment.patient, 'username'):
+                patient_name = appointment.patient.username
+            
+            data.append({
+                'doctor_name': doctor['full_name'] if doctor else 'Unknown',
+                'patient_name': patient_name,
+                'appointment_date': appointment.date.strftime('%Y-%m-%d') if appointment.date else '',
+                'start_time': appointment.start_time.strftime('%H:%M') if appointment.start_time else '',
+                'end_time': appointment.end_time.strftime('%H:%M') if appointment.end_time else '',
+                'description': appointment.description,
+            })
+        
+        return JsonResponse({
+            'data': data,
+            'counts': {
+                'doctors': unique_doctors,
+                'patients': unique_patients,
+                'appointments': total_appointments
+            }
+        }, safe=False)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+    
+    
+    
+def get_patient_metrics(request):
+    patient_id = request.GET.get('patient_id')
+    metric_type = request.GET.get('metric_type', '')
+    time_range = request.GET.get('time_range', 'all')
+    
+    if not patient_id:
+        return JsonResponse({'error': 'Patient ID is required'}, status=400)
+    
+    try:
+        patient = User.objects.get(id=patient_id)
+        now = timezone.now()
+        date_filter = None
+        
+        # Set date filter based on time range
+        if time_range == 'today':
+            date_filter = now - timedelta(days=1)
+        elif time_range == 'week':
+            date_filter = now - timedelta(weeks=1)
+        elif time_range == 'month':
+            date_filter = now - timedelta(days=30)
+        
+        data = []
+        counts = {
+            'blood_pressure': 0,
+            'cholesterol': 0,
+            'weight': 0,
+            'ecg': 0,
+            'eye_exam': 0
+        }
+        
+        # Blood Pressure
+        if not metric_type or metric_type == 'blood_pressure':
+            query = BloodPressureReading.objects.filter(patient=patient)
+            if date_filter:
+                query = query.filter(record_date__gte=date_filter)
+            bp_readings = query.order_by('-record_date')
+            
+            counts['blood_pressure'] = bp_readings.count()
+            for reading in bp_readings:
+                data.append({
+                    'metric_type': 'Blood Pressure',
+                    'date': reading.record_date.strftime('%Y-%m-%d %H:%M'),
+                    'measurements': f"{reading.systolic}/{reading.diastolic} mmHg (Pulse: {reading.pulse})",
+                    'status': reading.status,
+                })
+        
+        # Cholesterol
+        if not metric_type or metric_type == 'cholesterol':
+            query = CholesterolReading.objects.filter(patient=patient)
+            if date_filter:
+                query = query.filter(record_date__gte=date_filter)
+            cholesterol_readings = query.order_by('-record_date')
+            
+            counts['cholesterol'] = cholesterol_readings.count()
+            for reading in cholesterol_readings:
+                data.append({
+                    'metric_type': 'Cholesterol',
+                    'date': reading.record_date.strftime('%Y-%m-%d %H:%M'),
+                    'measurements': f"Total: {reading.total} | LDL: {reading.ldl} | HDL: {reading.hdl}",
+                    'status': reading.status,
+                })
+        
+        # Weight
+        if not metric_type or metric_type == 'weight':
+            query = WeightTracking.objects.filter(patient=patient)
+            if date_filter:
+                query = query.filter(date__gte=date_filter.date())
+            weight_readings = query.order_by('-date')
+            
+            counts['weight'] = weight_readings.count()
+            for reading in weight_readings:
+                status = 'Normal' if 50 <= reading.weight <= 100 else 'Abnormal'
+                data.append({
+                    'metric_type': 'Weight',
+                    'date': reading.date.strftime('%Y-%m-%d'),
+                    'measurements': f"{reading.weight} kg",
+                    'status': status,
+                })
+        
+        # ECG
+        if not metric_type or metric_type == 'ecg':
+            query = ECGReading.objects.filter(patient=patient)
+            if date_filter:
+                query = query.filter(record_date__gte=date_filter)
+            ecg_readings = query.order_by('-record_date')
+            
+            counts['ecg'] = ecg_readings.count()
+            for reading in ecg_readings:
+                data.append({
+                    'metric_type': 'ECG',
+                    'date': reading.record_date.strftime('%Y-%m-%d %H:%M'),
+                    'measurements': f"HR: {reading.heart_rate}bpm ({reading.rhythm})",
+                    'status': reading.health_status[1],
+                })
+        
+        # Eye Exams
+        if not metric_type or metric_type == 'eye_exam':
+            query = EyeExam.objects.filter(patient=patient)
+            if date_filter:
+                query = query.filter(exam_date__gte=date_filter.date())
+            eye_exams = query.order_by('-exam_date')
+            
+            counts['eye_exam'] = eye_exams.count()
+            for exam in eye_exams:
+                data.append({
+                    'metric_type': 'Eye Exam',
+                    'date': exam.exam_date.strftime('%Y-%m-%d'),
+                    'measurements': f"Right: {exam.right_sph}/{exam.right_cyl} | Left: {exam.left_sph}/{exam.left_cyl}",
+                    'status': 'Exam Completed',
+                })
+        
+        return JsonResponse({
+            'data': data,
+            'counts': counts
+        }, safe=False)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
 
 from django.http import JsonResponse
 
@@ -1626,36 +2172,21 @@ def edit_nurse(request, nurse_id):
     nurse = get_object_or_404(NurseReg, id=nurse_id)
 
     if request.method == 'POST':
-        # new_email = request.POST.get('email')
-
-        # # Debugging: Print the new_email value
-        # print(f"New Email: {new_email}")
-
-        # # Skip duplicate email check if new_email is None or blank
-        # if new_email is not None and new_email.strip() != "":  # Only check if new_email is not None and not empty
-        #     print("Performing duplicate email check")
-        #     if NurseReg.objects.filter(email=new_email).exclude(id=nurse_id).exists():
-        #         messages.error(request, 'Email already exists. Please use a different email.')
-        #         return redirect('ad_nurse')
-        # else:
-        #     print("Skipping duplicate email check (email is None or blank)")
-
         # Update nurse details
         nurse.full_name = request.POST.get('full_name')
         nurse.mobile_number = request.POST.get('mobile_number')
         nurse.email = request.POST.get('email')
-        # nurse.email = new_email or None  # Set to None if empty
         nurse.gender = request.POST.get('gender')
         nurse.age = request.POST.get('age')
         nurse.department = request.POST.get('department')
+        nurse.sub_department = request.POST.get('sub_department')  # New field
         nurse.qualification = request.POST.get('qualification')
         nurse.blood_group = request.POST.get('blood_group')
         nurse.save()
 
         # Reset password if provided
         new_password = request.POST.get('new_password')
-        if new_password: 
-        # if new_password and new_password.strip():  # Check if new_password is not empty
+        if new_password:
             user = nurse.user
             user.password = make_password(new_password)
             user.save()
@@ -1664,7 +2195,6 @@ def edit_nurse(request, nurse_id):
         return redirect('ad_nurse')
 
     return redirect('ad_nurse')
-
 
 
 
@@ -1743,6 +2273,7 @@ def edit_doctor(request, doctor_id):
         doctor.email = request.POST.get('email')
         doctor.mobile_number = request.POST.get('mobile_number')
         doctor.department = request.POST.get('department')
+        doctor.sub_department = request.POST.get('sub_department')  
         doctor.specialization = request.POST.get('specialization')
         doctor.qualification = request.POST.get('qualification')
         doctor.years_of_experience = request.POST.get('years_of_experience')
@@ -1940,3 +2471,7 @@ def reject_appointment(request, appointment_id):
 # def send_email(request):
 #     email()
 #     return redirect('/')
+
+
+def ad_rep(request):
+    return render(request, 'accounts/ad_rep.html')

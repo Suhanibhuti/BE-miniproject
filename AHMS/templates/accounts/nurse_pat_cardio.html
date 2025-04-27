@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
     <style>
-        /* Navigation and Top Bar Styles (Kept Original) */
+        /* Same CSS as in staff_pat_cardio.html */
         body, html {
             font-family: 'Inter', 'Poppins', sans-serif;
             margin: 0;
@@ -20,6 +20,7 @@
             flex-direction: column;
             height: 100%;
         }
+        
         .navbar {
             background-color: #e6f3f8;
             padding: 10px 20px;
@@ -74,8 +75,8 @@
             border-radius: 5px;
         }
         .menu-item img {
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             margin-right: 10px;
         }
         .main-content {
@@ -88,6 +89,7 @@
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
+            margin-top: 20px;
         }
         .button-group .btn {
             background-color: #2563eb;
@@ -310,16 +312,16 @@
             </div>
             <div class="profile">
                 <span><a href="{% url 'staff_reg' %}"> {{ full_name }} </a></span>
-                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Nurse Profile">
             </div>
         </div>
         <div class="content">
             <div class="sidebar">
-                <a href="{% url 'staff_dash' %}" class="menu-item">
+                <a href="{% url 'nurse_dash' %}" class="menu-item">
                     <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
                     Dashboard
                 </a>
-                <a href="{% url 'staff_app' %}" class="menu-item">
+                <a href="{% url 'nurse_app' %}" class="menu-item">
                     <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
                     Appointment
                 </a>
@@ -334,23 +336,21 @@
             
             <div class="main-content">
                 <div class="button-group">
-                    <a href="{% url 'staff_pat1' patient.id %}" class="btn inactive">Details</a>
-                    {% if is_dialysis_doctor %}
-                     <a href="{% url 'staff_pat_dialysis' patient.id %}" class="btn">Dialysis</a>
+                    <a href="{% url 'nurse_pat1' patient.id %}" class="btn inactive">Details</a>
+                    {% if is_dialysis_nurse %}
+                     <a href="{% url 'nurse_pat_dialysis' patient.id %}" class="btn inactive">Dialysis</a>
                     {% endif %}
-                    {% if is_eyecare_doctor %}
-                    <a href="{% url 'staff_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
+                    {% if is_eyecare_nurse %}
+                    <a href="{% url 'nurse_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
                     {% endif %}
-                    {% if is_cardio_doctor %}
-                    <a href="{% url 'staff_pat_cardio' patient.id %}" class="btn">Cardiology</a>
+                    {% if is_cardio_nurse %}
+                    <a href="{% url 'nurse_pat_cardio' patient.id %}" class="btn">Cardiology</a>
                     {% endif %}
-                    <a href="{% url 'staff_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
-                    <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
+                    <a href="{% url 'nurse_pat_pres' patient.id %}" class="btn inactive">Prescription</a>
+                    <a href="{% url 'nurse_pat_rep' patient.id %}" class="btn inactive">Report</a>
                 </div>
 
-                {% comment %} <div class="patient-header">
-                    <h2>Cardiology Data for {{ patient.full_name }}</h2>
-                </div> {% endcomment %}
+                <!-- The rest of the template is identical to staff_pat_cardio.html -->
                 <div class="welcome-card">
                 <!-- Blood Pressure Section -->
                 <div class="data-section">

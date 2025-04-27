@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            cursor: pointer;
+           
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #edf5f9;
+        }
+        .info-cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .info-card {
+            background-color: #83BDD1;
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+            height: 120px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .info-card h3 {
+            margin: 0 0 15px 0;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .info-card .card-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-grow: 1;
+        }
+        .info-card .card-icon {
+            width: 40px;
+            height: 40px;
+        }
+        .info-card .count {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .info-card a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 14px;
+        }
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            width: 150px;
+            
+        }
+        .logout img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+
+        }
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background: #4285f4;
+            color: white;
+        }
+        .btn-check {
+            background-color: #1e88e5;
+        }
+        .btn-appointment {
+            background-color: #1a73e8;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="MediCare Logo" width="24" height="24">
+                MediCare
+            </div>
+            <div class="admin-profile">
+                <span>Admin</span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Admin Profile" width="30" height="30">
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <a href="{% url 'admin_dash' %}" class="menu-item ">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard Icon"> Dashboard
+                </a>
+                <a href="{% url 'ad_doc' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Treatment.png" alt="Doctors Icon"> Doctors
+                </a>
+                <a href="{% url 'ad_pat' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients Icon"> Patients
+                </a>
+                <a href="{% url 'ad_nurse' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}nurse.png" alt="Nurse Icon"> Nurse
+                </a>
+                <a href="{% url 'ad_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment
+                </a>
+                <a href="{% url 'ad_rep' %}" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}Test Results.png" alt="">
+                    Report
+                </a>
+                <div class="logout">
+                    {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
+                    <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</body>
+</html>

@@ -255,6 +255,265 @@
         .highlight {
             background-color: #ffff99 !important; /* Yellow background for highlighting */
         }
+
+        select {
+            width: 100%;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+            background-color: white;
+        }
+
+
+
+        .edit-modal-content {
+            background-color: #ffffff;
+            border-radius: 10px;
+            width: 750px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            margin: 20px;
+        }
+        
+        .edit-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eaeaea;
+            background-color: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .edit-modal-header h2 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .edit-modal-body {
+            padding: 30px;
+        }
+        
+        .edit-modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eaeaea;
+            background-color: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            text-align: right;
+        }
+        
+        .edit-modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .edit-modal-column {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .edit-modal-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .edit-modal-input[type="text"],
+        .edit-modal-input[type="email"],
+        .edit-modal-input[type="password"],
+        .edit-modal-input[type="number"],
+        .edit-modal-input select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        
+        .edit-modal-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+        
+        .edit-modal-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .edit-modal-btn-cancel {
+            background-color: #f1f5f9;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .edit-modal-btn-cancel:hover {
+            background-color: #e2e8f0;
+        }
+        
+        .edit-modal-btn-save {
+            background-color: #4299e1;
+            color: white;
+            border: 1px solid #4299e1;
+            margin-left: 10px;
+        }
+        
+        .edit-modal-btn-save:hover {
+            background-color: #3182ce;
+        }
+        
+        /* Edit Modal Close Button */
+        .edit-modal-header .close {
+            color: #6b7280;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-left: 20px;
+        }
+        
+        .edit-modal-header .close:hover {
+            color: #4a5568;
+        }
+
+
+
+
+
+
+        /* Add Doctor Modal Styles */
+.add-modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 500px; /* Slightly narrower since it has fewer fields */
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 20px;
+}
+
+.add-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-modal-header h2 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.5rem;
+    flex-grow: 1;
+}
+
+.add-modal-body {
+    padding: 30px;
+}
+
+.add-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    text-align: right;
+}
+
+.add-modal-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.add-modal-input[type="text"],
+.add-modal-input[type="password"],
+.add-modal-input[type="email"],
+.add-modal-input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.add-modal-input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.add-modal-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+}
+
+.add-modal-btn-cancel {
+    background-color: #f1f5f9;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.add-modal-btn-cancel:hover {
+    background-color: #e2e8f0;
+}
+
+.add-modal-btn-submit {
+    background-color: #4299e1;
+    color: white;
+    border: 1px solid #4299e1;
+    margin-left: 10px;
+}
+
+.add-modal-btn-submit:hover {
+    background-color: #3182ce;
+}
+
+/* Add Modal Close Button */
+.add-modal-header .close {
+    color: #6b7280;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+}
+
+.add-modal-header .close:hover {
+    color: #4a5568;
+}
+
+
+
+
     </style>
 </head>
 <body>
@@ -292,6 +551,10 @@
                     <img src="{{ MEDIA_URL }}appointment.png" alt="">
                     Appointment
                 </a>
+                {% comment %} <a href="{% url 'ad_rep' %}" class="menu-item ">
+                    <img src="{{ MEDIA_URL }}Test Results.png" alt="">
+                    Report
+                </a> {% endcomment %}
                 <div class="logout">
                     {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
@@ -332,6 +595,7 @@
                                 <th>Username</th>
                                 <th>Doctor Name</th>
                                 <th>Department</th>
+                                <th>Sub-department</th>
                                 <th>Email</th>
                                 <th>Password</th>
                                 <th>Operation</th>
@@ -344,10 +608,11 @@
                                 <td>{{ doctor.user.username }}</td>
                                 <td>{{ doctor.full_name }}</td>
                                 <td>{{ doctor.department |default:"-"}}</td>
+                                <td>{{ doctor.sub_department |default:"-"}}</td>
                                 <td>{{ doctor.email|default:"-" }}</td>
                                 <td>{{ '********' }}</td> <!-- Placeholder for password -->
                                 <td class="operation-icons">
-                                    <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20" onclick="openEditModal('{{ doctor.id }}', '{{ doctor.full_name }}', '{{ doctor.email }}', '{{ doctor.mobile_number }}', '{{ doctor.department }}', '{{ doctor.specialization }}', '{{ doctor.qualification }}', '{{ doctor.years_of_experience }}')">
+                                    <img src="{{ MEDIA_URL }}Edit Property.png" alt="Edit" width="20" height="20" onclick="openEditModal('{{ doctor.id }}', '{{ doctor.full_name }}', '{{ doctor.email }}', '{{ doctor.mobile_number }}', '{{ doctor.department }}', '{{ doctor.sub_department }}', '{{ doctor.specialization }}', '{{ doctor.qualification }}', '{{ doctor.years_of_experience }}')">
                                     <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20" onclick="deleteDoctor('{{ doctor.id }}')">
                                 </td>
                             </tr>
@@ -363,45 +628,61 @@
         </div>
     </div>
 
- <!-- Edit Doctor Modal -->
- <div id="editModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
+<!-- Edit Doctor Modal -->
+<div id="editModal" class="modal">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
             <h2>Edit Doctor Details</h2>
             <span class="close" onclick="closeEditModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="edit-modal-body">
             <form id="editForm" method="post">
-                {% csrf_token %} <!-- Add CSRF token here -->
+                {% csrf_token %}
                 <input type="hidden" id="doctorId" name="doctorId">
-                <label for="full_name">Full Name:</label>
-                <input type="text" id="full_name" name="full_name" required>
-                
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                
-                <label for="mobile_number">Mobile Number:</label>
-                <input type="text" id="mobile_number" name="mobile_number" required>
-                
-                <label for="department">Department:</label>
-                <input type="text" id="department" name="department" required>
-                
-                <label for="specialization">Specialization:</label>
-                <input type="text" id="specialization" name="specialization" required>
-                
-                <label for="qualification">Qualification:</label>
-                <input type="text" id="qualification" name="qualification" required>
-                
-                <label for="years_of_experience">Years of Experience:</label>
-                <input type="text" id="years_of_experience" name="years_of_experience" required>
-                
-                <label for="new_password">New Password:</label>
-                <input type="password" id="new_password" name="new_password">
+                <div class="edit-modal-grid">
+                    <div>
+                        <label class="edit-modal-label" for="full_name">Full Name:</label>
+                        <input class="edit-modal-input" type="text" id="full_name" name="full_name" required>
+                        
+                        <label class="edit-modal-label" for="email">Email:</label>
+                        <input class="edit-modal-input" type="email" id="email" name="email" required>
+                        
+                        <label class="edit-modal-label" for="mobile_number">Mobile Number:</label>
+                        <input class="edit-modal-input" type="text" id="mobile_number" name="mobile_number" required>
+                        
+                        <label class="edit-modal-label" for="department">Department:</label>
+                        <select class="edit-modal-input" id="department" name="department" required onchange="updateSubDepartments()">
+                            <option value="">Select Department</option>
+                            <option value="Dialysis">Dialysis</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="EyeCare">EyeCare</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="edit-modal-label" for="sub_department">Sub-department:</label>
+                        <select class="edit-modal-input" id="sub_department" name="sub_department" required onchange="updateSpecialization()">
+                            <option value="">Select Sub-department</option>
+                        </select>
+                        
+                        <label class="edit-modal-label" for="specialization">Specialization:</label>
+                        <select class="edit-modal-input" id="specialization" name="specialization" required>
+                            <option value="">Select Specialization</option>
+                        </select>
+                        
+                        <label class="edit-modal-label" for="qualification">Qualification:</label>
+                        <input class="edit-modal-input" type="text" id="qualification" name="qualification" required>
+                        
+                        <label class="edit-modal-label" for="years_of_experience">Years of Experience:</label>
+                        <input class="edit-modal-input" type="text" id="years_of_experience" name="years_of_experience" required>
+                    </div>
+                </div>
+                <label class="edit-modal-label" for="new_password">New Password:</label>
+                <input class="edit-modal-input" type="password" id="new_password" name="new_password">
             </form>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeEditModal()">Cancel</button>
-            <button onclick="submitEditForm()">Save Changes</button>
+        <div class="edit-modal-footer">
+            <button class="edit-modal-btn edit-modal-btn-cancel" onclick="closeEditModal()">Cancel</button>
+            <button class="edit-modal-btn edit-modal-btn-save" onclick="submitEditForm()">Save Changes</button>
         </div>
     </div>
 </div>
@@ -409,16 +690,16 @@
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
+        <div class="edit-modal-header">  <!-- Using edit-modal-header for consistency -->
             <h2>Delete Doctor</h2>
             <span class="close" onclick="closeDeleteModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="edit-modal-body">  <!-- Using edit-modal-body for consistency -->
             <p>Are you sure you want to delete this doctor and all associated data?</p>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeDeleteModal()">Cancel</button>
-            <button onclick="confirmDelete()">Delete</button>
+        <div class="edit-modal-footer">  <!-- Using edit-modal-footer for consistency -->
+            <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="delete-modal-btn delete-modal-btn-confirm" onclick="confirmDelete()">Delete</button>
         </div>
     </div>
 </div>
@@ -426,45 +707,136 @@
 
 <!-- Add Doctor Modal -->
 <div id="addDoctorModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
+    <div class="add-modal-content">
+        <div class="add-modal-header">
             <h2>Add New Doctor</h2>
             <span class="close" onclick="closeAddDoctorModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="add-modal-body">
             <form id="addDoctorForm" method="post" action="{% url 'add_doctor' %}">
                 {% csrf_token %}
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label class="add-modal-label" for="username">Username:</label>
+                <input class="add-modal-input" type="text" id="username" name="username" required>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label class="add-modal-label" for="password">Password:</label>
+                <input class="add-modal-input" type="password" id="password" name="password" required>
 
                 <input type="hidden" id="role" name="role" value="doctor"> <!-- Default role -->
             </form>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeAddDoctorModal()">Cancel</button>
-            <button onclick="submitAddDoctorForm()">Add Doctor</button>
+        <div class="add-modal-footer">
+            <button class="add-modal-btn add-modal-btn-cancel" onclick="closeAddDoctorModal()">Cancel</button>
+            <button class="add-modal-btn add-modal-btn-submit" onclick="submitAddDoctorForm()">Add Doctor</button>
         </div>
     </div>
 </div>
 
 
 <script>
-    // Edit Modal Functions
-    function openEditModal(id, full_name, email, mobile_number, department, specialization, qualification, years_of_experience) {
-        
-        document.getElementById('doctorId').value = id;
-        document.getElementById('full_name').value = full_name;
-        document.getElementById('email').value = email;
-        document.getElementById('mobile_number').value = mobile_number;
-        document.getElementById('department').value = department;
-        document.getElementById('specialization').value = specialization;
-        document.getElementById('qualification').value = qualification;
-        document.getElementById('years_of_experience').value = years_of_experience;
-        document.getElementById('editModal').style.display = 'flex';
+
+// Define department structure first
+const departmentStructure = {
+    "Dialysis": {
+        "Nephrology": ["Nephrologist"],
+        "Hemodialysis Unit": ["Dialysis Nurse/Tech"],
+        "Peritoneal Dialysis": ["PD Nurse"],
+        "Interventional Radiology": ["IR Specialist"],
+        "Nutrition": ["Renal Dietitian"]
+    },
+    "Cardiology": {
+        "Heart Failure Clinic": ["Heart Failure Specialist"],
+        "Electrophysiology (EP)": ["EP Cardiologist"],
+        "Interventional Cardiology": ["Interventional Cardiologist"],
+        "Preventive Cardiology": ["Preventive Cardiologist"],
+        "Vascular Medicine": ["Vascular Specialist"]
+    },
+    "EyeCare": {
+        "Retina Services": ["Retina Specialist"],
+        "Glaucoma Services": ["Glaucoma Specialist"],
+        "Cataract Services": ["Cataract Surgeon"],
+        "General Ophthalmology": ["Comprehensive Eye Specialist"],
+        "Optometry": ["Optometrist"]
     }
+};
+
+function updateSubDepartments() {
+    const departmentSelect = document.getElementById('department');
+    const subDepartmentSelect = document.getElementById('sub_department'); // Fixed ID (was sub_departmentt)
+    const specializationSelect = document.getElementById('specialization');
+
+    if (!departmentSelect || !subDepartmentSelect || !specializationSelect) {
+        console.error('Required select elements not found');
+        return;
+    }
+    
+    // Clear previous options
+    subDepartmentSelect.innerHTML = '<option value="">Select Sub-department</option>';
+    specializationSelect.innerHTML = '<option value="">Select Specialization</option>';
+    
+    const selectedDepartment = departmentSelect.value;
+    
+    if (selectedDepartment && departmentStructure[selectedDepartment]) {
+        Object.keys(departmentStructure[selectedDepartment]).forEach(subDept => {
+            const option = document.createElement('option');
+            option.value = subDept;
+            option.textContent = subDept;
+            subDepartmentSelect.appendChild(option);
+        });
+    }
+}
+function updateSpecialization() {
+    const departmentSelect = document.getElementById('department');
+    const subDepartmentSelect = document.getElementById('sub_department'); // Fixed ID
+    const specializationSelect = document.getElementById('specialization');
+    
+    // Clear previous options
+    specializationSelect.innerHTML = '<option value="">Select Specialization</option>';
+    
+    const selectedDepartment = departmentSelect.value;
+    const selectedSubDepartment = subDepartmentSelect.value;
+    
+    if (selectedDepartment && selectedSubDepartment && 
+        departmentStructure[selectedDepartment] && 
+        departmentStructure[selectedDepartment][selectedSubDepartment]) {
+        
+        // Add new options
+        departmentStructure[selectedDepartment][selectedSubDepartment].forEach(spec => {
+            const option = document.createElement('option');
+            option.value = spec;
+            option.textContent = spec;
+            specializationSelect.appendChild(option);
+        });
+    }
+}
+
+
+// Modal Functions
+function openEditModal(id, full_name, email, mobile_number, department, sub_department, specialization, qualification, years_of_experience) {
+    document.getElementById('doctorId').value = id;
+    document.getElementById('full_name').value = full_name;
+    document.getElementById('email').value = email;
+    document.getElementById('mobile_number').value = mobile_number;
+    
+    // Set department and trigger updates
+    const deptSelect = document.getElementById('department');
+    deptSelect.value = department || '';
+    updateSubDepartments();
+    
+    // Use setTimeout to ensure DOM updates complete
+    setTimeout(() => {
+        const subDeptSelect = document.getElementById('sub_department');
+        subDeptSelect.value = sub_department || '';
+        updateSpecialization();
+        
+        setTimeout(() => {
+            document.getElementById('specialization').value = specialization || '';
+        }, 50);
+    }, 50);
+    
+    document.getElementById('qualification').value = qualification;
+    document.getElementById('years_of_experience').value = years_of_experience;
+    document.getElementById('editModal').style.display = 'flex';
+}
 
     function closeEditModal() {
         document.getElementById('editModal').style.display = 'none';

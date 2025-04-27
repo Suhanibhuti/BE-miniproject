@@ -15,8 +15,9 @@
         }
         .container {
             display: flex;
-            flex-direction: column;
-            height: 100%;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 50px;
         }
         .navbar {
             background-color: #e6f3f8;
@@ -25,6 +26,11 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #d2ebf2;
+            position: fixed; /* Add this */
+            top: 0; /* Add this */
+            left: 0; /* Add this */
+            right: 0; /* Add this */
+            z-index: 1000;
         }
         .logo {
             font-size: 24px;
@@ -42,6 +48,7 @@
         .content {
             display: flex;
             flex: 1;
+            padding-top: 0;
         }
         .sidebar {
             width: 200px;
@@ -49,6 +56,10 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            height: calc(100vh - 60px); /* Full height minus navbar */
+            overflow-y: auto;
+            padding-bottom: 80px; 
         }
         .menu-item {
             margin-bottom: 15px;
@@ -73,6 +84,8 @@
             flex-grow: 1;
             padding: 20px;
             background-color: #edf5f9;
+            margin-left: 245px; /* Same as sidebar width */
+            width: calc(100% - 200px);
         }
         .info-cards {
             display: flex;
@@ -86,7 +99,7 @@
             width: 250px;
             position: relative;
             font-family: 'Inter', sans-serif;
-            height: 120px;
+            height: 80px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
@@ -123,18 +136,39 @@
             text-decoration: underline;
         }
         .logout {
-            margin-top: auto;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 150px; /* Same as sidebar width */
+            padding: 20px;
+            background-color: #D2EBF2;
+            z-index: 100;
             display: flex;
             align-items: center;
-            cursor: pointer;
-            text-align: center;
-            width: 150px;
+            justify-content: center;
             
         }
         .logout img {
             width: 18px;
             height: 18px;
             margin-right: 8px;
+        }
+        .logout a {
+            background: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            width: 150px;
+            text-align: center;
+        }
+        
+        .logout a:hover {
+            background: #0d5bba;
         }
 
         .btn {
@@ -160,6 +194,70 @@
         }
         .btn-appointment {
             background-color: #1a73e8;}
+
+
+            .data-filter-section {
+                background-color: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin-top: 20px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            .filter-controls {
+                display: flex;
+                gap: 15px;
+                margin-bottom: 20px;
+                align-items: flex-end;
+            }
+            
+            .filter-group {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .filter-group label {
+                margin-bottom: 5px;
+                font-weight: 500;
+            }
+            
+            .form-select {
+                padding: 8px 12px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                min-width: 200px;
+            }
+            
+            .data-table-container {
+                overflow-x: auto;
+            }
+            
+            .data-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+            
+            .data-table th, .data-table td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .data-table th {
+                background-color: #e6f3f8;
+                font-weight: 600;
+            }
+            
+            .data-table tr:hover {
+                background-color: #f5f5f5;
+            }
+
+
+            .status-normal { color: #28a745; font-weight: 500; }
+            .status-abnormal { color: #dc3545; font-weight: 500; }
+            .status-exam-completed { color: #17a2b8; font-weight: 500; }
+
     </style>
 </head>
 <body>
@@ -195,6 +293,10 @@
                 <a href="{% url 'ad_app' %}" class="menu-item">
                     <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment Icon"> Appointment
                 </a>
+                {% comment %} <a href="{% url 'ad_rep' %}" class="menu-item ">
+                    <img src="{{ MEDIA_URL }}Test Results.png" alt="">
+                    Report
+                </a> {% endcomment %}
                 <div class="logout">
                     {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
@@ -228,9 +330,317 @@
                         </div>
                         <a href="{% url 'ad_nurse' %}">Add New</a>
                     </div>
+                    <div class="info-card">
+                        <h3>Total Appointment</h3>
+                        <div class="card-content">
+                            <img src="{{ MEDIA_URL }}appointment.png" class="card-icon" alt="Nurse Icon">
+                            <span class="count">{{ total_appointment }}</span>
+                        </div>
+                        <a href="{% url 'ad_nurse' %}">Add New</a>
+                    </div>
                 </div>
-            </div>
+
+
+                <!-- In your main-content div, after the info-cards -->
+<div class="data-filter-section">
+    <h2>Department Data Viewer</h2>
+    
+    <div class="filter-controls">
+        <div class="filter-group">
+            <label for="department-select">Department:</label>
+            <select id="department-select" class="form-select">
+                <option value="">Select Department</option>
+                {% for dept in departments %}
+                <option value="{{ dept }}">{{ dept }}</option>
+                {% endfor %}
+            </select>
         </div>
+        
+        <div class="filter-group">
+            <label for="subdepartment-select">Sub-Department:</label>
+            <select id="subdepartment-select" class="form-select" disabled>
+                <option value="">Select Sub-Department</option>
+                <!-- Will be populated dynamically -->
+            </select>
+        </div>
+        
+        <button id="filter-btn" class="btn btn-primary">Filter Data</button>
     </div>
+    
+    <div class="data-table-container">
+        <table id="department-data-table" class="data-table">
+            <thead>
+                <tr>
+                    <th>Doctor (0)</th>
+                    <th>Patient (0)</th>
+                    <th>Appointment (0)</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Patient Health Metrics Viewer -->
+<div class="data-filter-section" style="margin-top: 20px;">
+    <h2>Patient Health Metrics Viewer</h2>
+    
+    <div class="filter-controls">
+        <div class="filter-group">
+            <label for="patient-select">Patient:</label>
+            <select id="patient-select" class="form-select">
+                <option value="">Select Patient</option>
+                {% for patient in patients %}
+                <option value="{{ patient.user.id }}">{{ patient.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="metric-type">Metric Type:</label>
+            <select id="metric-type" class="form-select">
+                <option value="">All Metrics</option>
+                <option value="blood_pressure">Blood Pressure</option>
+                <option value="cholesterol">Cholesterol</option>
+                <option value="weight">Weight</option>
+                <option value="ecg">ECG</option>
+                <option value="eye_exam">Eye Exams</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="time-range">Time Range:</label>
+            <select id="time-range" class="form-select">
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">Last Week</option>
+                <option value="month">Last Month</option>
+            </select>
+        </div>
+        
+        <button id="patient-filter-btn" class="btn btn-primary">Filter Data</button>
+    </div>
+    
+    <div class="data-table-container">
+        <table id="patient-metrics-table" class="data-table">
+            <thead>
+                <tr>
+                    <th>Metric Type (0)</th>
+                    <th>Uploaded Date</th>
+                    <th>Measurements</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+ // Define department and sub-department structure from template variable
+const allSubDepartments = JSON.parse('{{ sub_departments_json|escapejs }}');
+
+// Update sub-department dropdown based on selected department
+document.getElementById('department-select').addEventListener('change', function() {
+    const department = this.value;
+    const subDepartmentSelect = document.getElementById('subdepartment-select');
+    
+    // Clear previous options
+    subDepartmentSelect.innerHTML = '<option value="">Select Sub-Department</option>';
+    
+    if (department && allSubDepartments[department]) {
+        // Enable the select
+        subDepartmentSelect.disabled = false;
+        
+        // Add "View All" option first
+        const viewAllOption = document.createElement('option');
+        viewAllOption.value = "all";
+        viewAllOption.textContent = "View All";
+        subDepartmentSelect.appendChild(viewAllOption);
+        
+        // Add all possible sub-department options
+        allSubDepartments[department].forEach(subDept => {
+            const option = document.createElement('option');
+            option.value = subDept;
+            option.textContent = subDept;
+            subDepartmentSelect.appendChild(option);
+        });
+    } else {
+        // Disable if no department selected
+        subDepartmentSelect.disabled = true;
+    }
+});
+    
+    // Handle filter button click
+document.getElementById('filter-btn').addEventListener('click', function() {
+    const department = document.getElementById('department-select').value;
+    const subDepartment = document.getElementById('subdepartment-select').value;
+    
+    if (!department) {
+        alert('Please select a department first');
+        return;
+    }
+    
+    // Show loading state
+    const tableBody = document.querySelector('#department-data-table tbody');
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading data...</td></tr>';
+    
+    // Prepare the URL - don't include sub_department parameter if "all" is selected
+    let url = `{% url 'get_department_data' %}?department=${encodeURIComponent(department)}`;
+    if (subDepartment && subDepartment !== "all") {
+        url += `&sub_department=${encodeURIComponent(subDepartment)}`;
+    }
+    
+    // Make AJAX request to get filtered data
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(responseData => {
+            console.log("Received data:", responseData);
+            
+            if (responseData.error) {
+                tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">${responseData.error}</td></tr>`;
+                return;
+            }
+            
+            const data = responseData.data;
+            const counts = responseData.counts;
+            
+            // Update table headers with counts
+            updateTableHeaders(counts);
+            
+            // Clear table
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No data found for the selected filters</td></tr>';
+                return;
+            }
+            
+            // Populate table with data
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.doctor_name || '-'}</td>
+                    <td>${item.patient_name || '-'}</td>
+                    <td>${item.appointment_date || '-'}</td>
+                    <td>${item.start_time || '-'}</td>
+                    <td>${item.end_time || '-'}</td>
+                    <td>${item.description || '-'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: red;">Error loading data: ${error.message}</td></tr>`;
+        });
+});
+    
+    function updateTableHeaders(counts) {
+        const headers = document.querySelectorAll('#department-data-table th');
+        
+        // Update Doctor header
+        if (headers[0]) {
+            headers[0].textContent = `Doctor (${counts.doctors})`;
+        }
+        
+        // Update Patient header
+        if (headers[1]) {
+            headers[1].textContent = `Patient (${counts.patients})`;
+        }
+        
+        // Update Appointment header (using Date column)
+        if (headers[2]) {
+            headers[2].textContent = `Appointment (${counts.appointments})`;
+        }
+    }
+    
+    // Initialize with zero counts on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateTableHeaders({
+            doctors: 0,
+            patients: 0,
+            appointments: 0
+        });
+    });
+
+
+    document.getElementById('patient-filter-btn').addEventListener('click', function() {
+        const patientId = document.getElementById('patient-select').value;
+        const metricType = document.getElementById('metric-type').value;
+        const timeRange = document.getElementById('time-range').value;
+        
+        if (!patientId) {
+            alert('Please select a patient first');
+            return;
+        }
+        
+        // Show loading state
+        const tableBody = document.querySelector('#patient-metrics-table tbody');
+        tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Loading data...</td></tr>';
+        
+        // Make AJAX request
+        fetch(`{% url 'get_patient_metrics' %}?patient_id=${patientId}&metric_type=${metricType}&time_range=${timeRange}`)
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.error) {
+                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: red;">${responseData.error}</td></tr>`;
+                    return;
+                }
+                
+                const { data, counts } = responseData;
+                tableBody.innerHTML = '';
+                
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No metrics found</td></tr>';
+                    return;
+                }
+                
+                // Update metric type header with counts
+                const metricHeader = document.querySelector('#patient-metrics-table th:first-child');
+                if (metricHeader) {
+                    if (metricType) {
+                        metricHeader.textContent = `${metricType.replace('_', ' ').toUpperCase()} (${counts[metricType] || 0})`;
+                    } else {
+                        metricHeader.textContent = `Metric Type (${data.length})`;
+                    }
+                }
+                
+                // Populate table
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.metric_type}</td>
+                        <td>${item.date}</td>
+                        <td>${item.measurements}</td>
+                        <td class="status-${item.status.toLowerCase().replace(' ', '-')}">${item.status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: red;">Error: ${error.message}</td></tr>`;
+            });
+    });
+
+
+
+    </script>
+
+
 </body>
 </html>

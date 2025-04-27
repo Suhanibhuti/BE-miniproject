@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f8ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .navbar {
+            background-color: #e6f3f8;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d2ebf2;
+        }
+        .logo {
+            font-size: 24px;
+            font-family: 'Inter', sans-serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        .profile img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .content {
+            display: flex;
+            flex: 1;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #D2EBF2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .menu-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+        }
+        .menu-item.active {
+            background-color: #a7d7e8;
+            border-radius: 5px;
+        }
+        .menu-item img {
+            width: 25px;
+            height: 25px;
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            max-width: 1200px;
+        }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .button-group .btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .button-group .btn.inactive {
+            background-color: transparent;
+            color: #2563eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 2px solid #2563eb;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        .button-group .btn:hover {
+            background-color: #1e4bb5;
+            color: #fff;
+        }
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            width: 150px;
+            text-decoration: none;
+            background: #1a73e8;
+            color: white;
+            text-align: center;
+        }
+        .logout-btn:hover {
+            background: #0d5bba;
+        }
+        .logout {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 150px;
+        }
+        
+        /* Updated Prescription Card Styles from reference */
+        .prescription-card {
+            background-color: rgb(241 245 249);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            width: 1320px;
+        }
+
+        .prescription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .prescription-date {
+            font-weight: 600;
+            color: #2D6CBF;
+            font-size: 16px;
+        }
+
+        .doctor-name {
+            font-weight: 500;
+            color: #333;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .prescription-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .prescription-table th,
+        .prescription-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .prescription-table th {
+            background-color: #f1f5f9;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <img src="{{ MEDIA_URL }}Heart Health.png" alt="Heart Icon">
+                MediCare
+            </div>
+            <div class="profile">
+                <span><a href="{% url 'staff_reg' %}"> {{ full_name }} </a></span>
+                <img src="{{ MEDIA_URL }}Male User.png" alt="Dr. Sarah K Profile">
+            </div>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <a href="{% url 'nurse_dash' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}Control Panel.png" alt="Dashboard">
+                    Dashboard
+                </a>
+                <a href="{% url 'nurse_app' %}" class="menu-item">
+                    <img src="{{ MEDIA_URL }}appointment.png" alt="Appointment">
+                    Appointment
+                </a>
+                <a href="{% url 'nurse_pat' %}" class="menu-item active">
+                    <img src="{{ MEDIA_URL }}patient.png" alt="Patients">
+                    Patients
+                </a>
+                <div class="logout">
+                    <a href="{% url 'logouts' %}" class="logout-btn">Logout</a>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="button-group">
+                    <a href="{% url 'nurse_pat1' patient.id %}" class="btn inactive">Details</a>
+                    {% if is_dialysis_nurse %}
+                     <a href="{% url 'nurse_pat_dialysis' patient.id %}" class="btn inactive">Dialysis</a>
+                    {% endif %}
+                    {% if is_eyecare_nurse %}
+                     <a href="{% url 'nurse_pat_eyecare' patient.id %}" class="btn inactive">Eyecare</a>
+                    {% endif %}
+                    {% if is_cardio_nurse %}
+                    <a href="{% url 'nurse_pat_cardio' patient.id %}" class="btn inactive">Cardiology</a>
+                    {% endif %}
+                    <a href="{% url 'nurse_pat_pres' patient.id %}" class="btn">Prescription</a>
+                    <a href="{% url 'nurse_pat_rep' patient.id %}" class="btn inactive">Report</a> 
+                </div>
+
+                <!-- Prescription List - Updated to match reference structure -->
+<div class="prescription-card">
+    <h3>Prescriptions for {{ patient.full_name }}</h3>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if grouped_prescriptions %}
+        {% for date, doctors in grouped_prescriptions.items %}
+        <div class="prescription-card">
+            <div class="prescription-header">
+                <span class="prescription-date">Prescribed On: {{ date }}</span>
+            </div>
+            
+            {% for doctor_name, prescriptions in doctors.items %}
+                <div class="doctor-name">Prescribed By: Dr. {{ doctor_name }}</div>
+                <table class="prescription-table">
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Dosage</th>
+                            <th>Timing</th>
+                            <th>Before/After Food</th>
+                            <th>Prescribed At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prescription in prescriptions %}
+                        <tr>
+                            <td>{{ prescription.medicine_name }}</td>
+                            <td>{{ prescription.dosage }}</td>
+                            <td>{{ prescription.timing }}</td>
+                            <td>{{ prescription.get_before_after_food_display }}</td>
+                            <td>{{ prescription.prescribed_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No prescriptions found for this patient in your department.</p>
+    {% endif %}
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

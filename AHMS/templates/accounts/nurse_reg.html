@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,97 +8,107 @@
     <!-- Load static files -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'nurse_regstyle.css' %}" />
-
+    <!-- Tailwind CSS for consistent styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Iconscout for icons -->
     <link
       rel="stylesheet"
       href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
     />
+    <style>
+      body {
+          font-family: 'Poppins', sans-serif;
+      }
+    </style>
   </head>
-  <body>
-    <div class="container">
-      <header>Nurse Registration Form</header>
+  <body class="bg-blue-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-4xl w-full border border-gray-300">
+      <h2 class="text-2xl font-semibold mb-6 text-left text-gray-800 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-32 after:bg-blue-500 after:rounded-md">
+        Nurse Registration
+      </h2>
 
       {% if messages %}
-      <div class="messages">
+      <div class="messages mb-4">
           {% for message in messages %}
-              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+              <div class="p-2 mb-2 text-white {% if message.tags %}{{ message.tags }}{% endif %}">
                   {{ message }}
               </div>
           {% endfor %}
       </div>
-  {% endif %}
+      {% endif %}
 
-  <form method="post" action="{% url 'nurse_reg' %}">
-    {% csrf_token %}
-    {% if error %}
-    <div class="error">{{ error }}</div>
-    {% endif %}
+      <form method="post" action="{% url 'nurse_reg' %}" id="nurseForm">
+        {% csrf_token %}
+        {% if error %}
+        <div class="error p-2 mb-2 text-white bg-red-500">{{ error }}</div>
+        {% endif %}
 
-
-     <div class="form first">
-       <div class="details personal">
-      <span class="title">Personal Details</span>
-         <div class="fields">
-           <div class="input-field">
-             <label>Full Name</label>
-             <input type="text" name="full_name" placeholder="Enter your name" required />
-           </div>
-           <div class="input-field">
-             <label>Mobile Number</label>
-             <input
-               type="number" name="mobile_number"
-               placeholder="Enter mobile number"
-               required
-             />
-           </div>
-           <div class="input-field">
-            <label>Email</label>
-            <input
-              type="email" name="email"
-              placeholder="Enter Email"
-              required
-            />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-gray-700 font-medium">Full Name</label>
+            <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                   placeholder="Enter your name" name="full_name" required />
           </div>
-           <div class="input-field">
-             <label>Gender</label>
-             <select required name="gender">
-               <option disabled selected>Select gender</option>
-               <option>Male</option>
-               <option>Female</option>
-               <option>Others</option>
-             </select>
-           </div>
-           <div class="input-field">
-             <label>Age</label>
-             <input
-               type="number" name="age"
-               placeholder="Enter age"
-               required
-             />
-           </div>
-           <div class="input-field">
-            <label>Department</label>
-            <select  name="department" required>
-                <option disabled selected>Select Department</option>
-                <option>Dialysis</option>
-                <option>Cardiology</option>
-                <option>EyeCare</option>
-                <option>Gynaecology</option>
-                <option>General OPD</option>
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Mobile Number</label>
+            <input type="number" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                   placeholder="Enter mobile number" name="mobile_number" required />
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Email</label>
+            <input type="email" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                   placeholder="Enter Email" name="email" required />
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Gender</label>
+            <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="gender" required>
+              <option disabled selected>Select gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Others</option>
             </select>
           </div>
-          <div class="input-field">
-            <label>Qualification</label>
-            <input
-              type="text"
-              name="qualification"
-              placeholder="Enter your Qualification"
-              required />
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Age</label>
+            <input type="number" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                   placeholder="Enter age" name="age" required />
           </div>
-          <div class="input-field">
-            <label>Blood Group</label>
-            <select required name="blood_group">
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Department</label>
+            <select id="department" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                    name="department" required onchange="updateSubDepartments()">
+              <option disabled selected value="">Select Department</option>
+              <option value="Dialysis">Dialysis</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="EyeCare">EyeCare</option>
+              {% comment %} <option value="Gynaecology">Gynaecology</option> {% endcomment %}
+              {% comment %} <option value="General OPD">General OPD</option> {% endcomment %}
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Sub-department</label>
+            <select id="sub-department" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                    name="sub_department" required>
+              <option disabled selected value="">Select Sub-department</option>
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Qualification</label>
+            <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" 
+                   placeholder="Enter your Qualification" name="qualification" required />
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 font-medium">Blood Group</label>
+            <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-200" name="blood_group" required>
               <option disabled selected>Select Blood Group</option>
               <option>A+</option>
               <option>A-</option>
@@ -111,13 +120,82 @@
               <option>O-</option>
             </select>
           </div>
-       </div>
-     <button class="sumbit">
-         <span class="btnText">Submit</span>
-         <i class="uil uil-navigator"></i>
-     </button>
-   </form>
- </div>
- <script src="{% static 'nurse_regjs.js' %}"></script>
+        </div>
+        
+        <button type="submit" class="mt-6 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-all">
+          <span class="btnText">Submit</span>
+          <i class="uil uil-navigator"></i>
+        </button>
+      </form>
+    </div>
+
+    <script>
+      // Define department structure for nurses
+      const departmentStructure = {
+          "Dialysis": {
+              "Nephrology": [],
+              "Hemodialysis Unit": [],
+              "Peritoneal Dialysis": [],
+              "Interventional Radiology": [],
+              "Nutrition": []
+          },
+          "Cardiology": {
+              "Heart Failure Clinic": [],
+              "Electrophysiology (EP)": [],
+              "Interventional Cardiology": [],
+              "Preventive Cardiology": [],
+              "Vascular Medicine": []
+          },
+          "EyeCare": {
+              "Retina Services": [],
+              "Glaucoma Services": [],
+              "Cataract Services": [],
+              "General Ophthalmology": [],
+              "Optometry": []
+          },
+          "Gynaecology": {
+              "Obstetrics": [],
+              "Gynecologic Oncology": [],
+              "Reproductive Endocrinology": [],
+              "Urogynecology": [],
+              "Family Planning": []
+          },
+          "General OPD": {
+              "Primary Care": [],
+              "Pediatrics": [],
+              "Geriatrics": [],
+              "Internal Medicine": [],
+              "Emergency Medicine": []
+          }
+      };
+
+      function updateSubDepartments() {
+          const departmentSelect = document.getElementById('department');
+          const subDepartmentSelect = document.getElementById('sub-department');
+          
+          // Clear previous options
+          subDepartmentSelect.innerHTML = '<option disabled selected value="">Select Sub-department</option>';
+          
+          const selectedDepartment = departmentSelect.value;
+          
+          if (selectedDepartment && departmentStructure[selectedDepartment]) {
+              // Add new options
+              Object.keys(departmentStructure[selectedDepartment]).forEach(subDept => {
+                  const option = document.createElement('option');
+                  option.value = subDept;
+                  option.textContent = subDept;
+                  subDepartmentSelect.appendChild(option);
+              });
+          }
+      }
+
+      // Initialize sub-departments on page load if department is already selected
+      document.addEventListener('DOMContentLoaded', function() {
+          const departmentSelect = document.getElementById('department');
+          if (departmentSelect.value) {
+              updateSubDepartments();
+          }
+      });
+    </script>
   </body>
 </html>

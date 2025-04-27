@@ -33,13 +33,24 @@ urlpatterns = [
     #  path("getAppointments", views.get_appointments, name="get_appointments"),
     
     path('nurse_dash/', views.nurse_dash, name='nurse_dash'),
+    
     path('nurse_pat/', views.nurse_pat, name='nurse_pat'),  # Your staff dashboard path
-    path('nurse_pat1/', views.nurse_pat1, name='nurse_pat1'),
+    path('nurse_pat1/<int:patient_id>/', views.nurse_pat1, name='nurse_pat1'),
+    path('nurse_pat_pres/<int:patient_id>/', views.nurse_pat_pres, name='nurse_pat_pres'),
+    path('nurse_pat_rep/<int:patient_id>/', views.nurse_pat_rep, name='nurse_pat_rep'),
+    
+    path('nurse_pat_dialysis/<int:patient_id>/', views.nurse_pat_dialysis, name='nurse_pat_dialysis'),
+    path('nurse_pat_eyecare/<int:patient_id>/', views.nurse_pat_eyecare, name='nurse_pat_eyecare'),
+    path('nurse_pat_cardio/<int:patient_id>/', views.nurse_pat_cardio, name='nurse_pat_cardio'),
+    
+    
     path('nurse_app/', views.nurse_app, name='nurse_app'),
     path('nurse_reg/', views.nurse_reg, name='nurse_reg'),
     
     
     path('admin_dash/', views.admin_dash, name='admin_dash'),
+    path('get_department_data/', views.get_department_data, name='get_department_data'),
+    path('get_patient_metrics/', views.get_patient_metrics, name='get_patient_metrics'),
     
     path('login_p/', views.login_p, name='login_p'),  # Your login path
     
@@ -77,6 +88,7 @@ urlpatterns = [
     
     
     path('ad_app/', views.ad_app, name='ad_app'), 
+    path('ad_rep/', views.ad_rep, name='ad_rep'), 
      
     path('ad_pat/', views.ad_pat, name='ad_pat'),
     path('edit_patient/<int:patient_id>/', views.edit_patient, name='edit_patient'),

@@ -232,6 +232,258 @@
             .highlight {
                 background-color: #ffff99 !important; /* Yellow background for highlighting */
             }
+
+
+            /* Updated Modal Styles for Nurses */
+.edit-modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 750px;
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 20px;
+}
+
+.edit-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-modal-header h2 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.5rem;
+    flex-grow: 1;
+}
+
+.edit-modal-body {
+    padding: 30px;
+}
+
+.edit-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    text-align: right;
+}
+
+.edit-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.edit-modal-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-modal-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.edit-modal-input[type="text"],
+.edit-modal-input[type="email"],
+.edit-modal-input[type="password"],
+.edit-modal-input[type="number"],
+.edit-modal-input select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.edit-modal-input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.edit-modal-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+}
+
+.edit-modal-btn-cancel {
+    background-color: #f1f5f9;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.edit-modal-btn-cancel:hover {
+    background-color: #e2e8f0;
+}
+
+.edit-modal-btn-save {
+    background-color: #4299e1;
+    color: white;
+    border: 1px solid #4299e1;
+    margin-left: 10px;
+}
+
+.edit-modal-btn-save:hover {
+    background-color: #3182ce;
+}
+
+/* Edit Modal Close Button */
+.edit-modal-header .close {
+    color: #6b7280;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+}
+
+.edit-modal-header .close:hover {
+    color: #4a5568;
+}
+
+/* Add Nurse Modal Styles */
+.add-modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    margin: 20px;
+}
+
+.add-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-modal-header h2 {
+    color: #2c3e50;
+    margin: 0;
+    font-size: 1.5rem;
+    flex-grow: 1;
+}
+
+.add-modal-body {
+    padding: 30px;
+}
+
+.add-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    text-align: right;
+}
+
+.add-modal-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.add-modal-input[type="text"],
+.add-modal-input[type="password"],
+.add-modal-input[type="email"],
+.add-modal-input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background-color: white;
+    box-sizing: border-box;
+}
+
+.add-modal-input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.add-modal-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+}
+
+.add-modal-btn-cancel {
+    background-color: #f1f5f9;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.add-modal-btn-cancel:hover {
+    background-color: #e2e8f0;
+}
+
+.add-modal-btn-submit {
+    background-color: #4299e1;
+    color: white;
+    border: 1px solid #4299e1;
+    margin-left: 10px;
+}
+
+.add-modal-btn-submit:hover {
+    background-color: #3182ce;
+}
+
+/* Add Modal Close Button */
+.add-modal-header .close {
+    color: #6b7280;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+}
+
+.add-modal-header .close:hover {
+    color: #4a5568;
+}
+
+select {
+    width: 100%;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 15px;
+    background-color: white;
+}
+
+            
     </style>
 </head>
 <body>
@@ -269,6 +521,10 @@
                     <img src="{{ MEDIA_URL }}appointment.png" alt="">
                     Appointment
                 </a>
+                {% comment %} <a href="{% url 'ad_rep' %}" class="menu-item ">
+                    <img src="{{ MEDIA_URL }}Test Results.png" alt="">
+                    Report
+                </a> {% endcomment %}
                 <div class="logout">
                     {% comment %} <img src="{{ MEDIA_URL }}Logout Rounded Left.png" alt="Logout Icon"> {% endcomment %}
                     <a href="{% url "logouts" %}" class='btn btn-primary'> Logout </a>
@@ -309,6 +565,7 @@
                                 <th>Username</th>
                                 <th>Full Name</th>
                                 <th>Department</th>
+                                <th>Sub-department</th>
                                 <th>Email</th>
                                 <th>Password</th>
                                 <th>Operation</th>
@@ -321,6 +578,7 @@
                                 <td>{{ nurse.user.username }}</td>
                                 <td>{{ nurse.full_name }}</td>
                                 <td>{{ nurse.department |default:"-" }}</td>
+                                <td>{{ nurse.sub_department |default:"-" }}</td>
                                 <td>{{ nurse.email |default:"-"}}</td>
                                 <td>********</td> <!-- Masked password -->
                                 <td class="operation-icons">
@@ -333,10 +591,11 @@
                                              '{{ nurse.gender }}', 
                                              '{{ nurse.age }}', 
                                              '{{ nurse.department }}', 
+                                             '{{ nurse.sub_department }}', 
                                              '{{ nurse.qualification }}', 
                                              '{{ nurse.blood_group }}'
                                          )">
-                                         <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20" 
+                                    <img src="{{ MEDIA_URL }}Remove.png" alt="Delete" width="20" height="20" 
                                          onclick="deleteNurse('{{ nurse.id }}')">
                                 </td>
                             </tr>
@@ -354,91 +613,191 @@
 
 <!-- Edit Nurse Modal -->
 <div id="editNurseModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
+    <div class="edit-modal-content">
+        <div class="edit-modal-header">
             <h2>Edit Nurse Details</h2>
             <span class="close" onclick="closeEditNurseModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="edit-modal-body">
             <form id="editNurseForm" method="post">
                 {% csrf_token %}
                 <input type="hidden" id="nurseId" name="nurseId">
-                <label for="full_name">Full Name:</label>
-                <input type="text" id="full_name" name="full_name" required>
-                
-                <label for="mobile_number">Mobile Number:</label>
-                <input type="text" id="mobile_number" name="mobile_number" required>
-                
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required> 
-                
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Others">Others</option>
-                </select>
-                
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" required>
-                
-                <label for="department">Department:</label>
-                <input type="text" id="department" name="department" required>
-                
-                <label for="qualification">Qualification:</label>
-                <input type="text" id="qualification" name="qualification" required>
-                
-                <label for="blood_group">Blood Group:</label>
-                <select id="blood_group" name="blood_group" required>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                </select>
-                
-                <label for="new_password">New Password:</label>
-                <input type="password" id="new_password" name="new_password">
+                <div class="edit-modal-grid">
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="full_name">Full Name:</label>
+                        <input class="edit-modal-input" type="text" id="full_name" name="full_name" required>
+                        
+                        <label class="edit-modal-label" for="mobile_number">Mobile Number:</label>
+                        <input class="edit-modal-input" type="text" id="mobile_number" name="mobile_number" required>
+                        
+                        <label class="edit-modal-label" for="email">Email:</label>
+                        <input class="edit-modal-input" type="email" id="email" name="email" required>
+                        
+                        <label class="edit-modal-label" for="gender">Gender:</label>
+                        <select class="edit-modal-input" id="gender" name="gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="edit-modal-column">
+                        <label class="edit-modal-label" for="age">Age:</label>
+                        <input class="edit-modal-input" type="number" id="age" name="age" required>
+                        
+                        <label class="edit-modal-label" for="department">Department:</label>
+                        <select class="edit-modal-input" id="department" name="department" required onchange="updateSubDepartments()">
+                            <option value="">Select Department</option>
+                            <option value="Dialysis">Dialysis</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="EyeCare">EyeCare</option>
+                            {% comment %} <option value="Gynaecology">Gynaecology</option> {% endcomment %}
+                            {% comment %} <option value="General OPD">General OPD</option> {% endcomment %}
+                        </select>
+                        
+                        <label class="edit-modal-label" for="sub_department">Sub-department:</label>
+                        <select class="edit-modal-input" id="sub_department" name="sub_department" required>
+                            <option value="">Select Sub-department</option>
+                        </select>
+                        
+                        <label class="edit-modal-label" for="qualification">Qualification:</label>
+                        <input class="edit-modal-input" type="text" id="qualification" name="qualification" required>
+                        
+                        <label class="edit-modal-label" for="blood_group">Blood Group:</label>
+                        <select class="edit-modal-input" id="blood_group" name="blood_group" required>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                </div>
+                <label class="edit-modal-label" for="new_password">New Password:</label>
+                <input class="edit-modal-input" type="password" id="new_password" name="new_password">
             </form>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeEditNurseModal()">Cancel</button>
-            <button onclick="submitEditNurseForm()">Save Changes</button>
+        <div class="edit-modal-footer">
+            <button class="edit-modal-btn edit-modal-btn-cancel" onclick="closeEditNurseModal()">Cancel</button>
+            <button class="edit-modal-btn edit-modal-btn-save" onclick="submitEditNurseForm()">Save Changes</button>
         </div>
     </div>
 </div>
 
-
 <!-- Add Nurse Modal -->
 <div id="addNurseModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
+    <div class="add-modal-content">
+        <div class="add-modal-header">
             <h2>Add New Nurse</h2>
             <span class="close" onclick="closeAddNurseModal()">&times;</span>
         </div>
-        <div class="modal-body">
+        <div class="add-modal-body">
             <form id="addNurseForm" method="post" action="{% url 'add_nurse' %}">
                 {% csrf_token %}
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <label class="add-modal-label" for="username">Username:</label>
+                <input class="add-modal-input" type="text" id="username" name="username" required>
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label class="add-modal-label" for="password">Password:</label>
+                <input class="add-modal-input" type="password" id="password" name="password" required>
 
-                <input type="hidden" id="role" name="role" value="nurse"> <!-- Default role -->
+                <input type="hidden" id="role" name="role" value="nurse">
             </form>
         </div>
-        <div class="modal-footer">
-            <button onclick="closeAddNurseModal()">Cancel</button>
-            <button onclick="submitAddNurseForm()">Add Nurse</button>
+        <div class="add-modal-footer">
+            <button class="add-modal-btn add-modal-btn-cancel" onclick="closeAddNurseModal()">Cancel</button>
+            <button class="add-modal-btn add-modal-btn-submit" onclick="submitAddNurseForm()">Add Nurse</button>
         </div>
     </div>
 </div>
 
 <script>
+
+// Define department structure for nurses
+const nurseDepartmentStructure = {
+    "Dialysis": {
+        "Nephrology": [],
+        "Hemodialysis Unit": [],
+        "Peritoneal Dialysis": [],
+        "Interventional Radiology": [],
+        "Nutrition": []
+    },
+    "Cardiology": {
+        "Heart Failure Clinic": [],
+        "Electrophysiology (EP)": [],
+        "Interventional Cardiology": [],
+        "Preventive Cardiology": [],
+        "Vascular Medicine": []
+    },
+    "EyeCare": {
+        "Retina Services": [],
+        "Glaucoma Services": [],
+        "Cataract Services": [],
+        "General Ophthalmology": [],
+        "Optometry": []
+    },
+    "Gynaecology": {
+        "Obstetrics": [],
+        "Gynecologic Oncology": [],
+        "Reproductive Endocrinology": [],
+        "Urogynecology": [],
+        "Family Planning": []
+    },
+    "General OPD": {
+        "Primary Care": [],
+        "Pediatrics": [],
+        "Geriatrics": [],
+        "Internal Medicine": [],
+        "Emergency Medicine": []
+    }
+};
+
+function updateSubDepartments() {
+    const departmentSelect = document.getElementById('department');
+    const subDepartmentSelect = document.getElementById('sub_department');
+    
+    // Clear previous options
+    subDepartmentSelect.innerHTML = '<option value="">Select Sub-department</option>';
+    
+    const selectedDepartment = departmentSelect.value;
+    
+    if (selectedDepartment && nurseDepartmentStructure[selectedDepartment]) {
+        // Add new options
+        Object.keys(nurseDepartmentStructure[selectedDepartment]).forEach(subDept => {
+            const option = document.createElement('option');
+            option.value = subDept;
+            option.textContent = subDept;
+            subDepartmentSelect.appendChild(option);
+        });
+    }
+}
+
+function openEditNurseModal(id, full_name, mobile_number, email, gender, age, department, sub_department, qualification, blood_group) {
+    document.getElementById('nurseId').value = id;
+    document.getElementById('full_name').value = full_name;
+    document.getElementById('mobile_number').value = mobile_number;
+    document.getElementById('email').value = email;
+    document.getElementById('gender').value = gender;
+    document.getElementById('age').value = age;
+    
+    // Set department and trigger updates
+    const deptSelect = document.getElementById('department');
+    deptSelect.value = department || '';
+    updateSubDepartments();
+    
+    // Use setTimeout to ensure DOM updates complete
+    setTimeout(() => {
+        const subDeptSelect = document.getElementById('sub_department');
+        subDeptSelect.value = sub_department || '';
+    }, 50);
+    
+    document.getElementById('qualification').value = qualification;
+    document.getElementById('blood_group').value = blood_group;
+    document.getElementById('editNurseModal').style.display = 'flex';
+}
+
+
     function openEditNurseModal(id, full_name, mobile_number, email, gender, age, department, qualification, blood_group) {
 
         document.getElementById('nurseId').value = id;
