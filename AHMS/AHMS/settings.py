@@ -36,6 +36,7 @@ AUTHENTICATION_BACKENDS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'django_celery_beat',
     'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -155,4 +156,10 @@ EMAIL_HOST_USER = 'jsuhanibhuti@gmail.com'  # Your Gmail address
 EMAIL_HOST_PASSWORD = 'knhlknaiponvvvud'  # Your Gmail password or app-specific password
 # DEFAULT_FROM_EMAIL = 'jsuhanibhuti@gmail.com'  # Default sender email
 
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'UTC'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 

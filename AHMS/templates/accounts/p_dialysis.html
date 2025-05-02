@@ -99,13 +99,12 @@
             position: fixed;
             bottom: 0;
             left: 0;
-            width: 250px; /* Same as sidebar width */
+            width: 250px;
             padding: 20px;
             background-color: #D2EBF2;
             z-index: 100;
             margin-top: 0;
             display: flex;
-            {% comment %} justify-content: center; {% endcomment %}
             justify-content: flex-start;
         }
 
@@ -120,7 +119,6 @@
             background: #1a73e8;
             color: white;
             text-align: center;
-            
         }
 
         .logout-btn:hover {
@@ -133,7 +131,6 @@
             max-width: 1200px;
         }
 
-        /* Updated styles to match reference page */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -145,6 +142,7 @@
             border-radius: 8px;
             padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            min-height: 400px;
         }
 
         .card h3 {
@@ -157,6 +155,25 @@
             margin: 20px auto;
             height: 250px;
             width: 100%;
+            position: relative;
+        }
+
+        .chart-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+        }
+
+        .chart-error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #dc3545;
+            text-align: center;
+            padding: 0 20px;
         }
 
         .water-intake {
@@ -232,6 +249,23 @@
         .history-table th {
             background-color: #f1f5f9;
         }
+
+        .fallback-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .fallback-table th, 
+        .fallback-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .fallback-table th {
+            background-color: #f1f5f9;
+        }
     </style>
 </head>
 <body>
@@ -267,222 +301,386 @@
                 <div class="card">
                     <h3>Weight Tracking</h3>
                     <div class="chart-container">
-                        <canvas id="weightChart"></canvas>
+                        <canvas id="weightChart">
+                            <div class="chart-loading">Loading weight data...</div>
+                            <div class="chart-error" style="display:none">Error loading weight data</div>
+                        </canvas>
                     </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="addWeight()">+ Add Weight</button>
                         <button class="btn btn-danger" onclick="deleteWeight()">Delete Last Entry</button>
                     </div>
+                    <div id="weightFallbackTable" class="fallback-table-container" style="display:none"></div>
                 </div>
 
                 <!-- Dialysis Tubing -->
                 <div class="card">
                     <h3>Dialysis Tubing</h3>
                     <div class="chart-container">
-                        <canvas id="tubingChart" style="height: 290px"></canvas>
+                        <canvas id="tubingChart">
+                            <div class="chart-loading">Loading tubing data...</div>
+                            <div class="chart-error" style="display:none">Error loading tubing data</div>
+                        </canvas>
                     </div>
-                    {% comment %} <div class="tubing-history" id="tubingHistory">
-                        <h4>Tubing History</h4>
-                        <table class="history-table">
+                    <div class="tubing-history">
+                        <h4>Tubing History (Weekly)</h4>
+                        <table class="history-table" id="tubingHistoryTable">
                             <thead>
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Count</th>
+                                    <th>Week</th>
+                                    <th>Total Count</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Will be populated by JavaScript -->
                             </tbody>
                         </table>
-                    </div> {% endcomment %}
+                    </div>
+                    <div id="tubingFallbackTable" class="fallback-table-container" style="display:none"></div>
                 </div>
 
-                <!-- Water Intake Card -->
-<div class="card">
-    <h3>Water Intake</h3>
-    <div class="water-intake">
-        <canvas id="waterIntakeChart"></canvas>
-        <div class="remaining-water">
-            <span id="waterRemaining">1000</span>ml
-            <span>remaining</span>
-        </div>
-    </div>
-    <div class="btn-group">
-        <button class="btn btn-primary" onclick="addWaterIntake()">+ Add 200ml</button>
-        <button class="btn btn-danger" onclick="deleteWaterIntake()">Delete Last Entry</button>
-    </div>
-    <div id="waterLimitMessage" style="color: red; margin-top: 1rem; display: none;">
-        You cannot have any more water today. You have reached the limit.
-    </div>
-    <div class="water-intake-history">
-        <h4>Water Intake History</h4>
-        <table class="history-table" id="waterHistoryTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Total (ml)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Will be populated by JavaScript -->
-            </tbody>
-        </table>
-    </div>
-</div>
+                <!-- Water Intake -->
+                <div class="card">
+                    <h3>Water Intake</h3>
+                    <div class="water-intake">
+                        <canvas id="waterIntakeChart">
+                            <div class="chart-loading">Loading water intake data...</div>
+                            <div class="chart-error" style="display:none">Error loading water intake data</div>
+                        </canvas>
+                        <div class="remaining-water">
+                            <span id="waterRemaining">1000</span>ml
+                            <span>remaining</span>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="addWaterIntake()">+ Add 200ml</button>
+                        <button class="btn btn-danger" onclick="deleteWaterIntake()">Delete Last Entry</button>
+                    </div>
+                    <div id="waterLimitMessage" style="color: red; margin-top: 1rem; display: none;">
+                        You cannot have any more water today. You have reached the limit.
+                    </div>
+                    <div class="water-intake-history">
+                        <h4>Water Intake History</h4>
+                        <table class="history-table" id="waterHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Total (ml)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="waterFallbackTable" class="fallback-table-container" style="display:none"></div>
+                </div>
             </div>
         </main>
     </div>
 
     <script>
-        // Fetch weight data from the backend
-        async function fetchWeightData() {
-            const response = await fetch("{% url 'fetch_weight_data' %}");
-            const data = await response.json();
-            return data;
+        // Global variables for charts
+        let weightChart, waterChart, tubingChart;
+
+        // Helper function to show loading state
+        function showLoading(chartId) {
+            const canvas = document.getElementById(chartId);
+            const loading = canvas.querySelector('.chart-loading');
+            const error = canvas.querySelector('.chart-error');
+            loading.style.display = 'block';
+            error.style.display = 'none';
         }
 
-        // Initialize the weight chart
-        const weightCtx = document.getElementById('weightChart').getContext('2d');
-        let weightChart;
+        // Helper function to show error state
+        function showError(chartId, message) {
+            const canvas = document.getElementById(chartId);
+            const loading = canvas.querySelector('.chart-loading');
+            const error = canvas.querySelector('.chart-error');
+            loading.style.display = 'none';
+            error.style.display = 'block';
+            if (message) error.textContent = message;
+        }
+
+        // Helper function to hide loading/error states
+        function hideStatus(chartId) {
+            const canvas = document.getElementById(chartId);
+            const loading = canvas.querySelector('.chart-loading');
+            const error = canvas.querySelector('.chart-error');
+            loading.style.display = 'none';
+            error.style.display = 'none';
+        }
+
+        // Helper function to create fallback table
+        function createFallbackTable(containerId, data, columns) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p>No data available</p>';
+                return;
+            }
+            
+            const table = document.createElement('table');
+            table.className = 'fallback-table';
+            
+            // Create header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            columns.forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Create body
+            const tbody = document.createElement('tbody');
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                columns.forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = item[col.toLowerCase()] || '';
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            
+            container.appendChild(table);
+            container.style.display = 'block';
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // ========== WEIGHT TRACKING ========== //
+        async function fetchWeightData() {
+            try {
+                showLoading('weightChart');
+                const response = await fetch("{% url 'fetch_weight_data' %}");
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Weight data:', data);
+                
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching weight data:', error);
+                showError('weightChart', 'Error loading weight data');
+                return [];
+            } finally {
+                hideStatus('weightChart');
+            }
+        }
 
         async function initializeWeightChart() {
             const weightData = await fetchWeightData();
-            const labels = weightData.map(entry => entry.date);
+            
+            if (weightData.length === 0) {
+                createFallbackTable('weightFallbackTable', weightData, ['Date', 'Weight']);
+                return;
+            }
+            
+            const labels = weightData.map(entry => formatDate(entry.date));
             const weights = weightData.map(entry => entry.weight);
-
-            weightChart = new Chart(weightCtx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Weight (kg)',
-                        data: weights,
-                        borderColor: '#4285f4',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
+            
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            
+            try {
+                weightChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Weight (kg)',
+                            data: weights,
+                            borderColor: '#4285f4',
+                            backgroundColor: 'rgba(66, 133, 244, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
                     },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
                             }
                         },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Weight (kg)'
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Weight (kg)'
+                                },
+                                suggestedMin: Math.min(...weights) - 2,
+                                suggestedMax: Math.max(...weights) + 2
                             }
                         }
                     }
-                }
-            });
+                });
+            } catch (error) {
+                console.error('Error initializing weight chart:', error);
+                showError('weightChart', 'Error displaying weight chart');
+                createFallbackTable('weightFallbackTable', weightData, ['Date', 'Weight']);
+            }
         }
 
-        // Add weight entry
         async function addWeight() {
             const newWeight = prompt('Enter new weight (kg):');
             if (newWeight && !isNaN(newWeight)) {
-                const response = await fetch("{% url 'add_weight' %}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    body: JSON.stringify({ weight: newWeight })
-                });
+                try {
+                    const response = await fetch("{% url 'add_weight' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ weight: parseFloat(newWeight) })
+                    });
 
-                if (response.ok) {
-                    alert('Weight added successfully!');
-                    location.reload(); // Refresh the page to update the chart
-                } else {
-                    alert('Failed to add weight.');
+                    if (response.ok) {
+                        alert('Weight added successfully!');
+                        await initializeWeightChart();
+                    } else {
+                        throw new Error('Failed to add weight');
+                    }
+                } catch (error) {
+                    console.error('Error adding weight:', error);
+                    alert('Failed to add weight. Please try again.');
                 }
             }
         }
 
-        // Delete the last weight entry
         async function deleteWeight() {
             if (confirm('Are you sure you want to delete the last weight entry?')) {
-                const response = await fetch("{% url 'delete_weight' %}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                });
-
-                if (response.ok) {
-                    alert('Last weight entry deleted successfully!');
-                    location.reload(); // Refresh the page to update the chart
-                } else {
-                    alert('Failed to delete weight entry.');
-                }
-            }
-        }
-
-        // Initialize the chart when the page loads
-        document.addEventListener('DOMContentLoaded', initializeWeightChart);
-
-        // Water Intake Chart
-        const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
-        const waterChart = new Chart(waterCtx, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [0, 1000],
-                    backgroundColor: ['#4285f4', '#e0e0e0'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                cutout: '75%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.label + ': ' + context.raw + 'ml';
-                            }
+                try {
+                    const response = await fetch("{% url 'delete_weight' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
                         }
+                    });
+
+                    if (response.ok) {
+                        alert('Last weight entry deleted successfully!');
+                        await initializeWeightChart();
+                    } else {
+                        throw new Error('Failed to delete weight entry');
                     }
+                } catch (error) {
+                    console.error('Error deleting weight:', error);
+                    alert('Failed to delete weight entry. Please try again.');
                 }
             }
-        });
+        }
 
-        // Fetch water intake data for the current day
+        // ========== WATER INTAKE ========== //
         async function fetchWaterIntake() {
-            const response = await fetch("{% url 'fetch_water_intake' %}");
-            const data = await response.json();
-            return data;
+            try {
+                showLoading('waterIntakeChart');
+                const response = await fetch("{% url 'fetch_water_intake' %}");
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Water intake data:', data);
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching water intake:', error);
+                showError('waterIntakeChart', 'Error loading water intake data');
+                return { today_total: 0 };
+            } finally {
+                hideStatus('waterIntakeChart');
+            }
         }
 
-        // Fetch historical water intake data
         async function fetchWaterHistory() {
-            const response = await fetch("{% url 'fetch_water_history' %}");
-            const data = await response.json();
-            return data;
+            try {
+                const response = await fetch("{% url 'fetch_water_history' %}");
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Water history data:', data);
+                
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching water history:', error);
+                return [];
+            }
         }
 
-        // Update water intake data
         async function updateWaterIntake() {
             try {
                 // Get today's total
-                const todayResponse = await fetch("{% url 'fetch_water_intake' %}");
-                const todayData = await todayResponse.json();
+                const todayData = await fetchWaterIntake();
                 const todayTotal = todayData.today_total || 0;
                 
-                // Update chart
-                waterChart.data.datasets[0].data = [todayTotal, Math.max(0, 1000 - todayTotal)];
-                waterChart.update();
+                // Update chart if it exists, or create it
+                const ctx = document.getElementById('waterIntakeChart').getContext('2d');
+                
+                if (!waterChart) {
+                    waterChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: [todayTotal, Math.max(0, 1000 - todayTotal)],
+                                backgroundColor: ['#4285f4', '#e0e0e0'],
+                                borderWidth: 0
+                            }],
+                            labels: ['Consumed', 'Remaining']
+                        },
+                        options: {
+                            cutout: '75%',
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.label + ': ' + context.raw + 'ml';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    waterChart.data.datasets[0].data = [todayTotal, Math.max(0, 1000 - todayTotal)];
+                    waterChart.update();
+                }
                 
                 // Update remaining display
                 document.getElementById('waterRemaining').textContent = Math.max(0, 1000 - todayTotal);
@@ -492,56 +690,41 @@
                     todayTotal >= 1000 ? 'block' : 'none';
                     
                 // Get history
-                const historyResponse = await fetch("{% url 'fetch_water_history' %}");
-                const historyData = await historyResponse.json();
+                const historyData = await fetchWaterHistory();
                 
                 // Populate table
                 const tableBody = document.querySelector('#waterHistoryTable tbody');
                 tableBody.innerHTML = '';
                 
-                historyData.forEach(entry => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${entry.date}</td>
-                        <td>${entry.amount}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
+                if (historyData.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center">No water intake history available</td></tr>';
+                } else {
+                    historyData.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${formatDate(entry.date)}</td>
+                            <td>${entry.amount || 0}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
                 
             } catch (error) {
                 console.error('Error updating water intake:', error);
+                showError('waterIntakeChart', 'Error displaying water intake data');
+                const historyData = await fetchWaterHistory();
+                createFallbackTable('waterFallbackTable', historyData, ['Date', 'Amount']);
             }
         }
 
-
-        // Delete the last water intake entry
-async function deleteWaterIntake() {
-    if (confirm('Are you sure you want to delete the last water intake entry?')) {
-        try {
-            const response = await fetch("{% url 'delete_water_intake' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            });
-            
-            if (response.ok) {
-                await updateWaterIntake();
-                alert('Last water intake entry deleted successfully!');
-            } else {
-                alert('Failed to delete water intake entry.');
-            }
-        } catch (error) {
-            console.error('Error deleting water intake:', error);
-            alert('An error occurred while deleting the entry.');
-        }
-    }
-}
-
-        // Add water intake
         async function addWaterIntake() {
             try {
+                const todayData = await fetchWaterIntake();
+                if (todayData.today_total >= 1000) {
+                    alert('You have reached your daily water limit!');
+                    return;
+                }
+                
                 const response = await fetch("{% url 'add_water_intake' %}", {
                     method: 'POST',
                     headers: {
@@ -554,73 +737,169 @@ async function deleteWaterIntake() {
                 if (response.ok) {
                     await updateWaterIntake();
                 } else {
-                    alert('Failed to add water intake');
+                    throw new Error('Failed to add water intake');
                 }
             } catch (error) {
                 console.error('Error adding water intake:', error);
-                alert('An error occurred');
+                alert('Failed to add water intake. Please try again.');
             }
         }
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', updateWaterIntake);
-
-        // Fetch tubing data for the current month
-        async function fetchTubingData() {
-            const response = await fetch("{% url 'fetch_tubing_data' %}");
-            const data = await response.json();
-            return data;
+        async function deleteWaterIntake() {
+            if (confirm('Are you sure you want to delete the last water intake entry?')) {
+                try {
+                    const response = await fetch("{% url 'delete_water_intake' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        await updateWaterIntake();
+                        alert('Last water intake entry deleted successfully!');
+                    } else {
+                        throw new Error('Failed to delete water intake entry');
+                    }
+                } catch (error) {
+                    console.error('Error deleting water intake:', error);
+                    alert('An error occurred while deleting the entry.');
+                }
+            }
         }
 
-        // Initialize the tubing chart
-        const tubingCtx = document.getElementById('tubingChart').getContext('2d');
-        let tubingChart;
+        // ========== DIALYSIS TUBING ========== //
+        async function fetchTubingData() {
+            try {
+                showLoading('tubingChart');
+                const response = await fetch("{% url 'fetch_tubing_data' %}");
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Tubing data:', data);
+                
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching tubing data:', error);
+                showError('tubingChart', 'Error loading tubing data');
+                return [];
+            } finally {
+                hideStatus('tubingChart');
+            }
+        }
 
         async function initializeTubingChart() {
             const tubingData = await fetchTubingData();
-            const labels = tubingData.map(entry => `Week ${entry.week}`);
+            
+            if (tubingData.length === 0) {
+                createFallbackTable('tubingFallbackTable', tubingData, ['Week', 'Count']);
+                return;
+            }
+            
+            const labels = tubingData.map(entry => `Week of ${formatDate(entry.week)}`);
             const counts = tubingData.map(entry => entry.count);
-
-            tubingChart = new Chart(tubingCtx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Tubing Count',
-                        data: counts,
-                        backgroundColor: '#4285f4'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
+            
+            const ctx = document.getElementById('tubingChart').getContext('2d');
+            
+            try {
+                tubingChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tubing Count',
+                            data: counts,
+                            backgroundColor: '#4285f4'
+                        }]
                     },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Week of the Current Month'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(context) {
+                                        return labels[context[0].dataIndex];
+                                    },
+                                    label: function(context) {
+                                        return 'Total tubing: ' + context.raw;
+                                    }
+                                }
                             }
                         },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Tubing Count'
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Week'
+                                }
                             },
-                            beginAtZero: true,
-                            max: 4 // Maximum tubing count per week
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Tubing Count'
+                                },
+                                beginAtZero: true,
+                                max: Math.max(...counts) + 2
+                            }
                         }
                     }
-                }
+                });
+                
+                // Update the tubing history table
+                updateTubingHistoryTable(tubingData);
+            } catch (error) {
+                console.error('Error initializing tubing chart:', error);
+                showError('tubingChart', 'Error displaying tubing chart');
+                createFallbackTable('tubingFallbackTable', tubingData, ['Week', 'Count']);
+            }
+        }
+
+        function updateTubingHistoryTable(data) {
+            const tableBody = document.querySelector('#tubingHistoryTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center">No tubing history available</td></tr>';
+                return;
+            }
+            
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>Week of ${formatDate(entry.week)}</td>
+                    <td>${entry.count}</td>
+                `;
+                tableBody.appendChild(row);
             });
         }
 
-        // Initialize the tubing chart when the page loads
-        document.addEventListener('DOMContentLoaded', initializeTubingChart);
+        // ========== INITIALIZE ALL CHARTS ========== //
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Chart.js is loaded
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not loaded!');
+                document.querySelectorAll('.chart-container').forEach(container => {
+                    container.innerHTML = '<div class="chart-error">Chart functionality not available</div>';
+                });
+                return;
+            }
+            
+            initializeWeightChart();
+            updateWaterIntake();
+            initializeTubingChart();
+        });
     </script>
 </body>
 </html>

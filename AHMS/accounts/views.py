@@ -18,6 +18,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db.models import Count,Sum
 from django.db.models.functions import TruncDate
+from django_celery_beat.models import PeriodicTask, CrontabSchedule
+from django.views.decorators.http import require_POST
+from django.db.models.functions import TruncWeek
 
 from django.core.mail import send_mail
 from django.urls import reverse
@@ -740,6 +743,8 @@ def nurse_pat1(request, patient_id):
     }
     return render(request, 'accounts/nurse_pat1.html', context)
 
+
+
 @login_required
 def nurse_pat_dialysis(request, patient_id):
     # Fetch the patient details based on the patient_id
@@ -770,13 +775,19 @@ def nurse_pat_dialysis(request, patient_id):
     today = timezone.now().date()
     start_of_month = today.replace(day=1)
     end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
-    tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
+    # tubing_data = DialysisTubing.objects.filter(patient=patient.user, date__date__range=[start_of_month, end_of_month])
     
     # Fetch and aggregate water intake data by date
     water_intake_data = WaterIntake.objects.filter(patient=patient.user) \
         .values('date__date') \
         .annotate(total_amount=Sum('amount')) \
         .order_by('-date__date')
+        
+    tubing_data = DialysisTubing.objects.filter(patient=patient.user) \
+        .annotate(week=TruncWeek('date')) \
+        .values('week') \
+        .annotate(total_count=Sum('tubing_count')) \
+        .order_by('-week')
     
     # Calculate today's total for the chart
     today_total = WaterIntake.objects.filter(
@@ -796,6 +807,135 @@ def nurse_pat_dialysis(request, patient_id):
         'full_name': request.user.get_full_name() or nurse.full_name if 'nurse' in locals() else '',
     }
     return render(request, 'accounts/nurse_pat_dialysis.html', context)
+
+
+
+
+@login_required
+@require_POST
+def add_tubing(request):
+    try:
+        data = json.loads(request.body)
+        patient_id = data.get('patient_id')
+        tubing_count = data.get('tubing_count')
+        
+        if not tubing_count or not patient_id:
+            return JsonResponse({'error': 'Missing required fields'}, status=400)
+        
+        patient = get_object_or_404(PatientReg, id=patient_id)
+        patient_user = patient.user
+        
+        # Check if the current user is a dialysis nurse
+        if not request.user.role == User.NURSE:
+            return JsonResponse({'error': 'Only nurses can perform this action'}, status=403)
+        
+        try:
+            nurse = request.user.nursereg
+            if nurse.department != 'Dialysis':
+                return JsonResponse({'error': 'Only dialysis nurses can perform this action'}, status=403)
+        except NurseReg.DoesNotExist:
+            return JsonResponse({'error': 'Nurse profile not found'}, status=403)
+        
+        # Get today's date
+        today = timezone.now().date()
+        
+        # Calculate total tubing count for today
+        today_total = DialysisTubing.objects.filter(
+            patient=patient_user,
+            date__date=today
+        ).aggregate(total=Sum('tubing_count'))['total'] or 0
+        
+        # Check if adding would exceed the daily limit
+        if int(today_total) + int(tubing_count) > 5:
+            return JsonResponse({
+                'error': f'Cannot add {tubing_count} tubing(s). Today\'s total would exceed the maximum of 5. Remaining today: {5 - today_total}'
+            }, status=400)
+        
+        # Create new tubing entry
+        tubing = DialysisTubing.objects.create(
+            patient=patient_user,
+            tubing_count=tubing_count,
+            department='Dialysis'
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Tubing data added successfully',
+            'data': {
+                'id': tubing.id,
+                'date': tubing.date.strftime('%Y-%m-%d'),
+                'tubing_count': tubing.tubing_count
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+    
+
+@login_required
+@require_POST
+def delete_tubing(request):
+    try:
+        data = json.loads(request.body)
+        patient_id = data.get('patient_id')
+        
+        if not patient_id:
+            return JsonResponse({'error': 'Missing patient ID'}, status=400)
+        
+        # Verify the patient exists
+        patient = get_object_or_404(PatientReg, id=patient_id)
+        patient_user = patient.user
+        
+        # Check if the current user is a dialysis nurse
+        if not request.user.role == User.NURSE:
+            return JsonResponse({'error': 'Only nurses can perform this action'}, status=403)
+        
+        try:
+            nurse = request.user.nursereg  # Changed from nurse_profile to nursereg
+            if nurse.department != 'Dialysis':
+                return JsonResponse({'error': 'Only dialysis nurses can perform this action'}, status=403)
+        except NurseReg.DoesNotExist:
+            return JsonResponse({'error': 'Nurse profile not found'}, status=403)
+        
+        # Get the most recent tubing entry for this patient
+        last_tubing = DialysisTubing.objects.filter(patient=patient_user).order_by('-date').first()
+        
+        if not last_tubing:
+            return JsonResponse({'error': 'No tubing entries found'}, status=404)
+        
+        # Delete the entry
+        deleted_id = last_tubing.id
+        last_tubing.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Tubing entry deleted successfully',
+            'deleted_id': deleted_id
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+    
+    
+
+def has_dialysis_nurse_permission(nurse_user, patient_user):
+    """
+    Check if the nurse has permission to manage dialysis data for this patient
+    """
+    try:
+        # Check if the user is a dialysis nurse
+        nurse = nurse_user.nurse_profile
+        if nurse.department != 'Dialysis':
+            return False
+        
+        # Additional permission checks can be added here if needed
+        # For example, checking if the nurse is assigned to this patient
+        
+        return True
+        
+    except AttributeError:
+        # User doesn't have a nurse profile
+        return False
 
 
 
@@ -1553,6 +1693,8 @@ def p_pres(request):
     return render(request, 'accounts/p_pres.html', context)
 
 
+
+
 @login_required
 def send_reminders(request, date):
     if request.method == 'POST':
@@ -1613,6 +1755,85 @@ def send_reminders(request, date):
         messages.error(request, 'Invalid request method')
 
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+    
+    
+    
+@login_required
+def prescription_list(request):
+    # Group prescriptions by date and doctor
+    prescriptions = Prescription.objects.filter(patient=request.user).order_by('-prescribed_at')
+    
+    # Group by date
+    grouped_prescriptions = {}
+    for prescription in prescriptions:
+        date_str = prescription.prescribed_at.strftime('%Y-%m-%d')
+        doctor_name = prescription.doctor.staff_profile.full_name
+        
+        if date_str not in grouped_prescriptions:
+            grouped_prescriptions[date_str] = {}
+        
+        if doctor_name not in grouped_prescriptions[date_str]:
+            grouped_prescriptions[date_str][doctor_name] = []
+            
+        grouped_prescriptions[date_str][doctor_name].append(prescription)
+    
+    context = {
+        'grouped_prescriptions': grouped_prescriptions,
+    }
+    return render(request, 'accounts/p_pres.html', context)
+
+
+
+
+@login_required
+@require_POST
+def toggle_reminders(request, prescription_id):
+    prescription = get_object_or_404(Prescription, id=prescription_id, patient=request.user)
+    
+    # Toggle the enabled status
+    prescription.reminders_enabled = not prescription.reminders_enabled
+    prescription.save()
+    
+    if prescription.reminders_enabled:
+        # Create reminders based on doctor's timing pattern
+        times = prescription.get_reminder_times()
+        for time_str in times:
+            hour, minute = map(int, time_str.split(':'))
+            
+            # Create or get schedule
+            schedule, _ = CrontabSchedule.objects.get_or_create(
+                minute=minute,
+                hour=hour,
+                day_of_week='*',
+                day_of_month='*',
+                month_of_year='*',
+            )
+            
+            # Create or update periodic task
+            task_name = f'prescription_{prescription.id}_reminder_{time_str.replace(":", "")}'
+            PeriodicTask.objects.update_or_create(
+                name=task_name,
+                defaults={
+                    'crontab': schedule,
+                    'task': 'accounts.tasks.send_medication_reminder',
+                    'args': json.dumps([prescription.id]),
+                    'enabled': True,
+                }
+            )
+    else:
+        # Disable all reminders for this prescription
+        PeriodicTask.objects.filter(
+            name__startswith=f'prescription_{prescription.id}_reminder_'
+        ).delete()
+    
+    return JsonResponse({
+        'success': True,
+        'enabled': prescription.reminders_enabled,
+        'timing_pattern': prescription.timing_pattern,
+        'reminder_times': prescription.get_reminder_times() if prescription.reminders_enabled else []
+    })
+    
     
     
 
@@ -1742,18 +1963,38 @@ def p_reg(request):
 
     return render(request, 'accounts/p_reg.html', {'form': form})
 
+
+
 @login_required
 def p_dialysis(request):
-    return render(request, 'accounts/p_dialysis.html')
+    # Get weekly tubing data for the template
+    tubing_data = DialysisTubing.objects.filter(patient=request.user) \
+        .annotate(week=TruncWeek('date')) \
+        .values('week') \
+        .annotate(total_count=Sum('tubing_count')) \
+        .order_by('-week')[:8]
+    
+    context = {
+        'tubing_data': tubing_data,
+    }
+    return render(request, 'accounts/p_dialysis.html', context)
 
 
 
 
 @csrf_exempt
 @login_required
-def fetch_weight_data(request):
+def fetch_weight_data(request, patient_id=None):
     if request.method == 'GET':
-        weights = WeightTracking.objects.filter(patient=request.user).order_by('date')
+        # For nurses accessing patient data
+        if patient_id:
+            patient = get_object_or_404(PatientReg, id=patient_id)
+            user = patient.user
+        # For patients accessing their own data
+        else:
+            user = request.user
+            
+        weights = WeightTracking.objects.filter(patient=user).order_by('date')
         data = [{
             'date': entry.date.strftime('%Y-%m-%d'),
             'weight': float(entry.weight)
@@ -1761,30 +2002,63 @@ def fetch_weight_data(request):
         return JsonResponse(data, safe=False)
 
 @csrf_exempt
+@require_POST
 @login_required
-def add_weight(request):
-    if request.method == 'POST':
+def add_weight(request, patient_id=None):
+    try:
         data = json.loads(request.body)
         weight = data.get('weight')
-        if weight:
-            WeightTracking.objects.create(
-                patient=request.user,
-                weight=weight,
-                date=timezone.now()
-            )
-            return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        
+        if not weight:
+            return JsonResponse({'error': 'Weight is required'}, status=400)
+        
+        # For nurses accessing patient data
+        if patient_id:
+            patient = get_object_or_404(PatientReg, id=patient_id)
+            user = patient.user
+            
+            # Verify nurse has permission
+            if not request.user.role == User.NURSE:
+                return JsonResponse({'error': 'Permission denied'}, status=403)
+        # For patients accessing their own data
+        else:
+            user = request.user
+        
+        WeightTracking.objects.create(
+            patient=user,
+            weight=weight,
+            date=timezone.now()
+        )
+        return JsonResponse({'status': 'success'})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 @csrf_exempt
+@require_POST
 @login_required
-def delete_weight(request):
-    if request.method == 'POST':
-        last_entry = WeightTracking.objects.filter(patient=request.user).order_by('-date').first()
+def delete_weight(request, patient_id=None):
+    try:
+        # For nurses accessing patient data
+        if patient_id:
+            patient = get_object_or_404(PatientReg, id=patient_id)
+            user = patient.user
+            
+            # Verify nurse has permission
+            if not request.user.role == User.NURSE:
+                return JsonResponse({'error': 'Permission denied'}, status=403)
+        # For patients accessing their own data
+        else:
+            user = request.user
+            
+        last_entry = WeightTracking.objects.filter(patient=user).order_by('-date').first()
         if last_entry:
             last_entry.delete()
             return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
-
+        return JsonResponse({'error': 'No entries found'}, status=404)
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 @csrf_exempt
 @login_required
@@ -1840,29 +2114,23 @@ def delete_water_intake(request):
             return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
 
-
 @csrf_exempt
 @login_required
 def fetch_tubing_data(request):
     if request.method == 'GET':
-        today = timezone.now().date()
-        start_of_month = today.replace(day=1)  # Start of the current month
-        end_of_month = (start_of_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)  # End of the current month
-
-        # Fetch tubing entries for the current month
-        tubing_entries = DialysisTubing.objects.filter(patient=request.user, date__date__range=[start_of_month, end_of_month])
-
-        # Group tubing entries by week
-        tubing_data = {}
-        for entry in tubing_entries:
-            week_number = (entry.date.date() - start_of_month).days // 7 + 1
-            if week_number not in tubing_data:
-                tubing_data[week_number] = 0
-            tubing_data[week_number] += 1
-
-        # Fill in missing weeks with 0
-        data = [{'week': week, 'count': tubing_data.get(week, 0)} for week in range(1, 6)]  # Max 5 weeks in a month
-
+        # Get tubing data grouped by week
+        tubing_data = DialysisTubing.objects.filter(patient=request.user) \
+            .annotate(week=TruncWeek('date')) \
+            .values('week') \
+            .annotate(total_count=Sum('tubing_count')) \
+            .order_by('-week')[:8]  # Get last 8 weeks of data
+        
+        # Format the data for the chart
+        data = [{
+            'week': entry['week'].strftime('%Y-%m-%d'),
+            'count': entry['total_count']
+        } for entry in tubing_data]
+        
         return JsonResponse(data, safe=False)
 
 

@@ -237,6 +237,38 @@
         .history-table th {
             background-color: #f1f5f9;
         }
+
+
+        /* Added styles for tubing management buttons */
+        .tubing-btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .tubing-btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .tubing-btn-danger {
+            background-color: #dc3545;
+        }
+
+        .tubing-btn:hover {
+            background-color: #1e4bb5;
+            color: #fff;
+        }
+
+
     </style>
 </head>
 <body>
@@ -297,6 +329,10 @@
                         <div class="chart-container">
                             <canvas id="weightChart"></canvas>
                         </div>
+                        <div class="tubing-btn-group">
+                            <button class="tubing-btn" onclick="addWeight()">+ Add Weight</button>
+                            <button class="tubing-btn tubing-btn-danger" onclick="deleteWeight()">Delete Last Entry</button>
+                        </div>
                     </div>
 
                     <!-- Dialysis Tubing -->
@@ -305,25 +341,33 @@
                         <div class="chart-container">
                             <canvas id="tubingChart"></canvas>
                         </div>
-                        {% comment %} <div class="tubing-history">
-                            <h4>Tubing History</h4>
+                        <div class="tubing-btn-group">
+                            <button class="tubing-btn" onclick="addTubing()">+ Add Tubing</button>
+                            <button class="tubing-btn tubing-btn-danger" onclick="deleteTubing()">Delete Last Entry</button>
+                        </div>
+                        <div class="tubing-history">
+                            <h4>Tubing History (Weekly)</h4>
                             <table class="history-table">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Count</th>
+                                        <th>Week</th>
+                                        <th>Total Count</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for entry in tubing_data %}
                                     <tr>
-                                        <td>{{ entry.date|date:"Y-m-d" }}</td>
-                                        <td>{{ entry.tubing_count }}</td>
+                                        <td>Week of {{ entry.week|date:"M d" }}</td>
+                                        <td>{{ entry.total_count }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2">No tubing data available</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                        </div> {% endcomment %}
+                        </div>
                     </div>
 
                     <!-- Water Intake Card -->
@@ -405,44 +449,114 @@
             }
         });
 
-        // Initialize the tubing chart
-        const tubingCtx = document.getElementById('tubingChart').getContext('2d');
-        const tubingChart = new Chart(tubingCtx, {
-            type: 'bar',
-            data: {
-                labels: [{% for entry in tubing_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
-                datasets: [{
-                    label: 'Tubing Count',
-                    data: [{% for entry in tubing_data %}{{ entry.tubing_count }},{% endfor %}],
-                    backgroundColor: '#4285f4'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+
+
+        // Add weight function
+async function addWeight() {
+    const weight = prompt('Enter weight in kg:');
+    if (weight && !isNaN(weight)) {
+        try {
+            const response = await fetch("{% url 'add_weight' patient.id %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
                 },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
+                body: JSON.stringify({ weight: weight })
+            });
+
+            if (response.ok) {
+                alert('Weight added successfully!');
+                location.reload(); // Refresh the page to update the chart
+            } else {
+                const errorData = await response.json();
+                alert('Failed to add weight: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error adding weight:', error);
+            alert('An error occurred while adding weight.');
+        }
+    } else if (weight) {
+        alert('Please enter a valid number for weight.');
+    }
+}
+
+// Delete weight function
+async function deleteWeight() {
+    if (confirm('Are you sure you want to delete the last weight entry?')) {
+        try {
+            const response = await fetch("{% url 'delete_weight' patient.id %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+
+            if (response.ok) {
+                alert('Last weight entry deleted successfully!');
+                location.reload(); // Refresh the page to update the chart
+            } else {
+                const errorData = await response.json();
+                alert('Failed to delete weight: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error deleting weight:', error);
+            alert('An error occurred while deleting weight.');
+        }
+    }
+}
+
+// Initialize the tubing chart with aggregated data
+// Initialize the tubing chart with weekly data
+const tubingCtx = document.getElementById('tubingChart').getContext('2d');
+const tubingChart = new Chart(tubingCtx, {
+    type: 'bar',
+    data: {
+        labels: [{% for entry in tubing_data %}"Week of {{ entry.week|date:'M d' }}",{% endfor %}],
+        datasets: [{
+            label: 'Tubing Count',
+            data: [{% for entry in tubing_data %}{{ entry.total_count }},{% endfor %}],
+            backgroundColor: '#4285f4'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    title: function(context) {
+                        return 'Week of ' + context[0].label;
                     },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Tubing Count'
-                        },
-                        beginAtZero: true,
-                        max: 4
+                    label: function(context) {
+                        return 'Total tubing: ' + context.raw;
                     }
                 }
             }
-        });
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Week'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Tubing Count'
+                },
+                beginAtZero: true,
+                max: 5  // Adjust based on your weekly maximum
+            }
+        }
+    }
+});
+
 
         // Use today's total for the chart
 const todayWaterConsumed = {{ today_total }};
@@ -470,6 +584,71 @@ const waterChart = new Chart(waterCtx, {
 
 // Update remaining water display (show 0 if over limit)
 document.getElementById('waterRemaining').textContent = Math.max(0, totalWater - todayWaterConsumed);
-    </script>
+    
+
+// Add tubing function
+async function addTubing() {
+    const tubingCount = prompt('Enter tubing count (1-4):');
+    if (tubingCount && !isNaN(tubingCount) && tubingCount >= 1 && tubingCount <= 4) {
+        try {
+            const response = await fetch("{% url 'add_tubing' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    patient_id: {{ patient.id }},
+                    tubing_count: tubingCount
+                })
+            });
+
+            if (response.ok) {
+                alert('Tubing data added successfully!');
+                location.reload(); // Refresh the page to update the chart
+            } else {
+                const errorData = await response.json();
+                alert('Failed to add tubing data: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error adding tubing data:', error);
+            alert('An error occurred while adding tubing data.');
+        }
+    } else if (tubingCount) {
+        alert('Please enter a valid number between 1 and 4.');
+    }
+}
+
+// Delete tubing function (now deletes all entries for the most recent day)
+async function deleteTubing() {
+    if (confirm('Are you sure you want to delete the last day\'s tubing entries?')) {
+        try {
+            const response = await fetch("{% url 'delete_tubing' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    patient_id: {{ patient.id }}
+                })
+            });
+
+            if (response.ok) {
+                alert('Last day\'s tubing entries deleted successfully!');
+                location.reload(); // Refresh to show updated data
+            } else {
+                const errorData = await response.json();
+                alert('Failed to delete tubing data: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error deleting tubing data:', error);
+            alert('An error occurred while deleting tubing data.');
+        }
+    }
+}
+
+
+</script>
 </body>
 </html>

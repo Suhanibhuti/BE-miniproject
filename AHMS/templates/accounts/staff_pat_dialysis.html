@@ -86,7 +86,6 @@
             background-color: #D2EBF2;
             border-radius: 8px;
             padding: 20px;
-            {% comment %} margin-bottom: 30px; {% endcomment %}
             margin-top: 20px;
             font-family: 'Inter', sans-serif;
             width: 1340px;
@@ -95,32 +94,7 @@
             margin-top: 0;
             font-weight: 600;
         }
-        .patient-details {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .patient-details h3 {
-            margin-top: 0;
-            font-weight: 600;
-            color: #2D6CBF;
-        }
-        .detail-row {
-            display: flex;
-            margin-bottom: 15px;
-        }
-        .detail-label {
-            font-weight: 500;
-            color: #555;
-            width: 300px;
-        }
-        .detail-value {
-            font-weight: 400;
-            color: #000;
-            flex-grow: 1;
-        }
+        
         .button-group {
             display: flex;
             gap: 12px;
@@ -182,26 +156,44 @@
             width: 150px;
         }
 
-        /* CHART SECTION STYLES (ONLY THIS PART CHANGED) */
+        /* CHART SECTION STYLES */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
             gap: 2rem;
-            {% comment %} margin-top: 2rem; {% endcomment %}
         }
 
         .department-card {
             background-color: #ffffff;
             border-radius: 8px;
             padding: 1.5rem;
-            {% comment %} margin-bottom: 20px; {% endcomment %}
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            min-height: 400px;
         }
 
         .chart-container {
             margin: 20px auto;
             height: 250px;
             width: 100%;
+            position: relative;
+        }
+
+        .chart-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+        }
+
+        .chart-error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #dc3545;
+            text-align: center;
+            padding: 0 20px;
         }
 
         .water-intake {
@@ -228,13 +220,31 @@
             font-size: 0.9rem;
         }
 
-        .history-table th, .history-table td {
+        .history-table th, 
+        .history-table td {
             padding: 8px;
             border: 1px solid #ddd;
             text-align: left;
         }
 
         .history-table th {
+            background-color: #f1f5f9;
+        }
+
+        .fallback-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .fallback-table th, 
+        .fallback-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .fallback-table th {
             background-color: #f1f5f9;
         }
     </style>
@@ -286,80 +296,74 @@
                     <a href="{% url 'staff_pat_rep' patient.id %}" class="btn inactive">Report</a>
                 </div>
 
-
                 <div class="welcome-card">
-
-                <!-- Only the chart grid section has been modified below -->
-                <div class="grid-container">
-                    <!-- Weight Tracking -->
-                    <div class="department-card">
-                        <h3>Weight Tracking</h3>
-                        <div class="chart-container">
-                            <canvas id="weightChart"></canvas>
+                    <div class="grid-container">
+                        <!-- Weight Tracking -->
+                        <div class="department-card">
+                            <h3>Weight Tracking</h3>
+                            <div class="chart-container">
+                                <canvas id="weightChart">
+                                    <div class="chart-loading">Loading weight data...</div>
+                                    <div class="chart-error" style="display:none">Error loading weight data</div>
+                                </canvas>
+                            </div>
+                            <div id="weightFallbackTable" class="fallback-table-container" style="display:none"></div>
                         </div>
-                    </div>
 
-                    <!-- Dialysis Tubing -->
-                    <div class="department-card">
-                        <h3>Dialysis Tubing</h3>
-                        <div class="chart-container">
-                            <canvas id="tubingChart"></canvas>
+                        <!-- Dialysis Tubing -->
+                        <div class="department-card">
+                            <h3>Dialysis Tubing</h3>
+                            <div class="chart-container">
+                                <canvas id="tubingChart">
+                                    <div class="chart-loading">Loading tubing data...</div>
+                                    <div class="chart-error" style="display:none">Error loading tubing data</div>
+                                </canvas>
+                            </div>
+                            <div class="tubing-history">
+                                <h4>Tubing History</h4>
+                                <table class="history-table" id="tubingHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="tubingFallbackTable" class="fallback-table-container" style="display:none"></div>
                         </div>
-                        {% comment %} <div class="tubing-history">
-                            <h4>Tubing History</h4>
-                            <table class="history-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Count</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for entry in tubing_data %}
-                                    <tr>
-                                        <td>{{ entry.date|date:"Y-m-d" }}</td>
-                                        <td>{{ entry.tubing_count }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div> {% endcomment %}
-                    </div>
 
-                    <!-- Water Intake Card -->
-<div class="department-card">
-    <h3>Water Intake</h3>
-    <div class="water-intake">
-        <canvas id="waterIntakeChart"></canvas>
-        <div class="remaining-water">
-            <span id="waterRemaining">0</span>ml
-        </div>
-    </div>
-    <div class="water-intake-history">
-        <h4>Water Intake History</h4>
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Total Amount (ml)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in water_intake_data %}
-                <tr>
-                    <td>{{ entry.date__date|date:"Y-m-d" }}</td>
-                    <td>{{ entry.total_amount }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="2">No water intake data available</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-
+                        <!-- Water Intake -->
+                        <div class="department-card">
+                            <h3>Water Intake</h3>
+                            <div class="water-intake">
+                                <canvas id="waterIntakeChart">
+                                    <div class="chart-loading">Loading water intake data...</div>
+                                    <div class="chart-error" style="display:none">Error loading water intake data</div>
+                                </canvas>
+                                <div class="remaining-water">
+                                    <span id="waterRemaining">0</span>ml
+                                </div>
+                            </div>
+                            <div class="water-intake-history">
+                                <h4>Water Intake History</h4>
+                                <table class="history-table" id="waterHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Total Amount (ml)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="waterFallbackTable" class="fallback-table-container" style="display:none"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -367,109 +371,323 @@
     </div>
 
     <script>
-        // Initialize the weight chart
-        const weightCtx = document.getElementById('weightChart').getContext('2d');
-        const weightChart = new Chart(weightCtx, {
-            type: 'line',
-            data: {
-                labels: [{% for entry in weight_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
-                datasets: [{
-                    label: 'Weight (kg)',
-                    data: [{% for entry in weight_data %}{{ entry.weight }},{% endfor %}],
-                    borderColor: '#4285f4',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Weight (kg)'
-                        }
-                    }
-                }
-            }
-        });
+        // Global variables for charts
+        let weightChart, waterChart, tubingChart;
 
-        // Initialize the tubing chart
-        const tubingCtx = document.getElementById('tubingChart').getContext('2d');
-        const tubingChart = new Chart(tubingCtx, {
-            type: 'bar',
-            data: {
-                labels: [{% for entry in tubing_data %}"{{ entry.date|date:'Y-m-d' }}",{% endfor %}],
-                datasets: [{
-                    label: 'Tubing Count',
-                    data: [{% for entry in tubing_data %}{{ entry.tubing_count }},{% endfor %}],
-                    backgroundColor: '#4285f4'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        }
+        // Helper function to show loading state
+        function showLoading(chartId) {
+            const canvas = document.getElementById(chartId);
+            const loading = canvas.querySelector('.chart-loading');
+            const error = canvas.querySelector('.chart-error');
+            loading.style.display = 'block';
+            error.style.display = 'none';
+        }
+
+        // Helper function to show error state
+        function showError(chartId, message) {
+            const canvas = document.getElementById(chartId);
+            const loading = canvas.querySelector('.chart-loading');
+            const error = canvas.querySelector('.chart-error');
+            loading.style.display = 'none';
+            error.style.display = 'block';
+            if (message) error.textContent = message;
+        }
+
+        // Helper function to hide loading/error states
+        function hideStatus(chartId) {
+            const canvas = document.getElementById(chartId);
+            const loading = canvas.querySelector('.chart-loading');
+            const error = canvas.querySelector('.chart-error');
+            loading.style.display = 'none';
+            error.style.display = 'none';
+        }
+
+        // Helper function to create fallback table
+        function createFallbackTable(containerId, data, columns) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<p>No data available</p>';
+                return;
+            }
+            
+            const table = document.createElement('table');
+            table.className = 'fallback-table';
+            
+            // Create header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            columns.forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Create body
+            const tbody = document.createElement('tbody');
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                columns.forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = item[col.toLowerCase()] || '';
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+            
+            container.appendChild(table);
+            container.style.display = 'block';
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // ========== WEIGHT TRACKING ========== //
+        function initializeWeightChart() {
+            const weightData = [
+                {% for entry in weight_data %}
+                { date: "{{ entry.date|date:'Y-m-d' }}", weight: {{ entry.weight }} },
+                {% endfor %}
+            ];
+            
+            if (weightData.length === 0) {
+                showError('weightChart', 'No weight data available');
+                createFallbackTable('weightFallbackTable', weightData, ['Date', 'Weight']);
+                return;
+            }
+            
+            const labels = weightData.map(entry => formatDate(entry.date));
+            const weights = weightData.map(entry => entry.weight);
+            
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            
+            try {
+                weightChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Weight (kg)',
+                            data: weights,
+                            borderColor: '#4285f4',
+                            backgroundColor: 'rgba(66, 133, 244, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
                     },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Tubing Count'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
                         },
-                        beginAtZero: true,
-                        max: 4
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Weight (kg)'
+                                },
+                                suggestedMin: Math.min(...weights) - 2,
+                                suggestedMax: Math.max(...weights) + 2
+                            }
+                        }
                     }
-                }
-            }
-        });
-
-        // Use today's total for the chart
-const todayWaterConsumed = {{ today_total }};
-const totalWater = 1000; // 1 liter limit
-
-// Initialize the water intake chart
-const waterCtx = document.getElementById('waterIntakeChart').getContext('2d');
-const waterChart = new Chart(waterCtx, {
-    type: 'doughnut',
-    data: {
-        datasets: [{
-            data: [todayWaterConsumed, Math.max(0, totalWater - todayWaterConsumed)],
-            backgroundColor: ['#4285f4', '#e0e0e0']
-        }]
-    },
-    options: {
-        cutout: '70%',
-        plugins: {
-            legend: {
-                display: false
+                });
+            } catch (error) {
+                console.error('Error initializing weight chart:', error);
+                showError('weightChart', 'Error displaying weight chart');
+                createFallbackTable('weightFallbackTable', weightData, ['Date', 'Weight']);
             }
         }
-    }
-});
 
-// Update remaining water display (show 0 if over limit)
-document.getElementById('waterRemaining').textContent = Math.max(0, totalWater - todayWaterConsumed);
+        // ========== DIALYSIS TUBING ========== //
+        function initializeTubingChart() {
+            const tubingData = [
+                {% for entry in tubing_data %}
+                { date: "{{ entry.date|date:'Y-m-d' }}", count: {{ entry.tubing_count }} },
+                {% endfor %}
+            ];
+            
+            if (tubingData.length === 0) {
+                showError('tubingChart', 'No tubing data available');
+                createFallbackTable('tubingFallbackTable', tubingData, ['Date', 'Count']);
+                return;
+            }
+            
+            const labels = tubingData.map(entry => formatDate(entry.date));
+            const counts = tubingData.map(entry => entry.count);
+            
+            const ctx = document.getElementById('tubingChart').getContext('2d');
+            
+            try {
+                tubingChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tubing Count',
+                            data: counts,
+                            backgroundColor: '#4285f4'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Tubing Count'
+                                },
+                                beginAtZero: true,
+                                max: Math.max(...counts) + 1
+                            }
+                        }
+                    }
+                });
+                
+                // Update the tubing history table
+                updateTubingHistoryTable(tubingData);
+            } catch (error) {
+                console.error('Error initializing tubing chart:', error);
+                showError('tubingChart', 'Error displaying tubing chart');
+                createFallbackTable('tubingFallbackTable', tubingData, ['Date', 'Count']);
+            }
+        }
+
+        function updateTubingHistoryTable(data) {
+            const tableBody = document.querySelector('#tubingHistoryTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center">No tubing history available</td></tr>';
+                return;
+            }
+            
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(entry.date)}</td>
+                    <td>${entry.count}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // ========== WATER INTAKE ========== //
+        function initializeWaterIntakeChart() {
+            const waterIntakeData = [
+                {% for entry in water_intake_data %}
+                { date: "{{ entry.date__date|date:'Y-m-d' }}", amount: {{ entry.total_amount }} },
+                {% endfor %}
+            ];
+            
+            const todayTotal = {{ today_total }};
+            const totalWater = 1000; // 1 liter limit
+            
+            const ctx = document.getElementById('waterIntakeChart').getContext('2d');
+            
+            try {
+                waterChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [todayTotal, Math.max(0, totalWater - todayTotal)],
+                            backgroundColor: ['#4285f4', '#e0e0e0'],
+                            borderWidth: 0
+                        }],
+                        labels: ['Consumed', 'Remaining']
+                    },
+                    options: {
+                        cutout: '70%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.raw + 'ml';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Update remaining water display
+                document.getElementById('waterRemaining').textContent = Math.max(0, totalWater - todayTotal);
+                
+                // Update water intake history table
+                updateWaterHistoryTable(waterIntakeData);
+            } catch (error) {
+                console.error('Error initializing water intake chart:', error);
+                showError('waterIntakeChart', 'Error displaying water intake data');
+                createFallbackTable('waterFallbackTable', waterIntakeData, ['Date', 'Amount']);
+            }
+        }
+
+        function updateWaterHistoryTable(data) {
+            const tableBody = document.querySelector('#waterHistoryTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="2" style="text-align:center">No water intake history available</td></tr>';
+                return;
+            }
+            
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(entry.date)}</td>
+                    <td>${entry.amount || 0}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // ========== INITIALIZE ALL CHARTS ========== //
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Chart.js is loaded
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not loaded!');
+                document.querySelectorAll('.chart-container').forEach(container => {
+                    container.innerHTML = '<div class="chart-error">Chart functionality not available</div>';
+                });
+                return;
+            }
+            
+            initializeWeightChart();
+            initializeTubingChart();
+            initializeWaterIntakeChart();
+        });
     </script>
 </body>
 </html>

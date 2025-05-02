@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+from django.utils import timezone
 
 # Create your models here.
 
@@ -129,13 +130,37 @@ class Prescription(models.Model):
     doctor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='prescribed_by')
     medicine_name = models.CharField(max_length=100)
     dosage = models.CharField(max_length=50)
-    timing = models.CharField(max_length=50)  # e.g., "1-1-1" or "1-0-1"
+    timing_pattern = models.CharField(max_length=10)
     before_after_food = models.CharField(max_length=10, choices=[('before', 'Before Food'), ('after', 'After Food'), ('none', 'None')])
-    prescribed_at = models.DateTimeField(auto_now_add=True)
-    reminders_set = models.BooleanField(default=False)  # New field to track toggle state
+    prescribed_at = models.DateTimeField(default=timezone.now)
+    reminders_enabled = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.medicine_name} for {self.patient.username} (Prescribed by: {self.doctor.username})"
+    
+    class Meta:
+        ordering = ['-prescribed_at']
+    
+       
+    def get_reminder_times(self):
+        """Convert timing pattern to actual reminder times"""
+        times = []
+        pattern_parts = self.timing_pattern.split('-')
+        
+        # Morning (8 AM)
+        if len(pattern_parts) > 0 and pattern_parts[0] == '1':
+            times.append('08:00')
+        
+        # Afternoon (1 PM)
+        if len(pattern_parts) > 1 and pattern_parts[1] == '1':
+            times.append('13:00')
+        
+        # Evening (8 PM)
+        if len(pattern_parts) > 2 and pattern_parts[2] == '1':
+            times.append('20:00')
+            
+        return times
+
     
     
     

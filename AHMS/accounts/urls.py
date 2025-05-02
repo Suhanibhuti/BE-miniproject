@@ -40,6 +40,10 @@ urlpatterns = [
     path('nurse_pat_rep/<int:patient_id>/', views.nurse_pat_rep, name='nurse_pat_rep'),
     
     path('nurse_pat_dialysis/<int:patient_id>/', views.nurse_pat_dialysis, name='nurse_pat_dialysis'),
+    path('add_tubing/', views.add_tubing, name='add_tubing'),
+    path('delete_tubing/', views.delete_tubing, name='delete_tubing'),
+    
+    
     path('nurse_pat_eyecare/<int:patient_id>/', views.nurse_pat_eyecare, name='nurse_pat_eyecare'),
     path('nurse_pat_cardio/<int:patient_id>/', views.nurse_pat_cardio, name='nurse_pat_cardio'),
     
@@ -61,6 +65,9 @@ urlpatterns = [
     
     path('p_pres/', views.p_pres, name='p_pres'),
     path('send-reminders/<str:date>/', views.send_reminders, name='send_reminders'),
+    path('prescription_list/', views.prescription_list, name='prescription_list'),
+    path('prescriptions/toggle_reminders/<int:prescription_id>/', views.toggle_reminders, name='toggle_reminders'),
+    
     
     path('p_rep/', views.p_rep, name='p_rep'),
     path('delete_report/<int:report_id>/', views.delete_report, name='delete_report'),
@@ -73,6 +80,10 @@ urlpatterns = [
     path('fetch_weight_data/', views.fetch_weight_data, name='fetch_weight_data'),
     path('add_weight/', views.add_weight, name='add_weight'),
     path('delete_weight/', views.delete_weight, name='delete_weight'),
+    
+    path('patient/<int:patient_id>/fetch_weight_data/', views.fetch_weight_data, name='fetch_weight_data'),
+    path('patient/<int:patient_id>/add_weight/', views.add_weight, name='add_weight'),
+    path('patient/<int:patient_id>/delete_weight/', views.delete_weight, name='delete_weight'),
     
     path('fetch_water_intake/', views.fetch_water_intake, name='fetch_water_intake'),
     path('fetch_water_history/', views.fetch_water_history, name='fetch_water_history'),
